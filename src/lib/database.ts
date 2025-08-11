@@ -1,6 +1,22 @@
 import { User, ContactMessage, Enrollment, Profile } from './supabase';
-import bcrypt from 'bcryptjs';
 import { logError, logInfo, logDebug } from './logger';
+
+// Browser-compatible password hashing (for demo purposes only)
+const hashPassword = async (password: string): Promise<string> => {
+  // Use Web Crypto API for browser-compatible hashing
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password + 'zyntiq_salt_2024');
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+};
+
+const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
+  const newHash = await hashPassword(password);
+  return newHash === hashedPassword;
+};
+
 // Local storage database implementation
 class LocalStorageDatabase {
   private getStorageKey(table: string): string {
@@ -30,15 +46,6 @@ class LocalStorageDatabase {
     } catch (error) {
       logError(`Error saving table ${tableName}`, error);
     }
-  }
-  // Secure password hashing using bcrypt
-  private async hashPassword(password: string): Promise<string> {
-    const saltRounds = 12;
-    return await bcrypt.hash(password, saltRounds);
-  }
-  // Verify password using bcrypt
-  private async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-    return await bcrypt.compare(password, hashedPassword);
   }
   // Validate password strength
   private validatePasswordStrength(password: string): { isValid: boolean; error?: string } {
@@ -105,62 +112,52 @@ class LocalStorageDatabase {
       if (!passwordValidation.isValid) {
         return { user: null, error: passwordValidation.error! };
       }
-      // Create new user with hashed password
+      // Hash password
+      const hashedPassword = await hashPassword(sanitizedData.password);
+      // Create new user
       const newUser: User & { password: string } = {
         id: this.generateId(),
         email: sanitizedData.email,
+        password: hashedPassword,
         first_name: sanitizedData.first_name,
         middle_name: sanitizedData.middle_name,
         last_name: sanitizedData.last_name,
         phone: sanitizedData.phone,
-        password: await this.hashPassword(sanitizedData.password),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
+      // Save user
       users.push(newUser);
       this.setTable('users', users);
-      // Return user without password
+      // Remove password from returned user object
       const { password, ...userWithoutPassword } = newUser;
+      logInfo('User registered successfully', { email: sanitizedData.email });
       return { user: userWithoutPassword, error: null };
     } catch (error) {
-      logError('Sign up error', error);
+      logError('Error during sign up', error);
       return { user: null, error: 'Failed to create account. Please try again.' };
     }
   }
   async signIn(email: string, password: string): Promise<{ user: User | null; error: string | null }> {
     try {
       const users = this.getTable<(User & { password: string })>('users');
-      // Sanitize email input
       const sanitizedEmail = this.sanitizeInput(email).toLowerCase();
-      // Find user by email
+      // Find user
       const user = users.find(u => u.email === sanitizedEmail);
       if (!user) {
         return { user: null, error: 'Invalid email or password' };
       }
-      // Handle Google OAuth users
-      if (password === 'google-oauth') {
-        const { password: _, ...userWithoutPassword } = user;
-        // Set current user session
-        localStorage.setItem('zyntiq_current_user', JSON.stringify({
-          id: user.id,
-          email: user.email
-        }));
-        return { user: userWithoutPassword, error: null };
-      }
-      // Verify password for regular users
-      const isPasswordValid = await this.verifyPassword(password, user.password);
-      if (!isPasswordValid) {
+      // Verify password
+      const isValidPassword = await verifyPassword(password, user.password);
+      if (!isValidPassword) {
         return { user: null, error: 'Invalid email or password' };
       }
+      // Remove password from returned user object
       const { password: _, ...userWithoutPassword } = user;
-      // Set current user session
-      localStorage.setItem('zyntiq_current_user', JSON.stringify({
-        id: user.id,
-        email: user.email
-      }));
+      logInfo('User signed in successfully', { email: sanitizedEmail });
       return { user: userWithoutPassword, error: null };
     } catch (error) {
-      logError('Sign in error', error);
+      logError('Error during sign in', error);
       return { user: null, error: 'Failed to sign in. Please try again.' };
     }
   }
