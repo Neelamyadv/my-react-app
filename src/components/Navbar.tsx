@@ -4,13 +4,11 @@ import { User, LogOut, Crown, Menu, X } from 'lucide-react';
 import { useAuth } from '../lib/auth';
 import { useEnrollment } from '../hooks/useEnrollment';
 import toast from 'react-hot-toast';
-
 const Navbar = () => {
   const { user, signOut } = useAuth();
   const { hasPremiumPass } = useEnrollment();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const handleLogout = async () => {
     try {
       const { error } = await signOut();
@@ -25,15 +23,12 @@ const Navbar = () => {
       toast.error('Failed to log out');
     }
   };
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
-
   const navItems = [
     { name: 'Home', path: '/' },
     { name: 'Courses', path: '/courses' },
@@ -41,7 +36,6 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ];
-
   return (
     <>
       <header className="py-1 px-4 sm:px-6 md:px-12 flex justify-between items-center relative z-50 bg-transparent opacity-100 backdrop-filter-none"> {/* Changed/Added classes here */}
@@ -53,7 +47,6 @@ const Navbar = () => {
             className="h-14 sm:h-14 md:h-16 w-auto object-contain"
           />
         </Link>
-        
         {/* Desktop Navigation */}
         <nav className="hidden lg:block">
           <ul className="flex gap-6 xl:gap-8">
@@ -70,7 +63,6 @@ const Navbar = () => {
             ))}
           </ul>
         </nav>
-        
         {/* Desktop Auth Buttons */}
         <div className="hidden lg:flex items-center gap-3">
           {user ? (
@@ -117,7 +109,6 @@ const Navbar = () => {
             </>
           )}
         </div>
-
         {/* Mobile Menu Button */}
         <button
           onClick={toggleMobileMenu}
@@ -127,12 +118,10 @@ const Navbar = () => {
           {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
-
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={closeMobileMenu} />
       )}
-
       {/* Mobile Menu */}
       <div className={`fixed top-0 right-0 h-full w-60 max-w-[85vw] bg-white shadow-8xl z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${ 
         isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
@@ -157,7 +146,6 @@ const Navbar = () => {
               ))}
             </ul>
           </nav>
-
           {/* Mobile Auth Section */}
           <div className="border-t border-gray-200 pt-6">
             {user ? (
@@ -185,7 +173,6 @@ const Navbar = () => {
                     )}
                   </div>
                 </div>
-
                 {/* Account Actions */}
                 <div className="space-y-3">
                   <Link
@@ -222,7 +209,6 @@ const Navbar = () => {
               </div>
             )}
           </div>
-
           {/* Mobile Footer */}
           <div className="mt-8 pt-6 border-t border-gray-200">
             <p className="text-center text-sm text-gray-500">
@@ -234,5 +220,4 @@ const Navbar = () => {
     </>
   );
 };
-
 export default Navbar;

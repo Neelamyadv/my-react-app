@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth.tsx';
 import toast from 'react-hot-toast';
-
 const SignupPage = () => {
   const navigate = useNavigate();
   const { signUp, signInWithGoogle, isGoogleAuthAvailable } = useAuth();
@@ -18,48 +17,38 @@ const SignupPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     // Validate required fields
     if (!formData.firstName.trim()) {
       toast.error('First name is required');
       return;
     }
-    
     if (!formData.lastName.trim()) {
       toast.error('Last name is required');
       return;
     }
-    
     if (!formData.phone.trim()) {
       toast.error('Phone number is required');
       return;
     }
-    
     if (!formData.email.trim()) {
       toast.error('Email is required');
       return;
     }
-    
     if (!formData.password) {
       toast.error('Password is required');
       return;
     }
-    
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
       return;
     }
-
     if (!formData.agreeToTerms) {
       toast.error('Please agree to the terms and conditions');
       return;
     }
-
     setLoading(true);
-
     try {
       const { error } = await signUp({
         email: formData.email.trim(),
@@ -69,12 +58,10 @@ const SignupPage = () => {
         last_name: formData.lastName.trim(),
         phone: formData.phone.trim()
       });
-
       if (error) {
         toast.error(error);
         return;
       }
-
       toast.success('Account created successfully! Please log in with your credentials.');
       navigate('/login');
     } catch (error) {
@@ -83,13 +70,11 @@ const SignupPage = () => {
       setLoading(false);
     }
   };
-
   const handleGoogleSignup = async () => {
     if (!isGoogleAuthAvailable) {
       toast.error('Google Sign-In is not available in this environment');
       return;
     }
-
     setGoogleLoading(true);
     try {
       const { error } = await signInWithGoogle();
@@ -105,7 +90,6 @@ const SignupPage = () => {
       setGoogleLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen yellow-gradient-bg flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl w-full">
@@ -120,7 +104,6 @@ const SignupPage = () => {
                   </h2>
                   <p className="text-gray-600 text-sm sm:text-base">Join thousands of learners worldwide</p>
                 </div>
-
                 <form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
                   <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <input
@@ -150,7 +133,6 @@ const SignupPage = () => {
                       disabled={loading}
                     />
                   </div>
-
                   <div className="flex gap-2 sm:gap-3">
                     <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-violet-100 to-pink-100 rounded-xl text-violet-700 font-medium text-sm">+91</span>
                     <input
@@ -163,7 +145,6 @@ const SignupPage = () => {
                       disabled={loading}
                     />
                   </div>
-
                   <input
                     type="email"
                     placeholder="Email address*"
@@ -173,7 +154,6 @@ const SignupPage = () => {
                     required
                     disabled={loading}
                   />
-
                   <div className="grid grid-cols-2 gap-2 sm:gap-3">
                     <input
                       type="password"
@@ -196,7 +176,6 @@ const SignupPage = () => {
                       minLength={6}
                     />
                   </div>
-
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
@@ -213,7 +192,6 @@ const SignupPage = () => {
                       <Link to="/terms-of-service" className="text-violet-600 hover:text-violet-700">terms of service</Link>.
                     </span>
                   </div>
-
                   <button
                     type="submit"
                     disabled={loading}
@@ -222,7 +200,6 @@ const SignupPage = () => {
                     {loading ? 'Creating Account...' : 'Create Account'}
                   </button>
                 </form>
-
                 <div className="mt-4 sm:mt-6 text-center">
                   <span className="text-gray-500 text-sm">Already have an account?</span>
                   <br />
@@ -230,7 +207,6 @@ const SignupPage = () => {
                     Log in
                   </Link>
                 </div>
-                
                 {isGoogleAuthAvailable && (
                   <div className="mt-4 sm:mt-6 flex justify-center">
                     <button
@@ -254,7 +230,6 @@ const SignupPage = () => {
                     </button>
                   </div>
                 )}
-
                 {!isGoogleAuthAvailable && (
                   <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50/80 backdrop-blur-sm border border-blue-200 rounded-xl">
                     <p className="text-sm text-blue-800 text-center">
@@ -265,7 +240,6 @@ const SignupPage = () => {
               </div>
             </div>
           </div>
-
           {/* Right Side - Illustration */}
           <div className="order-1 lg:order-2 flex justify-center">
             <div className="relative max-w-sm sm:max-w-md lg:max-w-lg">
@@ -273,7 +247,6 @@ const SignupPage = () => {
               <div className="hidden sm:block absolute -top-8 -left-8 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-yellow-300/70 to-orange-400/70 rounded-full opacity-70 blur-xl animate-float"></div>
               <div className="hidden sm:block absolute -bottom-8 -right-8 w-32 sm:w-40 h-32 sm:h-40 bg-gradient-to-br from-purple-400/70 to-pink-400/70 rounded-full opacity-70 blur-xl animate-float" style={{animationDelay: '2s'}}></div>
               <div className="hidden sm:block absolute top-1/2 -left-12 w-20 sm:w-24 h-20 sm:h-24 bg-gradient-to-br from-blue-400/60 to-purple-400/60 rounded-full opacity-60 blur-lg animate-float" style={{animationDelay: '1s'}}></div>
-              
               {/* Main illustration */}
               <div className="relative z-10">
                 <img
@@ -282,7 +255,6 @@ const SignupPage = () => {
                   className="w-full h-auto drop-shadow-2xl"
                 />
               </div>
-              
               {/* Additional floating elements - Hidden on mobile */}
               <div className="hidden sm:block absolute top-16 right-8 w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-br from-pink-300/80 to-purple-400/80 rounded-2xl opacity-80 animate-float" style={{animationDelay: '0.5s'}}></div>
               <div className="hidden sm:block absolute bottom-24 left-4 w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-blue-300/70 to-indigo-400/70 rounded-xl opacity-70 animate-float" style={{animationDelay: '1.5s'}}></div>
@@ -293,5 +265,4 @@ const SignupPage = () => {
     </div>
   );
 };
-
 export default SignupPage;

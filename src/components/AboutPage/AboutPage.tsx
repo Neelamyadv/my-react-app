@@ -1,6 +1,5 @@
 import React from 'react';
 import { Target, BookOpen, GraduationCap } from 'lucide-react';
-
 const AboutPage = () => {
   return (
     <div className="min-h-screen yellow-gradient-bg">
@@ -17,7 +16,6 @@ const AboutPage = () => {
                 className="w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 object-cover rounded-2xl sm:rounded-3xl floating-delay-1"
               />
             </div>
-            
             <div className="order-1 lg:order-2 text-center lg:text-left">
               <span className="inline-block px-3 sm:px-4 py-2 bg-blue-50/80 backdrop-blur-sm text-xs sm:text-sm rounded-full mb-4 sm:mb-6 border border-blue-200/50">
                 About Zyntiq
@@ -37,7 +35,6 @@ const AboutPage = () => {
           </div>
         </div>
       </div>
-
       {/* Innovation Section */}
       <div className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center lg:text-left">
@@ -49,7 +46,6 @@ const AboutPage = () => {
           </p>
         </div>
       </div>
-
       {/* Mission & Vision */}
       <div className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -69,7 +65,6 @@ const AboutPage = () => {
           </div>
         </div>
       </div>
-
       {/* Certification Section */}
       <div className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
@@ -82,16 +77,13 @@ const AboutPage = () => {
           </div>
         </div>
       </div>
-
       {/* What we Stand for */}
       <div className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 text-gray-50 text-center lg:text-left">What we Stand for</h2>
-          
           <h3 className="text-lg sm:text-xl font-superbold mb-8 sm:mb-12 text-gray-300 text-center lg:text-left">
             Our expertise allows us to offer the finest carrier
           </h3>
-
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
             <div className="space-y-8 sm:space-y-12">
               <div className="flex items-start gap-3 sm:gap-4">
@@ -105,7 +97,6 @@ const AboutPage = () => {
                   </p>
                 </div>
               </div>
-
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100/80 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
                   <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
@@ -117,7 +108,6 @@ const AboutPage = () => {
                   </p>
                 </div>
               </div>
-
               <div className="flex items-start gap-3 sm:gap-4">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-100/80 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
                   <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
@@ -130,7 +120,6 @@ const AboutPage = () => {
                 </div>
               </div>
             </div>
-
             <div className="flex items-center justify-center">
               <img 
                 src="https://cdn3d.iconscout.com/3d/premium/thumb/woman-working-on-laptop-5706070-4755619.png" 
@@ -141,13 +130,11 @@ const AboutPage = () => {
           </div>
         </div>
       </div>
-
       {/* Educational Philosophy */}
       <div className="py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
           <span className="text-purple-200 font-medium mb-2 block text-sm sm:text-base">Our Educational Philosophy</span>
           <h2 className="text-3xl sm:text-3xl font-bold mb-8 sm:mb-12 text-gray-100">How does Zyntiq Works?</h2>
-          
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
@@ -179,7 +166,6 @@ const AboutPage = () => {
           </div>
         </div>
       </div>
-
       {/* Call to Action */}
       <div className="bg-black text-white py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -198,5 +184,4 @@ const AboutPage = () => {
     </div>
   );
 };
-
 export default AboutPage;

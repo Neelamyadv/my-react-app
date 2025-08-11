@@ -6,7 +6,6 @@ import CourseContent from './CourseContent';
 import { usePayment } from '../../hooks/usePayment';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../lib/auth';
-
 // Course data for all courses
 const courseData = {
   'web-development': {
@@ -208,14 +207,12 @@ const courseData = {
     ]
   }
 };
-
 const CourseDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { courseId } = useParams<{ courseId: string }>();
   const { user } = useAuth();
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [enrollment, setEnrollment] = useState<any>(null);
-  
   // Payment integration
   const {
     isPaymentModalOpen,
@@ -224,7 +221,6 @@ const CourseDetailPage: React.FC = () => {
     closePaymentModal,
     handlePaymentSuccess
   } = usePayment();
-
   // Enrollment integration
   const {
     enrollments,
@@ -235,17 +231,14 @@ const CourseDetailPage: React.FC = () => {
     updateProgress,
     refreshEnrollments
   } = useEnrollment();
-
   // Get course details based on courseId
   const courseDetails = courseId ? courseData[courseId as keyof typeof courseData] : null;
-
   // Redirect to 404 or courses page if course not found
   useEffect(() => {
     if (courseId && !courseDetails) {
       navigate('/courses');
     }
   }, [courseId, courseDetails, navigate]);
-
   const testimonials = [
     {
       quote: "Transformed my skills completely",
@@ -266,26 +259,19 @@ const CourseDetailPage: React.FC = () => {
       avatar: "https://randomuser.me/api/portraits/men/67.jpg"
     }
   ];
-
   // Listen for enrollment updates
   useEffect(() => {
     const handleEnrollmentUpdate = () => {
-      console.log('Enrollment update event received in course detail, refreshing...');
       refreshEnrollments();
     };
-
     window.addEventListener('enrollmentUpdated', handleEnrollmentUpdate);
     return () => window.removeEventListener('enrollmentUpdated', handleEnrollmentUpdate);
   }, [refreshEnrollments]);
-
   // Check enrollment status
   useEffect(() => {
     if (user && courseId && !enrollmentLoading) {
       const enrolled = isEnrolledInCourseSync(courseId);
       const courseEnrollment = getCourseEnrollment(courseId);
-      
-      console.log(`Course ${courseId} enrollment status:`, { enrolled, courseEnrollment, hasPremiumPass });
-      
       setIsEnrolled(enrolled);
       setEnrollment(courseEnrollment);
     } else {
@@ -293,7 +279,6 @@ const CourseDetailPage: React.FC = () => {
       setEnrollment(null);
     }
   }, [user, courseId, enrollments, hasPremiumPass, enrollmentLoading, isEnrolledInCourseSync, getCourseEnrollment]);
-
   const handleEnrollClick = () => {
     if (!user) {
       navigate('/login');
@@ -303,14 +288,12 @@ const CourseDetailPage: React.FC = () => {
       initiateCoursePayment(courseId, courseDetails.title);
     }
   };
-
   const handleProgressUpdate = async (progress: number) => {
     if (enrollment?.id) {
       await updateProgress(enrollment.id, progress);
       setEnrollment(prev => ({ ...prev, progress }));
     }
   };
-
   if (enrollmentLoading) {
     return (
       <div className="min-h-screen yellow-gradient-bg flex items-center justify-center">
@@ -318,7 +301,6 @@ const CourseDetailPage: React.FC = () => {
       </div>
     );
   }
-
   if (!courseDetails) {
     return (
       <div className="min-h-screen yellow-gradient-bg flex items-center justify-center px-4">
@@ -336,7 +318,6 @@ const CourseDetailPage: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen yellow-gradient-bg">
       {/* Header */}
@@ -349,7 +330,6 @@ const CourseDetailPage: React.FC = () => {
             <ChevronLeft size={20} />
             Back
           </button>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center">
             <div className="text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 mb-4">
@@ -362,7 +342,6 @@ const CourseDetailPage: React.FC = () => {
                 )}
               </div>
               <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base leading-relaxed">{courseDetails.description}</p>
-              
               <div className="flex flex-wrap justify-center md:justify-start gap-3 sm:gap-4">
                 <div className="bg-white/80 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full text-sm flex items-center gap-2 border border-white/30">
                   <BookOpen size={16} />
@@ -376,14 +355,12 @@ const CourseDetailPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
             <div className="relative flex justify-center">
               <img
                 src={courseDetails.image}
                 alt={courseDetails.title}
                 className="w-full max-w-xs sm:max-w-md mx-auto"
               />
-              
               {!isEnrolled && (
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                   <div className="w-16 h-16 sm:w-24 sm:h-24 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-white transition-colors enhanced-shadow">
@@ -397,7 +374,6 @@ const CourseDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Course Content */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {isEnrolled ? (
@@ -422,7 +398,6 @@ const CourseDetailPage: React.FC = () => {
                 ))}
               </div>
             </div>
-
             <div>
               <div className="glass-card-dark rounded-3xl p-4 sm:p-6 sticky top-6">
                 <div className="aspect-video bg-gray-100 rounded-xl mb-4 sm:mb-6">
@@ -432,7 +407,6 @@ const CourseDetailPage: React.FC = () => {
                     className="w-full h-full object-cover rounded-xl"
                   />
                 </div>
-                
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <div>
                     <span className="text-xl sm:text-2xl font-bold">₹{courseDetails.price}</span>
@@ -440,21 +414,18 @@ const CourseDetailPage: React.FC = () => {
                   </div>
                   <span className="text-green-500 font-medium text-sm sm:text-base">75% OFF</span>
                 </div>
-
                 <button 
                   onClick={handleEnrollClick}
                   className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white py-3 sm:py-4 rounded-full font-medium hover:shadow-lg transition-all duration-300 mb-3 sm:mb-4 text-base"
                 >
                   {user ? 'Enroll Now' : 'Login to Enroll'}
                 </button>
-
                 <p className="text-center text-xs sm:text-sm text-gray-500">30-Day Money-Back Guarantee</p>
               </div>
             </div>
           </div>
         )}
       </div>
-
       {/* Certificate Section - Only show if not enrolled */}
       {!isEnrolled && (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -469,7 +440,6 @@ const CourseDetailPage: React.FC = () => {
           </div>
         </div>
       )}
-
       {/* Testimonials - Only show if not enrolled */}
       {!isEnrolled && (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
@@ -500,7 +470,6 @@ const CourseDetailPage: React.FC = () => {
           </div>
         </div>
       )}
-
       {/* Footer Banner */}
       <div className="bg-black text-white py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -516,7 +485,6 @@ const CourseDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Payment Modal */}
       {currentPaymentData && (
         <PaymentModal
@@ -529,5 +497,4 @@ const CourseDetailPage: React.FC = () => {
     </div>
   );
 };
-
 export default CourseDetailPage;

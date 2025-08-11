@@ -5,12 +5,10 @@ import UserManagement from './UserManagement';
 import ContactMessages from './ContactMessages';
 import PaymentManagement from './PaymentManagement';
 import { useAuth } from '../../lib/auth';
-
 const AdminPanel: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { signOut } = useAuth();
-
   const navigation = [
     { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
     { id: 'users', name: 'Users', icon: Users },
@@ -18,11 +16,9 @@ const AdminPanel: React.FC = () => {
     { id: 'messages', name: 'Messages', icon: MessageSquare },
     { id: 'settings', name: 'Settings', icon: Settings },
   ];
-
   const handleNavigation = (pageId: string) => {
     setCurrentPage(pageId);
   };
-
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -31,7 +27,6 @@ const AdminPanel: React.FC = () => {
       console.error('Error signing out:', error);
     }
   };
-
   const renderContent = () => {
     switch (currentPage) {
       case 'dashboard':
@@ -118,7 +113,6 @@ const AdminPanel: React.FC = () => {
         return <AdminDashboard onNavigate={handleNavigation} />;
     }
   };
-
   return (
     <div className="min-h-screen bg-[var(--admin-bg)]">
       {/* Top Header Bar */}
@@ -137,7 +131,6 @@ const AdminPanel: React.FC = () => {
               <h1 className="text-sm font-bold text-[var(--admin-text)]">Zyntiq Admin</h1>
             </div>
           </div>
-
           {/* Center - Navigation Icons */}
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-2">
@@ -159,7 +152,6 @@ const AdminPanel: React.FC = () => {
               );
             })}
           </div>
-
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
@@ -170,7 +162,6 @@ const AdminPanel: React.FC = () => {
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
-
           {/* Right Side - Empty on mobile, User Info & Sign Out on desktop */}
           <div className="hidden md:flex items-center space-x-3">
             <div className="text-right">
@@ -187,12 +178,10 @@ const AdminPanel: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
-
       {/* Mobile Side Menu */}
       <div className={`fixed top-0 right-0 h-full w-64 bg-[var(--admin-card)] z-40 shadow-lg transform transition-transform duration-300 ease-in-out md:hidden ${
         mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
@@ -208,7 +197,6 @@ const AdminPanel: React.FC = () => {
             </button>
           </div>
         </div>
-        
         <div className="p-4 space-y-2">
           {navigation.map((item) => {
             const IconComponent = item.icon;
@@ -231,7 +219,6 @@ const AdminPanel: React.FC = () => {
             );
           })}
         </div>
-        
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[var(--admin-border)]">
           <div className="mb-4 text-center">
             <p className="text-sm font-medium text-[var(--admin-text)]">Admin User</p>
@@ -249,7 +236,6 @@ const AdminPanel: React.FC = () => {
           </button>
         </div>
       </div>
-
       {/* Main Content */}
       <div className="pt-20">
         {renderContent()}
@@ -257,5 +243,4 @@ const AdminPanel: React.FC = () => {
     </div>
   );
 };
-
 export default AdminPanel;

@@ -5,7 +5,6 @@ import PaymentModal from '../Payment/PaymentModal';
 import { usePayment } from '../../hooks/usePayment';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../lib/auth';
-
 const topCourses = [
   {
     id: 'web-development',
@@ -56,7 +55,6 @@ const topCourses = [
     color: 'from-indigo-600 to-purple-800'
   }
 ];
-
 const allCourses = [
   {
     id: 'web-development',
@@ -149,14 +147,12 @@ const allCourses = [
     originalPrice: 2450
   }
 ];
-
 const CoursesPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  
   // Payment integration
   const {
     isPaymentModalOpen,
@@ -166,7 +162,6 @@ const CoursesPage = () => {
     closePaymentModal,
     handlePaymentSuccess
   } = usePayment();
-
   // Enrollment integration
   const {
     enrollments,
@@ -175,47 +170,36 @@ const CoursesPage = () => {
     isEnrolledInCourseSync,
     refreshEnrollments
   } = useEnrollment();
-
   useEffect(() => {
     window.scrollTo(0, 0);
-    
     // Check if mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
   // Listen for enrollment updates
   useEffect(() => {
     const handleEnrollmentUpdate = () => {
-      console.log('Enrollment update event received, refreshing...');
       refreshEnrollments();
     };
-
     window.addEventListener('enrollmentUpdated', handleEnrollmentUpdate);
     return () => window.removeEventListener('enrollmentUpdated', handleEnrollmentUpdate);
   }, [refreshEnrollments]);
-
   // Auto-slide functionality (disabled on mobile for better performance)
   useEffect(() => {
     if (!isAutoPlaying || isMobile) return;
-    
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % topCourses.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, [isAutoPlaying, isMobile]);
-
   const handleCourseClick = (courseId: string) => {
     window.scrollTo(0, 0);
     navigate(`/courses/${courseId}`);
   };
-
   const handleEnrollClick = (e: React.MouseEvent, courseId: string, courseName: string) => {
     e.stopPropagation();
     if (!user) {
@@ -224,35 +208,29 @@ const CoursesPage = () => {
     }
     initiateCoursePayment(courseId, courseName);
   };
-
   const isEnrolledInCourse = (courseId: string): boolean => {
     if (enrollmentLoading) return false;
     return isEnrolledInCourseSync(courseId);
   };
-
   const nextSlide = () => {
     setIsAutoPlaying(false);
     setCurrentSlide((prev) => (prev + 1) % topCourses.length);
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
-
   const prevSlide = () => {
     setIsAutoPlaying(false);
     setCurrentSlide((prev) => (prev - 1 + topCourses.length) % topCourses.length);
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
-
   const goToSlide = (index: number) => {
     setIsAutoPlaying(false);
     setCurrentSlide(index);
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
-
   const handlePremiumPassExplore = () => {
     window.scrollTo(0, 0);
     navigate('/premium-pass');
   };
-
   return (
     <div className="min-h-screen yellow-gradient-bg">
       {/* Hero Section with Welcome Background */}
@@ -263,20 +241,15 @@ const CoursesPage = () => {
             Welcome
           </div>
         </div>
-
         {/* Floating decorative elements - Reduced on mobile */}
         <div className="absolute top-10 sm:top-20 right-10 sm:right-20 w-8 h-8 sm:w-16 sm:h-16 bg-yellow-300/60 rounded-2xl opacity-60"></div>
         <div className="absolute bottom-20 sm:bottom-40 left-10 sm:left-20 w-10 h-10 sm:w-20 sm:h-20 bg-yellow-400/50 rounded-full opacity-40"></div>
         <div className="absolute top-1/2 right-1/4 w-6 h-6 sm:w-12 sm:h-12 bg-yellow-500/60 rounded-xl opacity-50"></div>
-
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           {/* Breadcrumb */}
-          
-
           {/* Popular Courses Section */}
           <div className="mb-12 sm:mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-50 text-center sm:text-left">Popular Courses</h2>
-            
             <div className="relative max-w-5xl mx-auto">
               {/* Slider Container */}
               <div className="overflow-hidden rounded-2xl sm:rounded-3xl">
@@ -298,7 +271,6 @@ const CoursesPage = () => {
                             </div>
                             <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">{course.title}</h3>
                             <p className="text-white/90 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg leading-relaxed">{course.description}</p>
-                            
                             <div className="flex items-center justify-center md:justify-start gap-4 sm:gap-6 mb-4 sm:mb-6">
                               <div className="flex items-center gap-2">
                                 <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -309,7 +281,6 @@ const CoursesPage = () => {
                                 <span className="text-sm sm:text-base">{course.hours}</span>
                               </div>
                             </div>
-
                             <div className="flex items-center justify-center md:justify-start gap-3 sm:gap-4">
                               <span className="text-xl sm:text-2xl lg:text-3xl font-bold">₹{course.price}</span>
                               <span className="text-white/70 line-through text-base sm:text-lg lg:text-xl">₹{course.originalPrice}</span>
@@ -318,7 +289,6 @@ const CoursesPage = () => {
                               </span>
                             </div>
                           </div>
-
                           {/* Right Image */}
                           <div className="relative order-first md:order-last">
                             <div className="aspect-video rounded-xl sm:rounded-2xl overflow-hidden enhanced-shadow">
@@ -341,7 +311,6 @@ const CoursesPage = () => {
                   ))}
                 </div>
               </div>
-
               {/* Navigation Arrows - Hidden on mobile */}
               {!isMobile && (
                 <>
@@ -359,7 +328,6 @@ const CoursesPage = () => {
                   </button>
                 </>
               )}
-
               {/* Dots Indicator */}
               <div className="flex justify-center gap-2 sm:gap-3 mt-4 sm:mt-6">
                 {topCourses.map((_, index) => (
@@ -378,16 +346,13 @@ const CoursesPage = () => {
           </div>
         </div>
       </div>
-
       {/* All Courses Section */}
       <div className="bg-white/30 backdrop-blur-sm py-12 sm:py-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <h2 className="text-2xl sm:text-2xl font-bold mb-6 sm:mb-8 text-gray-200 text-center sm:text-left">All Courses</h2>
-          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {allCourses.map((course, index) => {
               const enrolled = isEnrolledInCourse(course.id);
-              
               return (
                 <div 
                   key={index} 
@@ -402,7 +367,6 @@ const CoursesPage = () => {
                       </div>
                     </div>
                   )}
-                  
                   <div className="aspect-video bg-gray-50 rounded-xl sm:rounded-2xl mb-3 sm:mb-4 overflow-hidden">
                     <img
                       src={course.image}
@@ -452,7 +416,6 @@ const CoursesPage = () => {
               );
             })}
           </div>
-
           {/* Premium Pass Banner - Mobile Optimized with BIGGER LOGO */}
           <div className="mt-12 sm:mt-16 relative overflow-hidden rounded-2xl sm:rounded-3xl">
             {/* Purple gradient background */}
@@ -463,13 +426,11 @@ const CoursesPage = () => {
                 <div className="absolute -top-10 sm:-top-20 -right-10 sm:-right-20 w-40 sm:w-80 h-40 sm:h-80 bg-purple-600/30 rounded-full"></div>
                 <div className="absolute -bottom-16 sm:-bottom-32 -left-16 sm:-left-32 w-48 sm:w-96 h-48 sm:h-96 bg-purple-600/20 rounded-full"></div>
                 <div className="absolute top-1/2 right-1/4 w-20 sm:w-40 h-20 sm:h-40 bg-purple-500/25 rounded-full"></div>
-                
                 {/* Smaller decorative shapes - Hidden on mobile */}
                 <div className="hidden sm:block absolute top-20 left-1/4 w-16 h-16 bg-purple-400/30 rounded-2xl transform rotate-45"></div>
                 <div className="hidden sm:block absolute bottom-20 right-1/3 w-12 h-12 bg-purple-300/40 rounded-full"></div>
                 <div className="hidden sm:block absolute top-1/3 left-1/6 w-8 h-8 bg-purple-200/50 rounded-lg"></div>
               </div>
-              
               <div className="relative z-10 p-6 sm:p-8 md:p-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-center">
                   {/* Left Content */}
@@ -486,7 +447,6 @@ const CoursesPage = () => {
                         <span className="text-xs sm:text-sm font-medium">Premium Pass</span>
                       </div>
                     </div>
-                    
                     <ul className="space-y-2 sm:space-y-3 mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg">
                       <li className="flex items-center justify-center md:justify-start gap-3">
                         <div className="w-2 h-2 bg-purple-300 rounded-full flex-shrink-0"></div>
@@ -509,7 +469,6 @@ const CoursesPage = () => {
                         <span>and lot <span className="font-semibold">more</span></span>
                       </li>
                     </ul>
-                    
                     <div className="flex justify-center md:justify-start">
                       <button 
                         onClick={handlePremiumPassExplore}
@@ -524,7 +483,6 @@ const CoursesPage = () => {
                       </button>
                     </div>
                   </div>
-                  
                   {/* Right Illustration */}
                   <div className="flex justify-center relative order-first md:order-last">
                     {/* Circular background for illustration */}
@@ -549,7 +507,6 @@ const CoursesPage = () => {
           </div>
         </div>
       </div>
-
       {/* Footer Banner */}
       <div className="bg-black text-white py-8 sm:py-12 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
@@ -570,7 +527,6 @@ const CoursesPage = () => {
           </div>
         </div>
       </div>
-
       {/* Payment Modal */}
       {currentPaymentData && (
         <PaymentModal
@@ -583,5 +539,4 @@ const CoursesPage = () => {
     </div>
   );
 };
-
 export default CoursesPage;

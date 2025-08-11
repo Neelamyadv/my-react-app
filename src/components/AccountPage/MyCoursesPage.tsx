@@ -7,53 +7,41 @@ import { certificateService } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-
 const MyCoursesPage = () => {
   const { user } = useAuth();
   const { enrollments, loading, hasPremiumPass } = useEnrollment();
   const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
   const [certificates, setCertificates] = useState<any[]>([]);
-
   // Load certificates when component mounts and when enrollments change
   useEffect(() => {
     if (user) {
       const userCertificates = certificateService.getUserCertificates();
       setCertificates(userCertificates);
-      console.log('Loaded certificates on mount:', userCertificates);
     }
   }, [user, enrollments]);
-
   // Listen for certificate updates
   useEffect(() => {
     const handleCertificateUpdate = (event: any) => {
-      console.log('Certificate update event received:', event);
       if (user) {
         const updatedCertificates = certificateService.refreshCertificates();
         setCertificates(updatedCertificates);
-        console.log('Updated certificates state:', updatedCertificates);
       }
     };
-
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'zyntiq_certificates') {
-        console.log('Storage change detected for certificates');
         handleCertificateUpdate(e);
       }
     };
-
     // Listen for custom certificate update events
     window.addEventListener('certificateUpdated', handleCertificateUpdate);
-    
     // Listen for storage changes (cross-tab updates)
     window.addEventListener('storage', handleStorageChange);
-
     return () => {
       window.removeEventListener('certificateUpdated', handleCertificateUpdate);
       window.removeEventListener('storage', handleStorageChange);
     };
   }, [user]);
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
@@ -64,7 +52,6 @@ const MyCoursesPage = () => {
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -72,7 +59,6 @@ const MyCoursesPage = () => {
       day: 'numeric'
     });
   };
-
   const getCourseImage = (courseId: string) => {
     const images: { [key: string]: string } = {
       'web-development': 'https://cdn3d.iconscout.com/3d/premium/thumb/web-development-5977974-4995252.png',
@@ -84,7 +70,6 @@ const MyCoursesPage = () => {
     };
     return images[courseId] || images['web-development'];
   };
-
   const getCourseDuration = (courseId: string) => {
     const durations: { [key: string]: string } = {
       'web-development': '4+ Hours',
@@ -96,7 +81,6 @@ const MyCoursesPage = () => {
     };
     return durations[courseId] || '2+ Hours';
   };
-
   const getCourseLessons = (courseId: string) => {
     const lessons: { [key: string]: string } = {
       'web-development': '100 lessons',
@@ -108,53 +92,39 @@ const MyCoursesPage = () => {
     };
     return lessons[courseId] || '50 lessons';
   };
-
   const handleCertificateClick = async (course: any) => {
     if (!user) {
       toast.error('Please log in to view your certificate');
       return;
     }
-
     if (course.progress !== 100) {
       toast.error('Complete the course to unlock your certificate');
       return;
     }
-
     try {
-      console.log('Certificate button clicked for course:', course.course_id);
-      
       // Check if certificate already exists for this user and course
       const studentName = `${user.first_name} ${user.last_name}`.trim();
       const existingCertificates = certificateService.getCertificatesByCourse(course.course_id);
       const userCertificate = existingCertificates.find(cert => 
         cert.studentName === studentName
       );
-      
       let certificate;
-
       if (userCertificate) {
         // Use existing certificate
         certificate = userCertificate;
-        console.log('Using existing certificate:', certificate);
         toast.success('Certificate loaded successfully!');
       } else {
         // Generate new certificate
-        console.log('Generating new certificate for:', studentName, course.course_name, course.course_id);
         certificate = await certificateService.generateCertificate(
           studentName,
           course.course_name,
           course.course_id
         );
-        console.log('Generated new certificate:', certificate);
-        
         // Update local certificates state immediately
         const updatedCertificates = certificateService.getUserCertificates();
         setCertificates(updatedCertificates);
-        console.log('Updated local certificates state:', updatedCertificates);
-        
         toast.success('Certificate generated successfully!');
       }
-
       // Show certificate modal
       setSelectedCertificate(certificate);
       setShowCertificateModal(true);
@@ -163,7 +133,6 @@ const MyCoursesPage = () => {
       toast.error('Failed to load certificate. Please try again.');
     }
   };
-
   if (loading) {
     return (
       <div className="glass-card-dark rounded-2xl p-8">
@@ -178,7 +147,6 @@ const MyCoursesPage = () => {
       </div>
     );
   }
-
   return (
     <div className="glass-card-dark rounded-2xl p-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
@@ -194,7 +162,6 @@ const MyCoursesPage = () => {
           Browse Courses
         </Link>
       </div>
-
       {enrollments.length === 0 ? (
         <div className="text-center py-16">
           <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -233,7 +200,6 @@ const MyCoursesPage = () => {
               <div className="text-2xl font-bold text-purple-900">{enrollments.length}</div>
               <div className="text-sm text-purple-700 font-medium">Total Courses</div>
             </div>
-            
             <div className="bg-gradient-to-br from-green-50/80 to-green-100/80 backdrop-blur-sm rounded-xl p-6 border border-green-200/50">
               <div className="flex items-center justify-between mb-2">
                 <Award className="w-8 h-8 text-green-600" />
@@ -244,7 +210,6 @@ const MyCoursesPage = () => {
               </div>
               <div className="text-sm text-green-700 font-medium">Completed</div>
             </div>
-            
             <div className="bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-sm rounded-xl p-6 border border-blue-200/50">
               <div className="flex items-center justify-between mb-2">
                 <Play className="w-8 h-8 text-blue-600" />
@@ -255,7 +220,6 @@ const MyCoursesPage = () => {
               </div>
               <div className="text-sm text-blue-700 font-medium">In Progress</div>
             </div>
-            
             <div className="bg-gradient-to-br from-orange-50/80 to-orange-100/80 backdrop-blur-sm rounded-xl p-6 border border-orange-200/50">
               <div className="flex items-center justify-between mb-2">
                 <Clock className="w-8 h-8 text-orange-600" />
@@ -267,7 +231,6 @@ const MyCoursesPage = () => {
               <div className="text-sm text-orange-700 font-medium">Progress</div>
             </div>
           </div>
-
           {/* Premium Pass Status */}
           {hasPremiumPass && (
             <div className="mb-8 p-6 bg-gradient-to-r from-purple-100/80 to-indigo-100/80 backdrop-blur-sm rounded-2xl border border-purple-200/50">
@@ -282,7 +245,6 @@ const MyCoursesPage = () => {
               </div>
             </div>
           )}
-
           {/* Courses List */}
           <div className="space-y-6">
             {enrollments.map((course) => (
@@ -321,7 +283,6 @@ const MyCoursesPage = () => {
                       </div>
                     </div>
                   </div>
-
                   {/* Progress Section */}
                   <div className="lg:col-span-3">
                     <div className="space-y-3">
@@ -342,7 +303,6 @@ const MyCoursesPage = () => {
                       </div>
                     </div>
                   </div>
-
                   {/* Dates and Actions */}
                   <div className="lg:col-span-4">
                     <div className="space-y-4">
@@ -355,7 +315,6 @@ const MyCoursesPage = () => {
                           <span className="text-green-600">₹{course.amount_paid} paid</span>
                         </div>
                       </div>
-                      
                       <div className="flex gap-3">
                         <Link
                           to={`/courses/${course.course_id}`}
@@ -382,7 +341,6 @@ const MyCoursesPage = () => {
           </div>
         </>
       )}
-
       {/* Certificate Modal */}
       {selectedCertificate && (
         <CertificateModal
@@ -400,5 +358,4 @@ const MyCoursesPage = () => {
     </div>
   );
 };
-
 export default MyCoursesPage;

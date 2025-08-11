@@ -2,28 +2,23 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { logError } from '../lib/logger';
-
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
 }
-
 interface State {
   hasError: boolean;
   error?: Error;
   errorInfo?: ErrorInfo;
 }
-
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
   }
-
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
-
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     // Log error with proper logging
     logError('Uncaught error in ErrorBoundary', {
@@ -31,24 +26,20 @@ class ErrorBoundary extends Component<Props, State> {
       stack: error.stack,
       componentStack: errorInfo.componentStack
     });
-
     this.setState({
       error,
       errorInfo
     });
   }
-
   handleRetry = () => {
     this.setState({ hasError: false, error: undefined, errorInfo: undefined });
   };
-
   render() {
     if (this.state.hasError) {
       // Custom fallback UI
       if (this.props.fallback) {
         return this.props.fallback;
       }
-
       // Default error UI
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -62,7 +53,6 @@ class ErrorBoundary extends Component<Props, State> {
                 We encountered an unexpected error. Please try again or contact support if the problem persists.
               </p>
             </div>
-
             <div className="space-y-3">
               <button
                 onClick={this.handleRetry}
@@ -71,7 +61,6 @@ class ErrorBoundary extends Component<Props, State> {
                 <RefreshCw className="w-4 h-4" />
                 Try Again
               </button>
-
               <Link
                 to="/"
                 className="w-full flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
@@ -80,7 +69,6 @@ class ErrorBoundary extends Component<Props, State> {
                 Go Home
               </Link>
             </div>
-
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-6 text-left">
                 <summary className="cursor-pointer text-sm text-gray-500 hover:text-gray-700">
@@ -104,9 +92,7 @@ class ErrorBoundary extends Component<Props, State> {
         </div>
       );
     }
-
     return this.props.children;
   }
 }
-
 export default ErrorBoundary;

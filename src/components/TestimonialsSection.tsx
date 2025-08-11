@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
 // This is the main App component that renders the TestimonialsSection.
 const App = () => {
   return (
@@ -11,12 +10,10 @@ const App = () => {
     </div>
   );
 };
-
 const TestimonialsSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  
   // Here is the testimonials data array. This is where you can change the avatar images.
   // Simply replace the URL string for the 'avatar' property with your own image URL.
   // For example: avatar: "https://your-website.com/path-to-your-image.jpg"
@@ -64,22 +61,18 @@ const TestimonialsSection = () => {
       avatar: "https://placehold.co/100x100/EAB308/FFFFFF?text=E" // Placeholder, replace this with your image URL
     }
   ];
-
   // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
   // Calculate how many testimonials to show
   const testimonialsPerView = isMobile ? 1 : 3;
   const totalSlides = testimonials.length - testimonialsPerView + 1;
-
   // Auto-slide functionality - ENABLED for both mobile and desktop
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,40 +80,31 @@ const TestimonialsSection = () => {
         nextTestimonial();
       }
     }, 4000); // Changed to 4 seconds for better mobile experience
-
     return () => clearInterval(interval);
   }, [activeIndex, isAnimating]);
-
   const nextTestimonial = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    
     setActiveIndex((prevIndex) => {
       const nextIndex = prevIndex + 1;
       return nextIndex >= totalSlides ? 0 : nextIndex;
     });
-    
     setTimeout(() => setIsAnimating(false), 500);
   };
-
   const prevTestimonial = () => {
     if (isAnimating) return;
     setIsAnimating(true);
-    
     setActiveIndex((prevIndex) => {
       return prevIndex === 0 ? totalSlides - 1 : prevIndex - 1;
     });
-    
     setTimeout(() => setIsAnimating(false), 500);
   };
-
   const goToSlide = (index: number) => {
     if (isAnimating || index === activeIndex || index >= totalSlides) return;
     setIsAnimating(true);
     setActiveIndex(index);
     setTimeout(() => setIsAnimating(false), 500);
   };
-
   // Get visible testimonials
   const getVisibleTestimonials = () => {
     const visible = [];
@@ -132,9 +116,7 @@ const TestimonialsSection = () => {
     }
     return visible;
   };
-
   const visibleTestimonials = getVisibleTestimonials();
-
   return (
     <section className="py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-16 relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10">
@@ -148,7 +130,6 @@ const TestimonialsSection = () => {
             Join thousands of successful learners who have transformed their careers with our comprehensive courses.
           </p>
         </div>
-        
         {/* Testimonials Container */}
         <div className="relative">
           <div className="overflow-hidden">
@@ -171,7 +152,6 @@ const TestimonialsSection = () => {
                       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
                     </svg>
                   </div>
-
                   <div className="relative z-10">
                     <h3 className="text-base sm:text-lg font-bold text-center mb-3 sm:mb-4 text-gray-900 group-hover:text-slate-800 transition-colors line-clamp-2">
                       "{testimonial.quote}"
@@ -193,7 +173,6 @@ const TestimonialsSection = () => {
                       </div>
                     </div>
                   </div>
-
                   {/* Hover Effect Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-3xl"></div>
                 </div>
@@ -201,7 +180,6 @@ const TestimonialsSection = () => {
             </div>
           </div>
         </div>
-        
         {/* Navigation Controls */}
         <div className="flex flex-col sm:flex-row justify-between items-center mt-6 sm:mt-8 gap-4">
           {/* Pagination Dots */}
@@ -220,7 +198,6 @@ const TestimonialsSection = () => {
               />
             ))}
           </div>
-          
           {/* Arrow Navigation */}
           <div className="flex gap-2 sm:gap-3 order-1 sm:order-2">
             <button 
@@ -247,7 +224,6 @@ const TestimonialsSection = () => {
             </button>
           </div>
         </div>
-
         {/* Progress Indicator - Minimal bottom margin */}
         <div className="mt-1 sm:mt-2 text-center">
           <span className="text-xs sm:text-sm text-slate-200">
@@ -258,5 +234,4 @@ const TestimonialsSection = () => {
     </section>
   );
 };
-
 export default App;

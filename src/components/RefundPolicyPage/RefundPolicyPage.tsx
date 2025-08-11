@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, RefreshCw, AlertTriangle, CheckCircle, Mail, Clock } from 'lucide-react';
-
 const RefundPolicyPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       {/* Header */}
@@ -19,7 +17,6 @@ const RefundPolicyPage = () => {
             <ChevronLeft size={20} />
             Back to Home
           </Link>
-          
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center">
               <RefreshCw className="w-8 h-8 text-white" />
@@ -31,7 +28,6 @@ const RefundPolicyPage = () => {
           </div>
         </div>
       </div>
-
       {/* Content */}
       <div className="max-w-4xl mx-auto px-6 py-12">
         {/* Introduction */}
@@ -43,7 +39,6 @@ const RefundPolicyPage = () => {
             Your satisfaction with any product, service, course, or workshop acquired from us is important. Please carefully review the following terms, which outline our policy regarding refunds.
           </p>
         </div>
-
         {/* Policy Overview */}
         <div className="bg-gradient-to-r from-purple-100 to-indigo-100 rounded-3xl p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
@@ -56,7 +51,6 @@ const RefundPolicyPage = () => {
             Please read this policy carefully before making any purchases. By completing a transaction with Zyntiq, you acknowledge that you have read, understood, and agree to be bound by this refund and cancellation policy.
           </p>
         </div>
-
         {/* Workshops Policy */}
         <div className="bg-white rounded-3xl shadow-sm p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
@@ -65,7 +59,6 @@ const RefundPolicyPage = () => {
             </div>
             <h2 className="text-2xl font-bold text-purple-900">Workshops</h2>
           </div>
-          
           <div className="bg-red-50 rounded-xl p-6 border border-red-200">
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-6 h-6 text-red-600 mt-1" />
@@ -77,7 +70,6 @@ const RefundPolicyPage = () => {
               </div>
             </div>
           </div>
-
           <div className="mt-6 space-y-4">
             <h3 className="text-lg font-semibold text-purple-900">Why workshops are non-refundable:</h3>
             <div className="space-y-3">
@@ -96,7 +88,6 @@ const RefundPolicyPage = () => {
             </div>
           </div>
         </div>
-
         {/* Courses Policy */}
         <div className="bg-white rounded-3xl shadow-sm p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
@@ -105,7 +96,6 @@ const RefundPolicyPage = () => {
             </div>
             <h2 className="text-2xl font-bold text-purple-900">Courses</h2>
           </div>
-          
           <div className="bg-orange-50 rounded-xl p-6 border border-orange-200 mb-6">
             <div className="flex items-start gap-3">
               <AlertTriangle className="w-6 h-6 text-orange-600 mt-1" />
@@ -117,7 +107,6 @@ const RefundPolicyPage = () => {
               </div>
             </div>
           </div>
-
           <div className="bg-green-50 rounded-xl p-6 border border-green-200">
             <div className="flex items-start gap-3">
               <CheckCircle className="w-6 h-6 text-green-600 mt-1" />
@@ -144,7 +133,6 @@ const RefundPolicyPage = () => {
             </div>
           </div>
         </div>
-
         {/* Special Circumstances */}
         <div className="bg-white rounded-3xl shadow-sm p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
@@ -153,11 +141,9 @@ const RefundPolicyPage = () => {
             </div>
             <h2 className="text-2xl font-bold text-purple-900">Special Circumstances</h2>
           </div>
-          
           <p className="text-gray-700 leading-relaxed mb-6">
             While our general policy is no refunds, we understand that exceptional circumstances may arise. We will consider refund requests on a case-by-case basis for the following situations:
           </p>
-
           <div className="space-y-4">
             <div className="bg-blue-50 rounded-xl p-4">
               <h3 className="font-semibold text-blue-900 mb-2">Medical Emergencies</h3>
@@ -173,7 +159,6 @@ const RefundPolicyPage = () => {
             </div>
           </div>
         </div>
-
         {/* Refund Process */}
         <div className="bg-white rounded-3xl shadow-sm p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
@@ -182,7 +167,6 @@ const RefundPolicyPage = () => {
             </div>
             <h2 className="text-2xl font-bold text-purple-900">Refund Process</h2>
           </div>
-          
           <div className="space-y-6">
             <div className="border-l-4 border-purple-300 pl-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Step 1: Contact Us</h3>
@@ -198,7 +182,6 @@ const RefundPolicyPage = () => {
             </div>
           </div>
         </div>
-
         {/* Contact Information */}
         <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-3xl p-8 text-white mb-8">
           <div className="flex items-center gap-3 mb-6">
@@ -219,7 +202,6 @@ const RefundPolicyPage = () => {
             </p>
           </div>
         </div>
-
         {/* Last Updated */}
         <div className="text-center">
           <p className="text-gray-500 text-sm">
@@ -231,7 +213,6 @@ const RefundPolicyPage = () => {
           </p>
         </div>
       </div>
-
       {/* Footer Banner */}
       <div className="bg-black text-white py-12 px-6">
         <div className="max-w-6xl mx-auto">
@@ -254,5 +235,4 @@ const RefundPolicyPage = () => {
     </div>
   );
 };
-
 export default RefundPolicyPage;

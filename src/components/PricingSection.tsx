@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Zap, CheckCircle } from 'lucide-react';
-
 const PricingSection = () => {
   const plans = [
     {
@@ -35,7 +34,6 @@ const PricingSection = () => {
       link: '/premium-pass'
     }
   ];
-
   return (
     <section className="py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-16 yellow-gradient-bg">
       <div className="max-w-6xl mx-auto">
@@ -47,7 +45,6 @@ const PricingSection = () => {
             Precision pricing, powerful results.
           </p>
         </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 max-w-5xl mx-auto">
           {plans.map((plan, index) => (
             <div
@@ -63,7 +60,6 @@ const PricingSection = () => {
                     <span className="text-lg font-medium ml-1">/ lifetime</span>
                   </div>
                 </div>
-
                 <ul className={`space-y-3 sm:space-y-4 mb-6 flex-1 ${index === 0 ? 'text-gray-500' : 'text-gray-300'}`}>
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
@@ -73,7 +69,6 @@ const PricingSection = () => {
                   ))}
                   {/* The spacer items are removed to make the cards more compact and sleek */}
                 </ul>
-
                 <div className="text-center mt-auto">
                   <Link
                     to={plan.link}
@@ -92,5 +87,4 @@ const PricingSection = () => {
     </section>
   );
 };
-
 export default PricingSection;

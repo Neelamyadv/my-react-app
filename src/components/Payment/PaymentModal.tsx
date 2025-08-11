@@ -3,14 +3,12 @@ import { X, CreditCard, Shield, CheckCircle, AlertCircle } from 'lucide-react';
 import { razorpayService, PRICING, PaymentData } from '../../lib/razorpay';
 import { useAuth } from '../../lib/auth';
 import toast from 'react-hot-toast';
-
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   paymentData: PaymentData;
   onSuccess?: (paymentResponse: any) => void;
 }
-
 const PaymentModal: React.FC<PaymentModalProps> = ({
   isOpen,
   onClose,
@@ -19,12 +17,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
 }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-
   if (!isOpen) return null;
-
   const handlePayment = async () => {
     setLoading(true);
-    
     try {
       // Validate user data
       if (!user) {
@@ -32,10 +27,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         setLoading(false);
         return;
       }
-
       // Ensure user has a phone number; otherwise, use an empty string.
       const userPhone = user.phone || '';
-
       const paymentOptions = {
         amount: paymentData.amount,
         currency: 'INR',
@@ -50,14 +43,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           color: '#8b5cf6'
         }
       };
-
-      console.log('Initiating payment with options:', paymentOptions);
-
       // We'll use a mock razorpayService for this example
       const result = await razorpayService.createPayment(paymentOptions);
-
-      console.log('Payment result:', result);
-
       if (result.success && result.data) {
         toast.success('🎉 Payment successful! Welcome to Zyntiq!');
         onSuccess?.(result.data);
@@ -74,7 +61,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       setLoading(false);
     }
   };
-
   const getDiscountPercentage = () => {
     if (paymentData.type === 'course') {
       return PRICING.COURSE.discount;
@@ -83,7 +69,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     }
     return 0;
   };
-
   const getOriginalPrice = () => {
     if (paymentData.type === 'course') {
       return PRICING.COURSE.originalPrice;
@@ -92,11 +77,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     }
     return paymentData.amount;
   };
-
   const getSavings = () => {
     return getOriginalPrice() - paymentData.amount;
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full relative overflow-hidden animate-in fade-in zoom-in duration-300">
@@ -119,7 +102,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             </div>
           </div>
         </div>
-
         {/* Content */}
         <div className="p-6">
           {/* Demo Notice */}
@@ -134,11 +116,9 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               </div>
             </div>
           </div>
-
           {/* Order Summary */}
           <div className="bg-gray-50 rounded-2xl p-4 mb-6">
             <h3 className="font-semibold text-gray-900 mb-3">Order Summary</h3>
-            
             <div className="space-y-3">
               <div className="flex justify-between items-start">
                 <div>
@@ -154,7 +134,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                   )}
                 </div>
               </div>
-
               {getDiscountPercentage() > 0 && (
                 <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                   <span className="text-green-600 font-medium">
@@ -163,14 +142,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
                   <span className="text-green-600 font-medium">-₹{getSavings()}</span>
                 </div>
               )}
-
               <div className="flex justify-between items-center pt-2 border-t border-gray-300">
                 <span className="font-bold text-gray-900">Total Amount</span>
                 <span className="font-bold text-xl text-violet-600">₹{paymentData.amount}</span>
               </div>
             </div>
           </div>
-
           {/* Features */}
           <div className="mb-6">
             <h4 className="font-semibold text-gray-900 mb-3">What you'll get:</h4>
@@ -220,13 +197,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               )}
             </div>
           </div>
-
           {/* Security Badge */}
           <div className="flex items-center gap-2 text-sm text-gray-600 mb-6">
             <Shield className="w-4 h-4 text-green-500" />
             <span>Secured by Razorpay • 256-bit SSL encryption</span>
           </div>
-
           {/* Payment Button */}
           <button
             onClick={handlePayment}
@@ -245,7 +220,6 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               </>
             )}
           </button>
-
           <p className="text-xs text-gray-500 text-center mt-4">
             By proceeding, you agree to our Terms of Service and Privacy Policy
           </p>
@@ -254,5 +228,4 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     </div>
   );
 };
-
 export default PaymentModal;

@@ -3,14 +3,12 @@ import { Search, Edit, Trash2, UserPlus, Mail, Phone, X, Plus, Minus } from 'luc
 import { apiClient } from '../../lib/api';
 import { logError, logInfo } from '../../lib/logger';
 import toast from 'react-hot-toast';
-
 interface User {
   id: number;
   email: string;
   name: string;
   created_at: string;
 }
-
 interface Enrollment {
   id: number;
   course_name: string;
@@ -19,7 +17,6 @@ interface Enrollment {
   completed_at?: string;
   progress: number;
 }
-
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
@@ -39,30 +36,24 @@ const UserManagement: React.FC = () => {
     'UI/UX Design',
     'Cyber Security'
   ]);
-
   const [availablePasses] = useState([
     'Premium Pass'
   ]);
-
   useEffect(() => {
     loadUsers();
   }, []);
-
   useEffect(() => {
     filterUsers();
   }, [users, searchTerm]);
-
   const loadUsers = async () => {
     try {
       setLoading(true);
-      
       // Try to get users from backend API
       const response = await fetch('/api/admin/users', {
         headers: {
           'Authorization': `Bearer ${apiClient.getToken()}`
         }
       });
-
       if (response.ok) {
         const result = await response.json();
         setUsers(result.data || []);
@@ -72,7 +63,6 @@ const UserManagement: React.FC = () => {
     } catch (error) {
       logError('Error loading users', { error: error.message });
       toast.error('Failed to load users');
-      
       // Fallback to demo data
       const demoUsers: User[] = [
         { id: 1, email: 'demo@example.com', name: 'Demo User', created_at: new Date().toISOString() },
@@ -83,13 +73,11 @@ const UserManagement: React.FC = () => {
       setLoading(false);
     }
   };
-
   const filterUsers = () => {
     if (!searchTerm) {
       setFilteredUsers(users);
       return;
     }
-
     const filtered = users.filter(user =>
       user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -98,13 +86,11 @@ const UserManagement: React.FC = () => {
     );
     setFilteredUsers(filtered);
   };
-
   const handleEditUser = (user: User) => {
     setSelectedUser(user);
     loadUserEnrollments(user.id);
     setShowEditModal(true);
   };
-
   const loadUserEnrollments = async (userId: number) => {
     try {
       const response = await fetch(`/api/admin/users/${userId}/enrollments`, {
@@ -112,7 +98,6 @@ const UserManagement: React.FC = () => {
           'Authorization': `Bearer ${apiClient.getToken()}`
         }
       });
-
       if (response.ok) {
         const result = await response.json();
         setUserEnrollments(result.data || []);
@@ -124,23 +109,18 @@ const UserManagement: React.FC = () => {
       setUserEnrollments([]);
     }
   };
-
   const addCourseToUser = (courseName: string) => {
     if (!selectedUser) return;
-
     // Check if user already has this course/pass
     const existingEnrollment = userEnrollments.find(enrollment => enrollment.course_name === courseName);
     if (existingEnrollment) {
       toast.error('User already has this course/pass');
       return;
     }
-
     try {
       const enrollmentData: Enrollment[] = JSON.parse(localStorage.getItem('zyntiq_enrollments') || '[]');
-      
       // Determine enrollment type
       const enrollmentType = courseName === 'Premium Pass' ? 'premium_pass' : 'course';
-      
       const newEnrollment: Enrollment = {
         id: `enrollment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         user_id: selectedUser.id,
@@ -153,10 +133,8 @@ const UserManagement: React.FC = () => {
         enrolled_at: new Date().toISOString(),
         payment_id: `manual_${Date.now()}`
       };
-
       const updatedEnrollments = [...enrollmentData, newEnrollment];
       localStorage.setItem('zyntiq_enrollments', JSON.stringify(updatedEnrollments));
-      
       setUserEnrollments([...userEnrollments, newEnrollment]);
       toast.success(`Added ${courseName} to user`);
     } catch (error) {
@@ -164,16 +142,13 @@ const UserManagement: React.FC = () => {
       toast.error('Failed to add course');
     }
   };
-
   const removeCourseFromUser = (enrollmentId: string, courseName: string) => {
     if (!selectedUser) return;
-
     if (window.confirm(`Are you sure you want to remove ${courseName} from this user?`)) {
       try {
         const enrollmentData: Enrollment[] = JSON.parse(localStorage.getItem('zyntiq_enrollments') || '[]');
         const updatedEnrollments = enrollmentData.filter(enrollment => enrollment.id !== enrollmentId);
         localStorage.setItem('zyntiq_enrollments', JSON.stringify(updatedEnrollments));
-        
         setUserEnrollments(userEnrollments.filter(enrollment => enrollment.id !== enrollmentId));
         toast.success(`Removed ${courseName} from user`);
       } catch (error) {
@@ -182,30 +157,22 @@ const UserManagement: React.FC = () => {
       }
     }
   };
-
   const getEnrolledCourses = () => {
     return userEnrollments.map(enrollment => enrollment.course_name);
   };
-
   const getAvailableCoursesForUser = () => {
     const enrolledCourses = getEnrolledCourses();
     return availableCourses.filter(course => !enrolledCourses.includes(course));
   };
-
   const getAvailablePassesForUser = () => {
     const enrolledCourses = getEnrolledCourses();
     return availablePasses.filter(pass => !enrolledCourses.includes(pass));
   };
-
-
-
   const EditUserModal = () => {
     if (!selectedUser) return null;
-
     const enrolledCourses = getEnrolledCourses();
     const availableCoursesForUser = getAvailableCoursesForUser();
     const availablePassesForUser = getAvailablePassesForUser();
-
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-[var(--admin-card)] rounded-lg p-4 md:p-6 w-full max-w-4xl shadow-xl border border-[var(--admin-border)] max-h-[90vh] overflow-y-auto">
@@ -220,7 +187,6 @@ const UserManagement: React.FC = () => {
               <X className="h-6 w-6" />
             </button>
           </div>
-          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Current Courses */}
             <div>
@@ -249,7 +215,6 @@ const UserManagement: React.FC = () => {
                 </div>
               )}
             </div>
-
             {/* Available Individual Courses */}
             <div>
               <h4 className="text-md font-medium text-[var(--admin-text)] mb-3">Individual Courses</h4>
@@ -272,7 +237,6 @@ const UserManagement: React.FC = () => {
                 </div>
               )}
             </div>
-
             {/* Available Passes */}
             <div>
               <h4 className="text-md font-medium text-[var(--admin-text)] mb-3">Premium Pass</h4>
@@ -299,7 +263,6 @@ const UserManagement: React.FC = () => {
               )}
             </div>
           </div>
-          
           <div className="flex justify-end mt-6">
             <button
               onClick={() => setShowEditModal(false)}
@@ -312,7 +275,6 @@ const UserManagement: React.FC = () => {
       </div>
     );
   };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -320,7 +282,6 @@ const UserManagement: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -329,7 +290,6 @@ const UserManagement: React.FC = () => {
           <p className="text-[var(--admin-text-secondary)]">Manage and monitor user accounts</p>
         </div>
       </div>
-
       {/* Search and Stats */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="relative mb-4 md:mb-0">
@@ -342,12 +302,10 @@ const UserManagement: React.FC = () => {
             className="pl-9 pr-4 py-2 border border-[var(--admin-border)] rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-transparent w-full md:w-64 shadow-sm text-sm bg-[var(--admin-card)] text-[var(--admin-text)] placeholder-[var(--admin-text-secondary)]"
           />
         </div>
-        
         <div className="text-sm text-[var(--admin-text-secondary)]">
           {filteredUsers.length} of {users.length} users
         </div>
       </div>
-
       {/* Users Table */}
       <div className="bg-[var(--admin-card)] shadow-sm overflow-hidden border border-[var(--admin-border)] sm:rounded-lg">
         <div className="overflow-x-auto">
@@ -399,17 +357,14 @@ const UserManagement: React.FC = () => {
             </tbody>
           </table>
         </div>
-
         {filteredUsers.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">No users found matching your search.</p>
           </div>
         )}
       </div>
-
              {showEditModal && <EditUserModal />}
     </div>
   );
 };
-
 export default UserManagement;

@@ -6,7 +6,6 @@ import { localDB } from '../../lib/database';
 import toast from 'react-hot-toast';
 import MyCoursesPage from './MyCoursesPage';
 import CertificatesPage from './CertificatesPage';
-
 const AccountPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -20,23 +19,19 @@ const AccountPage = () => {
     phone: ''
   });
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (!user) {
       navigate('/login');
       return;
     }
-
     const getProfile = async () => {
       try {
         const { data, error } = await localDB.getProfile(user.id);
-
         if (error) {
           console.error('Error fetching profile:', error);
           toast.error('Error loading profile. Please try again later.');
           return;
         }
-
         if (data) {
           setProfile({
             first_name: data.first_name || '',
@@ -53,16 +48,13 @@ const AccountPage = () => {
         setLoading(false);
       }
     };
-
     getProfile();
   }, [user, navigate]);
-
   const menuItems = [
     { icon: <User size={20} />, label: 'Profile', key: 'profile' },
     { icon: <BookOpen size={20} />, label: 'My Courses', key: 'courses' },
     { icon: <Award size={20} />, label: 'Certificates', key: 'certificates' }
   ];
-
   // Mobile dropdown items
   const mobileDropdownItems = [
     { 
@@ -81,7 +73,6 @@ const AccountPage = () => {
       key: 'certificates'
     }
   ];
-
   if (loading) {
     return (
       <div className="min-h-screen yellow-gradient-bg py-8 sm:py-12 px-4 sm:px-6">
@@ -94,19 +85,16 @@ const AccountPage = () => {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen yellow-gradient-bg py-8 sm:py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800 text-center sm:text-left">
           My <span className="gradient-text">Account</span>
         </h1>
-
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="glass-card-dark rounded-2xl p-4 sm:p-6">
-              
               {/* MOBILE: Purple Gradient Tab with Dropdown */}
               <div className="lg:hidden mb-4 relative">
                 <div className="relative">
@@ -123,7 +111,6 @@ const AccountPage = () => {
                   </button>
                 </div>
               </div>
-
               {/* DESKTOP: Simple Menu Items (No Dropdown, No Arrow) */}
               <ul className="hidden lg:block space-y-3">
                 {menuItems.map((item, index) => (
@@ -146,7 +133,6 @@ const AccountPage = () => {
                   </li>
                 ))}
               </ul>
-
               {/* Quick Stats - Desktop Only */}
               <div className="hidden lg:block mt-8 pt-6 border-t border-gray-200">
                 <div className="space-y-4">
@@ -169,7 +155,6 @@ const AccountPage = () => {
               </div>
             </div>
           </div>
-
           {/* Main Content */}
           <div className="lg:col-span-3 relative">
             {/* Mobile Dropdown Menu - Layered Above Content */}
@@ -196,7 +181,6 @@ const AccountPage = () => {
                 ))}
               </div>
             )}
-
             {/* Content Area */}
             <div className={`transition-all duration-300 ${showMobileDropdown ? 'mt-48' : ''}`}>
               {activeTab === 'profile' && (
@@ -207,7 +191,6 @@ const AccountPage = () => {
                       Edit Profile
                     </button>
                   </div>
-                  
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -220,7 +203,6 @@ const AccountPage = () => {
                         readOnly
                       />
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Middle Name
@@ -232,7 +214,6 @@ const AccountPage = () => {
                         readOnly
                       />
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Last Name
@@ -244,7 +225,6 @@ const AccountPage = () => {
                         readOnly
                       />
                     </div>
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone Number
@@ -259,7 +239,6 @@ const AccountPage = () => {
                         />
                       </div>
                     </div>
-
                     <div className="sm:col-span-2">
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Email Address
@@ -272,7 +251,6 @@ const AccountPage = () => {
                       />
                     </div>
                   </div>
-
                   {/* Profile Actions */}
                   <div className="mt-8 pt-6 border-t border-gray-200">
                     <div className="flex flex-col sm:flex-row gap-4">
@@ -286,14 +264,12 @@ const AccountPage = () => {
                   </div>
                 </div>
               )}
-
               {activeTab === 'courses' && <MyCoursesPage />}
               {activeTab === 'certificates' && <CertificatesPage />}
             </div>
           </div>
         </div>
       </div>
-
       {/* Overlay to close mobile dropdown */}
       {showMobileDropdown && (
         <div 
@@ -304,5 +280,4 @@ const AccountPage = () => {
     </div>
   );
 };
-
 export default AccountPage;

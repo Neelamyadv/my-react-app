@@ -4,21 +4,18 @@ import './training.css';
 import { useAuth } from '../../lib/auth';
 import PaymentModal from '../Payment/PaymentModal';
 import { PaymentData, PaymentType } from '../../lib/razorpay';
-
 // A custom hook to centralize payment logic
 const useTrainingPayment = () => {
   const { user } = useAuth();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [currentPaymentData, setCurrentPaymentData] = useState<PaymentData | null>(null);
   const TRAINING_PROGRAM_PRICE = 449;
-
   const initiateTrainingPayment = () => {
     if (!user) {
       alert('Please log in to enroll in the training program');
       window.location.href = '/login';
       return;
     }
-
     const paymentData: PaymentData = {
       type: PaymentType.COURSE,
       itemId: 'training-program',
@@ -28,23 +25,17 @@ const useTrainingPayment = () => {
       userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
       userPhone: user.phone
     };
-
-    console.log('Initiating training payment:', paymentData);
     setCurrentPaymentData(paymentData);
     setIsPaymentModalOpen(true);
   };
-
   const closePaymentModal = () => {
     setIsPaymentModalOpen(false);
     setCurrentPaymentData(null);
   };
-
   const handlePaymentSuccess = (paymentResponse: any) => {
-    console.log('Payment successful:', paymentResponse);
     alert('Enrollment successful! Welcome to our Corporate Training Program!');
     closePaymentModal();
   };
-
   return {
     isPaymentModalOpen,
     currentPaymentData,
@@ -54,15 +45,12 @@ const useTrainingPayment = () => {
     TRAINING_PROGRAM_PRICE
   };
 };
-
 // Hero Section Component
 const HeroSection = () => {
   const { initiateTrainingPayment, isPaymentModalOpen, currentPaymentData, closePaymentModal, handlePaymentSuccess, TRAINING_PROGRAM_PRICE } = useTrainingPayment();
-
   const heroBackgroundStyle = {
     backgroundImage: 'linear-gradient(to right top, #222e50, #364973, #4a6597, #5c82bc, #6ebff5)'
   };
-
   return (
     <section className="text-white py-24 sm:py-32 lg:py-48 rounded-b-1xl shadow-xl" style={heroBackgroundStyle}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -90,7 +78,6 @@ const HeroSection = () => {
           </button>
         </div>
       </div>
-
       {isPaymentModalOpen && currentPaymentData && (
         <PaymentModal
           isOpen={isPaymentModalOpen}
@@ -102,7 +89,6 @@ const HeroSection = () => {
     </section>
   );
 };
-
 // Program Overview Section Component
 const ProgramOverview = () => {
   return (
@@ -116,7 +102,6 @@ const ProgramOverview = () => {
     </section>
   );
 };
-
 // About/Introduction Section Component
 const AboutSection = () => {
   return (
@@ -156,7 +141,6 @@ const AboutSection = () => {
     </section>
   );
 };
-
 // Key Skills Section with diary and page-turning animation
 const KeySkills = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -169,10 +153,8 @@ const KeySkills = () => {
     { title: 'Problem-Solving & Critical Thinking', description: 'Enhance your ability to analyze complex situations and make data-driven decisions.' },
     { title: 'Digital Literacy & Tools', description: 'Become proficient in essential corporate tools like project management software, and communication platforms.' }
   ];
-
   const pageFlipDuration = 1000;
   const autoFlipInterval = 5000;
-
   useEffect(() => {
     if (!isTurning) {
       const timer = setInterval(() => {
@@ -185,20 +167,16 @@ const KeySkills = () => {
       return () => clearInterval(timer);
     }
   }, [isTurning, cardData.length]);
-
   const handlePageChange = (direction: 'prev' | 'next') => {
     if (isTurning) return;
-
     setIsTurning(true);
     setTimeout(() => {
       setCurrentPage((prevPage) => direction === 'next' ? (prevPage + 1) % cardData.length : (prevPage - 1 + cardData.length) % cardData.length);
       setIsTurning(false);
     }, pageFlipDuration - 100);
   };
-
   const currentCard = cardData[currentPage];
   const nextCard = cardData[(currentPage + 1) % cardData.length];
-
   return (
     <section className="bg-gray-100 py-16 sm:py-24 flex flex-col items-center">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -207,14 +185,12 @@ const KeySkills = () => {
           Explore our comprehensive curriculum by flipping through the pages of our digital diary.
         </p>
       </div>
-
       <div className="flex justify-center items-center h-[500px] mt-12 mb-12 relative w-full overflow-hidden">
         <div className="diary-container mx-auto flex">
           <div className="bg-gray-700 w-1/2 h-full rounded-l-lg shadow-xl relative z-30 flex flex-col items-center justify-center p-4 text-white">
             <img src="/images/wfavicon.svg" alt="Company Logo" className="w-12 h-auto mb-4" />
             <h2 className="text-2xl font-bold text-center">Corporate Training</h2>
           </div>
-
           <div className="diary-page-container">
             <div className="diary-page page-front">
               <h3 className="text-2xl font-bold mb-2 text-gray-800">{currentCard.title}</h3>
@@ -238,7 +214,6 @@ const KeySkills = () => {
           <div className="spiral"></div>
         </div>
       </div>
-
       <div className="flex justify-center mt-8 space-x-4">
         <button
           onClick={() => handlePageChange('prev')}
@@ -258,7 +233,6 @@ const KeySkills = () => {
     </section>
   );
 };
-
 // Certificate Section Component
 const CertificateSection = () => {
   return (
@@ -281,7 +255,6 @@ const CertificateSection = () => {
     </section>
   );
 };
-
 // Testimonial Section Component
 const TestimonialSection = () => {
   const testimonials = [
@@ -311,7 +284,6 @@ const TestimonialSection = () => {
       comment: "The expert-led workshops were fantastic. I learned strategic thinking skills that I never thought I'd get from a training program."
     }
   ];
-
   return (
     <section className="bg-white py-16 sm:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -343,7 +315,6 @@ const TestimonialSection = () => {
     </section>
   );
 };
-
 // Video Collage Section Component
 const VideoCollageSection = () => {
   const videos = [
@@ -353,7 +324,6 @@ const VideoCollageSection = () => {
     { url: "https://www.youtube.com/embed/o-YUD8y_7kI?controls=1&modestbranding=1&rel=0", title: "Team Collaboration" },
     { url: "https://www.youtube.com/embed/dQw4w9WgXcQ?controls=1&modestbranding=1&rel=0", title: "Problem Solving" }
   ];
-
   return (
     <section className="bg-gray-100 py-16 sm:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -383,11 +353,9 @@ const VideoCollageSection = () => {
     </section>
   );
 };
-
 // Call to Action Section Component
 const CallToAction = () => {
   const { initiateTrainingPayment, isPaymentModalOpen, currentPaymentData, closePaymentModal, handlePaymentSuccess, TRAINING_PROGRAM_PRICE } = useTrainingPayment();
-
   return (
     <section id="enroll" className="bg-[conic-gradient(var(--tw-gradient-stops))] from-pink-100 via-cyan-700 to-amber-50  py-16 sm:py-24 rounded-t-4xl">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -410,7 +378,6 @@ const CallToAction = () => {
           </button>
         </div>
       </div>
-
       {isPaymentModalOpen && currentPaymentData && (
         <PaymentModal
           isOpen={isPaymentModalOpen}
@@ -422,11 +389,9 @@ const CallToAction = () => {
     </section>
   );
 };
-
 // Payment Section Component
 const PaymentSection = () => {
   const { initiateTrainingPayment, isPaymentModalOpen, currentPaymentData, closePaymentModal, handlePaymentSuccess, TRAINING_PROGRAM_PRICE } = useTrainingPayment();
-
   return (
     <section id="payment-section" className="bg-gray-100 py-16 sm:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -434,7 +399,6 @@ const PaymentSection = () => {
         <p className="text-gray-600 max-w-2xl mx-auto mb-8">
           Secure your spot in our upcoming batch and start your journey towards professional excellence.
         </p>
-
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
           <div className="flex justify-between items-start mb-6">
             <div>
@@ -447,7 +411,6 @@ const PaymentSection = () => {
               <span className="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full">78% OFF</span>
             </div>
           </div>
-
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -474,7 +437,6 @@ const PaymentSection = () => {
               <span className="text-gray-700">Job placement assistance</span>
             </div>
           </div>
-
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
             <div className="flex items-start gap-2">
               <svg className="w-5 h-5 text-yellow-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -486,7 +448,6 @@ const PaymentSection = () => {
               </div>
             </div>
           </div>
-
           <button
             onClick={initiateTrainingPayment}
             className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
@@ -498,7 +459,6 @@ const PaymentSection = () => {
           </button>
         </div>
       </div>
-
       {isPaymentModalOpen && currentPaymentData && (
         <PaymentModal
           isOpen={isPaymentModalOpen}
@@ -510,7 +470,6 @@ const PaymentSection = () => {
     </section>
   );
 };
-
 // Main Training Component
 const Training = () => {
   return (
@@ -526,5 +485,4 @@ const Training = () => {
     </div>
   );
 };
-
 export default Training;

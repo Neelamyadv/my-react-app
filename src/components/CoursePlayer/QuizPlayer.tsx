@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, XCircle, Clock, Award, RotateCcw } from 'lucide-react';
 import { QuizContent, QuizQuestion } from '../../lib/contentService';
-
 interface QuizPlayerProps {
   quiz: QuizContent;
   onComplete: (score: number, passed: boolean) => void;
 }
-
 // ========================================
 // 📝 QUIZ PLAYER CONFIGURATION
 // ========================================
 // This component handles quiz functionality for your courses.
 // To customize quizzes, see the comments below:
-
 const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -23,14 +20,12 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     passed: boolean;
     feedback: string[];
   } | null>(null);
-
   // ========================================
   // ⏰ QUIZ TIMER FUNCTIONALITY
   // ========================================
   // Timer effect - you can customize timer behavior here
   useEffect(() => {
     if (timeLeft === null || timeLeft <= 0 || isSubmitted) return;
-
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev && prev <= 1) {
@@ -45,37 +40,30 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
         return prev ? prev - 1 : null;
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, [timeLeft, isSubmitted]);
-
   const handleAnswerChange = (questionId: string, answer: any) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: answer
     }));
   };
-
   // ========================================
   // 📊 QUIZ SCORING SYSTEM
   // ========================================
   // You can customize the scoring logic here
   const handleSubmit = async () => {
     setIsSubmitted(true);
-    
     // 🧮 SCORING CALCULATION
     let correctAnswers = 0;
     const feedback: string[] = [];
-    
     quiz.questions.forEach(question => {
       const userAnswer = answers[question.id];
-      
       // 🎯 ANSWER VALIDATION LOGIC
       // You can customize how answers are compared:
       const isCorrect = Array.isArray(question.correctAnswer) 
         ? JSON.stringify(userAnswer?.sort()) === JSON.stringify(question.correctAnswer.sort())
         : userAnswer === question.correctAnswer;
-      
       if (isCorrect) {
         correctAnswers++;
         feedback.push(`✓ Question ${quiz.questions.indexOf(question) + 1}: Correct!`);
@@ -83,15 +71,12 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
         feedback.push(`✗ Question ${quiz.questions.indexOf(question) + 1}: Incorrect. ${question.explanation || ''}`);
       }
     });
-
     // 📈 SCORE CALCULATION
     // You can modify this to use weighted scoring, partial credit, etc.
     const score = Math.round((correctAnswers / quiz.questions.length) * 100);
     const passed = score >= quiz.passingScore;
-
     const result = { score, passed, feedback };
     setResults(result);
-    
     // 🎯 COMPLETION CALLBACK
     // This reports results back to the parent component
     // You can add additional logic here:
@@ -101,7 +86,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     // - Unlock next content
     onComplete(score, passed);
   };
-
   const resetQuiz = () => {
     setCurrentQuestion(0);
     setAnswers({});
@@ -109,20 +93,17 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     setIsSubmitted(false);
     setResults(null);
   };
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
   // ========================================
   // 🎨 QUESTION RENDERING
   // ========================================
   // This function renders different question types
   const renderQuestion = (question: QuizQuestion, index: number) => {
     const userAnswer = answers[question.id];
-
     return (
       <div key={question.id} className="space-y-6">
         <div className="flex items-start gap-4">
@@ -131,7 +112,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
           </div>
           <div className="flex-1">
             <h3 className="text-xl font-semibold text-gray-900 mb-4">{question.question}</h3>
-            
             {/* 📝 MULTIPLE CHOICE QUESTIONS */}
             {/* You can customize the styling and behavior here */}
             {question.type === 'multiple-choice' && (
@@ -159,7 +139,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
                 ))}
               </div>
             )}
-
             {/* ✅ TRUE/FALSE QUESTIONS */}
             {/* You can customize the styling here */}
             {question.type === 'true-false' && (
@@ -187,7 +166,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
                 ))}
               </div>
             )}
-
             {/* ✏️ FILL-IN-THE-BLANK QUESTIONS */}
             {/* You can add validation, auto-complete, etc. */}
             {question.type === 'fill-blank' && (
@@ -204,7 +182,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
                 // autoComplete="off" // Disable autocomplete
               />
             )}
-
             {/* 💡 EXPLANATION DISPLAY */}
             {/* Shows after quiz is submitted */}
             {isSubmitted && question.explanation && (
@@ -219,7 +196,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
       </div>
     );
   };
-
   // ========================================
   // 🏆 RESULTS DISPLAY
   // ========================================
@@ -237,18 +213,15 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
               <XCircle className="w-12 h-12 text-red-600" />
             )}
           </div>
-          
           {/* 🎉 SUCCESS/FAILURE MESSAGES */}
           {/* You can customize these messages */}
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             {results.passed ? 'Congratulations!' : 'Keep Learning!'}
           </h2>
-          
           <p className="text-gray-600 mb-6">
             You scored {results.score}% on this quiz
             {results.passed ? ' and passed!' : `. You need ${quiz.passingScore}% to pass.`}
           </p>
-
           {/* 📊 SCORE DISPLAY */}
           <div className="flex items-center justify-center gap-8 mb-8">
             <div className="text-center">
@@ -261,7 +234,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
             </div>
           </div>
         </div>
-
         {/* 📝 DETAILED FEEDBACK */}
         {/* Shows results for each question */}
         <div className="space-y-4 mb-8">
@@ -281,7 +253,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
             </div>
           ))}
         </div>
-
         {/* 🔄 RETAKE OPTION */}
         {/* Only show if quiz was failed */}
         {!results.passed && (
@@ -298,7 +269,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
       </div>
     );
   }
-
   // ========================================
   // 📋 QUIZ INTERFACE
   // ========================================
@@ -311,7 +281,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
           <h2 className="text-2xl font-bold text-gray-900">{quiz.title}</h2>
           <p className="text-gray-600 mt-1">{quiz.description}</p>
         </div>
-        
         {/* ⏰ TIMER DISPLAY */}
         {/* Only shows if quiz has time limit */}
         {timeLeft !== null && (
@@ -321,7 +290,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
           </div>
         )}
       </div>
-
       {/* 📊 PROGRESS INDICATOR */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -339,12 +307,10 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
           ></div>
         </div>
       </div>
-
       {/* 📝 CURRENT QUESTION */}
       <div className="mb-8">
         {renderQuestion(quiz.questions[currentQuestion], currentQuestion)}
       </div>
-
       {/* 🧭 NAVIGATION CONTROLS */}
       <div className="flex items-center justify-between">
         <button
@@ -354,7 +320,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
         >
           Previous
         </button>
-
         {/* 🔢 QUESTION NAVIGATION */}
         {/* Dots showing all questions with status */}
         <div className="flex gap-2">
@@ -374,7 +339,6 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
             </button>
           ))}
         </div>
-
         {/* ✅ SUBMIT/NEXT BUTTON */}
         {currentQuestion === quiz.questions.length - 1 ? (
           <button
@@ -396,15 +360,12 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     </div>
   );
 };
-
 export default QuizPlayer;
-
 // ========================================
 // 📋 QUIZ CUSTOMIZATION GUIDE
 // ========================================
 /*
 To customize quizzes for your courses:
-
 1. 📝 QUESTION TYPES:
    - multiple-choice: Radio buttons with options
    - true-false: Simple True/False selection
@@ -414,43 +375,36 @@ To customize quizzes for your courses:
      * drag-and-drop
      * image-based questions
      * code completion
-
 2. ⏰ TIMING OPTIONS:
    - Set timeLimit in minutes (null for no limit)
    - Customize timer warnings
    - Add time per question limits
    - Implement pause/resume functionality
-
 3. 🎯 SCORING SYSTEM:
    - Modify passingScore percentage
    - Add weighted scoring by question
    - Implement partial credit
    - Add bonus points for speed
-
 4. 🎨 STYLING:
    - Change color schemes
    - Modify question layouts
    - Add animations and transitions
    - Customize success/failure messages
-
 5. 📊 ANALYTICS:
    - Track time spent per question
    - Monitor answer patterns
    - Implement difficulty analysis
    - Add performance insights
-
 6. 🔄 RETAKE LOGIC:
    - Set maximum attempts
    - Randomize question order
    - Use different question pools
    - Implement cooldown periods
-
 7. 🏆 GAMIFICATION:
    - Add points and badges
    - Implement leaderboards
    - Create achievement systems
    - Add streak counters
-
 8. 📱 ACCESSIBILITY:
    - Add keyboard navigation
    - Implement screen reader support

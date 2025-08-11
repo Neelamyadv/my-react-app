@@ -27,7 +27,6 @@ import AdminPanel from './components/AdminPanel/AdminPanel';
 import AccessPanel from './components/AdminPanel/AccessPanel';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import Training from './components/Training/training';
-
 function App() {
   return (
     <AuthProvider>
@@ -37,12 +36,10 @@ function App() {
     </AuthProvider>
   );
 }
-
 const AppContent = () => {
   const location = useLocation();
   const hiddenPaths = ['/premium-pass', '/admin', '/access'];
   const isHidden = hiddenPaths.includes(location.pathname);
-  
   useEffect(() => {
     const hasRunCleanup = sessionStorage.getItem('zyntiq_cleanup_done');
     if (!hasRunCleanup) {
@@ -50,11 +47,9 @@ const AppContent = () => {
       sessionStorage.setItem('zyntiq_cleanup_done', 'true');
     }
   }, []);
-  
   const navbar = isHidden ? null : <Navbar />;
   const footer = isHidden ? null : <Footer />;
   const whatsappFloat = (location.pathname === '/admin' || location.pathname === '/access') ? null : <WhatsAppFloat />;
-  
   return (
     <div className="min-h-screen yellow-gradient-bg">
       <Toaster position="top-right" />
@@ -72,7 +67,6 @@ const AppContent = () => {
         } />
         {/* The new route for your training page is added here */}
         <Route path="/training" element={<Training />} />
-        
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
@@ -81,7 +75,6 @@ const AppContent = () => {
         <Route path="/courses/:courseId" element={<CourseDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/premium-pass" element={<PremiumPassPage />} />
-    
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/refund-policy" element={<RefundPolicyPage />} />
@@ -90,10 +83,8 @@ const AppContent = () => {
         <Route path="/access" element={<AccessPanel />} />
       </Routes>
       {footer}
-      
       {whatsappFloat}
     </div>
   );
 }
-
 export default App;

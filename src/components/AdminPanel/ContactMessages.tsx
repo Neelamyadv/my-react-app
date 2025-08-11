@@ -3,7 +3,6 @@ import { Search, Eye, Trash2, Mail, Phone, X } from 'lucide-react';
 import { apiClient } from '../../lib/api';
 import { logError, logInfo } from '../../lib/logger';
 import toast from 'react-hot-toast';
-
 interface ContactMessage {
   id: number;
   name: string;
@@ -12,7 +11,6 @@ interface ContactMessage {
   status: string;
   created_at: string;
 }
-
 const ContactMessages: React.FC = () => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [filteredMessages, setFilteredMessages] = useState<ContactMessage[]>([]);
@@ -20,26 +18,21 @@ const ContactMessages: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [showModal, setShowModal] = useState(false);
-
   useEffect(() => {
     loadMessages();
   }, []);
-
   useEffect(() => {
     filterMessages();
   }, [messages, searchTerm]);
-
   const loadMessages = async () => {
     try {
       setLoading(true);
-      
       // Get messages from backend API
       const response = await fetch('/api/admin/messages', {
         headers: {
           'Authorization': `Bearer ${apiClient.getToken()}`
         }
       });
-
       if (response.ok) {
         const result = await response.json();
         const sortedMessages = (result.data || []).sort((a: ContactMessage, b: ContactMessage) => 
@@ -52,7 +45,6 @@ const ContactMessages: React.FC = () => {
     } catch (error) {
       logError('Error loading messages', { error: error.message });
       toast.error('Failed to load messages');
-      
       // Fallback to demo data
       const demoMessages: ContactMessage[] = [
         {
@@ -69,13 +61,11 @@ const ContactMessages: React.FC = () => {
       setLoading(false);
     }
   };
-
   const filterMessages = () => {
     if (!searchTerm) {
       setFilteredMessages(messages);
       return;
     }
-
     const filtered = messages.filter(message =>
       message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,7 +74,6 @@ const ContactMessages: React.FC = () => {
     );
     setFilteredMessages(filtered);
   };
-
   const handleDeleteMessage = (messageId: string) => {
     if (window.confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
       try {
@@ -98,15 +87,12 @@ const ContactMessages: React.FC = () => {
       }
     }
   };
-
   const handleViewMessage = (message: ContactMessage) => {
     setSelectedMessage(message);
     setShowModal(true);
   };
-
   const MessageModal = () => {
     if (!selectedMessage) return null;
-
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-[var(--admin-card)] rounded-lg p-4 md:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl border border-[var(--admin-border)]">
@@ -119,14 +105,12 @@ const ContactMessages: React.FC = () => {
               <X className="h-6 w-6" />
             </button>
           </div>
-          
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Name</label>
                 <p className="text-[var(--admin-text)]">{selectedMessage.name}</p>
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Date</label>
                 <p className="text-[var(--admin-text)]">
@@ -135,7 +119,6 @@ const ContactMessages: React.FC = () => {
                 </p>
               </div>
             </div>
-            
             <div>
               <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Email</label>
               <p className="text-[var(--admin-text)] flex items-center">
@@ -145,7 +128,6 @@ const ContactMessages: React.FC = () => {
                 </a>
               </p>
             </div>
-            
             <div>
               <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Phone</label>
               <p className="text-[var(--admin-text)] flex items-center">
@@ -155,7 +137,6 @@ const ContactMessages: React.FC = () => {
                 </a>
               </p>
             </div>
-            
             <div>
               <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Message</label>
               <div className="bg-[var(--admin-border)] bg-opacity-30 rounded-lg p-4">
@@ -163,7 +144,6 @@ const ContactMessages: React.FC = () => {
               </div>
             </div>
           </div>
-          
           <div className="flex flex-col md:flex-row md:justify-between mt-6 space-y-3 md:space-y-0">
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
               <a
@@ -173,7 +153,6 @@ const ContactMessages: React.FC = () => {
                 <Mail className="h-4 w-4 mr-2" />
                 Reply via Email
               </a>
-              
               <a
                 href={`tel:${selectedMessage.phone}`}
                 className="px-4 py-3 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center"
@@ -182,7 +161,6 @@ const ContactMessages: React.FC = () => {
                 Call
               </a>
             </div>
-            
             <button
               onClick={() => setShowModal(false)}
               className="px-4 py-3 md:py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
@@ -194,7 +172,6 @@ const ContactMessages: React.FC = () => {
       </div>
     );
   };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -202,7 +179,6 @@ const ContactMessages: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -211,7 +187,6 @@ const ContactMessages: React.FC = () => {
           <p className="text-[var(--admin-text-secondary)]">View and respond to user inquiries</p>
         </div>
       </div>
-
       {/* Search */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="relative mb-4 md:mb-0">
@@ -226,12 +201,10 @@ const ContactMessages: React.FC = () => {
             className="pl-9 pr-3 py-2 border border-[var(--admin-border)] rounded-md leading-5 bg-[var(--admin-card)] placeholder-[var(--admin-text-secondary)] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 shadow-sm text-sm w-full md:w-64 text-[var(--admin-text)]"
           />
         </div>
-        
         <div className="text-sm text-[var(--admin-text-secondary)]">
           {filteredMessages.length} of {messages.length} messages
         </div>
       </div>
-
       {/* Messages Table */}
       <div className="bg-[var(--admin-card)] shadow-sm overflow-hidden border border-[var(--admin-border)] sm:rounded-lg">
         <div className="overflow-x-auto">
@@ -306,7 +279,6 @@ const ContactMessages: React.FC = () => {
             </tbody>
           </table>
         </div>
-
         {filteredMessages.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500">
@@ -318,10 +290,8 @@ const ContactMessages: React.FC = () => {
           </div>
         )}
       </div>
-
       {showModal && <MessageModal />}
     </div>
   );
 };
-
 export default ContactMessages;

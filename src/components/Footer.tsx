@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, Instagram, Linkedin } from 'lucide-react';
-
 const Footer = () => {
   const legalLinks = [
     { name: 'Privacy Policy', path: '/privacy-policy' },
@@ -9,7 +8,6 @@ const Footer = () => {
     { name: 'Refund Policy', path: '/refund-policy' },
     { name: 'Support', path: '/support' }
   ];
-
   return (
     <footer className="conic-gradient-footer text-gray-200 pt-12 sm:pt-16 pb-6 sm:pb-8 px-4 sm:px-6 md:px-16">
       <div className="max-w-6xl mx-auto">
@@ -27,7 +25,6 @@ const Footer = () => {
               Zyntiq is an online education platform dedicated to helping professionals acquire new skills and advance their careers.
             </p>
             <div className="flex gap-3">
-        
               <a 
                 href="https://www.instagram.com/zyntiq_official?utm_source=qr&igsh=a3d3cGFtb3hudWpi" 
                 target="_blank" 
@@ -46,7 +43,6 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          
           {/* Legal & Support - Shifted to the right with margin */}
           <div className="lg:ml-8">
             <h3 className="text-lg font-bold mb-4 text-gray-200">Legal & Support</h3>
@@ -64,7 +60,6 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          
           {/* Contact Info */}
           <div>
             <h3 className="text-lg font-bold mb-4 text-gray-200">Contact Info</h3>
@@ -84,7 +79,6 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        
         <div className="border-t border-gray-200/30 pt-6 sm:pt-8">
           <p className="text-center text-gray-200 text-sm font-medium">
             © {new Date().getFullYear()} Zyntiq. All rights reserved.
@@ -94,5 +88,4 @@ const Footer = () => {
     </footer>
   );
 };
-
 export default Footer;

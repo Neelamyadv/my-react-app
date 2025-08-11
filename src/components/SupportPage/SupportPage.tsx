@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, Headphones, Mail, Phone, MessageCircle, Clock, Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { localDB } from '../../lib/database';
 import toast from 'react-hot-toast';
-
 const SupportPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
@@ -14,11 +13,9 @@ const SupportPage = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
   const faqs = [
     {
       question: "How do I enroll in a course?",
@@ -53,16 +50,13 @@ const SupportPage = () => {
       answer: "Yes, most course materials including videos, PDFs, and resources can be downloaded for offline access through our mobile app and web platform."
     }
   ];
-
   const filteredFaqs = faqs.filter(faq =>
     faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const { error } = await localDB.insertContactMessage({
         name: contactForm.name,
@@ -70,12 +64,10 @@ const SupportPage = () => {
         phone: '0000000000', // Default phone for support requests
         message: `Subject: ${contactForm.subject}\n\n${contactForm.message}`
       });
-
       if (error) {
         toast.error(error);
         return;
       }
-
       toast.success('Support request sent successfully! We\'ll get back to you within 24 hours.');
       setContactForm({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
@@ -84,7 +76,6 @@ const SupportPage = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
       {/* Header */}
@@ -97,7 +88,6 @@ const SupportPage = () => {
             <ChevronLeft size={20} />
             Back to Home
           </Link>
-          
           <div className="flex items-center gap-4 mb-4">
             <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center">
               <Headphones className="w-8 h-8 text-white" />
@@ -109,7 +99,6 @@ const SupportPage = () => {
           </div>
         </div>
       </div>
-
       {/* Quick Help Cards */}
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid md:grid-cols-3 gap-8 mb-16">
@@ -126,7 +115,6 @@ const SupportPage = () => {
               info@zyntiq.in
             </a>
           </div>
-
           <div className="bg-white rounded-3xl shadow-sm p-8 hover:shadow-lg transition-shadow">
             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
               <MessageCircle className="w-6 h-6 text-purple-600" />
@@ -137,7 +125,6 @@ const SupportPage = () => {
               Start Chat
             </button>
           </div>
-
           <div className="bg-white rounded-3xl shadow-sm p-8 hover:shadow-lg transition-shadow">
             <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
               <Clock className="w-6 h-6 text-purple-600" />
@@ -147,7 +134,6 @@ const SupportPage = () => {
             <span className="text-purple-600 font-medium">Mon-Fri, 9AM-6PM IST</span>
           </div>
         </div>
-
         {/* FAQ Section */}
         <div className="mb-16">
           <div className="text-center mb-12">
@@ -156,7 +142,6 @@ const SupportPage = () => {
               Find quick answers to common questions. Can't find what you're looking for? Contact our support team.
             </p>
           </div>
-
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto mb-8">
             <div className="relative">
@@ -170,7 +155,6 @@ const SupportPage = () => {
               />
             </div>
           </div>
-
           {/* FAQ List */}
           <div className="max-w-4xl mx-auto space-y-4">
             {filteredFaqs.map((faq, index) => (
@@ -194,14 +178,12 @@ const SupportPage = () => {
               </div>
             ))}
           </div>
-
           {filteredFaqs.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500">No FAQs found matching your search.</p>
             </div>
           )}
         </div>
-
         {/* Contact Form */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-sm p-8">
@@ -211,7 +193,6 @@ const SupportPage = () => {
                 Can't find the answer you're looking for? Send us a message and we'll get back to you.
               </p>
             </div>
-
             <form onSubmit={handleContactSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
@@ -237,7 +218,6 @@ const SupportPage = () => {
                   />
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
                 <input
@@ -249,7 +229,6 @@ const SupportPage = () => {
                   disabled={loading}
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
                 <textarea
@@ -261,7 +240,6 @@ const SupportPage = () => {
                   disabled={loading}
                 ></textarea>
               </div>
-
               <div className="text-center">
                 <button
                   type="submit"
@@ -275,7 +253,6 @@ const SupportPage = () => {
           </div>
         </div>
       </div>
-
       {/* Footer Banner */}
       <div className="bg-black text-white py-12 px-6">
         <div className="max-w-6xl mx-auto">
@@ -298,5 +275,4 @@ const SupportPage = () => {
     </div>
   );
 };
-
 export default SupportPage;

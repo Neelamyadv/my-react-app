@@ -1,9 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-
 // Use environment variables or fallback to demo values
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
-
 // Create Supabase client with error handling
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -12,7 +10,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true
   }
 });
-
 // Database types
 export interface User {
   id: string;
@@ -24,7 +21,6 @@ export interface User {
   created_at: string;
   updated_at: string;
 }
-
 export interface ContactMessage {
   id: string;
   name: string;
@@ -33,7 +29,6 @@ export interface ContactMessage {
   message: string;
   created_at: string;
 }
-
 export interface Enrollment {
   id: string;
   user_id: string;
@@ -46,7 +41,6 @@ export interface Enrollment {
   status: 'active' | 'completed';
   progress: number;
 }
-
 export interface Profile {
   id: string;
   first_name: string;

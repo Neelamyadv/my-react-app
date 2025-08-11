@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Monitor, Figma, Users, ArrowRight } from 'lucide-react';
-
 const CoursesSection = () => {
   const courses = [
     {
@@ -40,11 +39,9 @@ const CoursesSection = () => {
       path: '/courses/hr-management'
     }
   ];
-
   const handleNavigation = () => {
     window.scrollTo(0, 0);
   };
-
   return (
     <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-16">
       <div className="max-w-6xl mx-auto">
@@ -55,7 +52,6 @@ const CoursesSection = () => {
           In order to create an engaging learning experience, the role of 
           instructor is optional, but the role of learner is essential.
         </p>
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {courses.map((course, index) => (
             <div key={index} className="course-card group">
@@ -64,9 +60,7 @@ const CoursesSection = () => {
                   {course.icon}
                 </div>
               </div>
-              
               <h3 className="text-lg sm:text-xl font-bold text-center mb-3 sm:mb-4">{course.title}</h3>
-              
               <div className="flex-1 flex flex-col justify-start">
                 {course.topics.length > 0 ? (
                   <ul className="space-y-2 mb-4 sm:mb-6">
@@ -84,14 +78,12 @@ const CoursesSection = () => {
                     </p>
                   </div>
                 )}
-                
                 {course.topics.length > 0 && (
                   <p className="text-xs sm:text-sm text-gray-700 mb-4 sm:mb-6 leading-relaxed">
                     {course.description}
                   </p>
                 )}
               </div>
-              
               <Link 
                 to={course.path}
                 onClick={handleNavigation}
@@ -102,7 +94,6 @@ const CoursesSection = () => {
             </div>
           ))}
         </div>
-        
         <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mt-8 sm:mt-12">
           <Link
             to="/courses"
@@ -123,5 +114,4 @@ const CoursesSection = () => {
     </section>
   );
 };
-
 export default CoursesSection;

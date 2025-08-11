@@ -2,35 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { Award, Download, Share2, Eye, Calendar, Search } from 'lucide-react';
 import { certificateService, CertificateData } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
-
 const CertificatesPage = () => {
   const [certificates, setCertificates] = useState<CertificateData[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCertificate, setSelectedCertificate] = useState<CertificateData | null>(null);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
-
   useEffect(() => {
     loadCertificates();
   }, []);
-
   const loadCertificates = () => {
     const userCertificates = certificateService.getUserCertificates();
     setCertificates(userCertificates);
   };
-
   const filteredCertificates = certificates.filter(cert =>
     cert.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     cert.studentName.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   const handleViewCertificate = (certificate: CertificateData) => {
     setSelectedCertificate(certificate);
     setShowCertificateModal(true);
   };
-
   const handleShareCertificate = async (certificate: CertificateData) => {
     const shareText = certificateService.formatCertificateForSharing(certificate);
-    
     if (navigator.share) {
       try {
         await navigator.share({
@@ -47,7 +40,6 @@ const CertificatesPage = () => {
       alert('Certificate details copied to clipboard!');
     }
   };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -55,7 +47,6 @@ const CertificatesPage = () => {
       day: 'numeric'
     });
   };
-
   return (
     <div className="glass-card-dark rounded-2xl p-4 sm:p-6 lg:p-8">
       <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6 sm:mb-8">
@@ -63,7 +54,6 @@ const CertificatesPage = () => {
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">My Certificates</h2>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">View and download your earned certificates</p>
         </div>
-        
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
@@ -76,7 +66,6 @@ const CertificatesPage = () => {
           />
         </div>
       </div>
-
       {filteredCertificates.length === 0 ? (
         <div className="text-center py-12 sm:py-16">
           <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
@@ -100,7 +89,6 @@ const CertificatesPage = () => {
                 </div>
               </div>
             </div>
-            
             <div className="bg-gradient-to-br from-green-50/80 to-green-100/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-green-200/50">
               <div className="flex items-center justify-between mb-2">
                 <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
@@ -112,7 +100,6 @@ const CertificatesPage = () => {
                 </div>
               </div>
             </div>
-            
             <div className="bg-gradient-to-br from-blue-50/80 to-blue-100/80 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-blue-200/50">
               <div className="flex items-center justify-between mb-2">
                 <Eye className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
@@ -123,7 +110,6 @@ const CertificatesPage = () => {
               </div>
             </div>
           </div>
-
           {/* Certificates Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {filteredCertificates.map((certificate) => (
@@ -138,7 +124,6 @@ const CertificatesPage = () => {
                     <span className="text-xs text-white font-medium">Certificate</span>
                   </div>
                 </div>
-
                 {/* Certificate Info */}
                 <div className="mb-3 sm:mb-4">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
@@ -155,7 +140,6 @@ const CertificatesPage = () => {
                     </div>
                   </div>
                 </div>
-
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-2">
                   <button
@@ -177,7 +161,6 @@ const CertificatesPage = () => {
           </div>
         </>
       )}
-
       {/* Certificate Modal */}
       {selectedCertificate && (
         <CertificateModal
@@ -195,5 +178,4 @@ const CertificatesPage = () => {
     </div>
   );
 };
-
 export default CertificatesPage;

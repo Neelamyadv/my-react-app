@@ -6,14 +6,12 @@ import { useAuth } from '../../lib/auth';
 import { CourseContent as CourseContentType, contentService } from '../../lib/contentService';
 import ContentViewer from '../CoursePlayer/ContentViewer';
 import toast from 'react-hot-toast';
-
 interface CourseContentProps {
   courseId: string;
   courseName: string;
   enrollment: any;
   onProgressUpdate: (progress: number) => void;
 }
-
 const CourseContent: React.FC<CourseContentProps> = ({ 
   courseId, 
   courseName, 
@@ -27,17 +25,14 @@ const CourseContent: React.FC<CourseContentProps> = ({
   const [contentProgress, setContentProgress] = useState<Record<string, number>>({});
   const [showCertificateModal, setShowCertificateModal] = useState(false);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     loadCourseContent();
   }, [courseId]);
-
   const loadCourseContent = async () => {
     try {
       setLoading(true);
       const content = await contentService.getCourseContent(courseId);
       setCourseContent(content);
-      
       // Set first content as active by default
       if (content.length > 0) {
         setActiveContent(content[0]);
@@ -49,41 +44,32 @@ const CourseContent: React.FC<CourseContentProps> = ({
       setLoading(false);
     }
   };
-
   const handleContentProgress = (contentId: string, progress: number) => {
     setContentProgress(prev => ({
       ...prev,
       [contentId]: progress
     }));
-
     // Update overall course progress
     const totalProgress = Object.values({
       ...contentProgress,
       [contentId]: progress
     }).reduce((sum, p) => sum + p, 0) / courseContent.length;
-    
     onProgressUpdate(Math.round(totalProgress));
   };
-
   const handleContentComplete = (contentId: string) => {
     const newCompleted = new Set(completedContent);
     newCompleted.add(contentId);
     setCompletedContent(newCompleted);
-    
     // Update progress to 100% for this content
     handleContentProgress(contentId, 100);
-
     // Check if course is completed (all content completed)
     if (newCompleted.size === courseContent.length) {
       handleCourseCompletion();
     }
-
     toast.success('Content completed!');
   };
-
   const handleCourseCompletion = async () => {
     if (!user) return;
-
     try {
       // Generate certificate
       const certificate = await certificateService.generateCertificate(
@@ -91,9 +77,7 @@ const CourseContent: React.FC<CourseContentProps> = ({
         courseName,
         courseId
       );
-
       toast.success('🎉 Congratulations! You\'ve completed the course and earned your certificate!');
-      
       // Show certificate modal after a short delay
       setTimeout(() => {
         setShowCertificateModal(true);
@@ -103,7 +87,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
       toast.error('Course completed but there was an issue generating your certificate.');
     }
   };
-
   const getContentIcon = (type: string) => {
     switch (type) {
       case 'video':
@@ -116,7 +99,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
         return <Play className="w-4 h-4" />;
     }
   };
-
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'video':
@@ -129,13 +111,11 @@ const CourseContent: React.FC<CourseContentProps> = ({
         return 'text-gray-600 bg-gray-50';
     }
   };
-
   const formatDuration = (seconds?: number) => {
     if (!seconds) return '';
     const mins = Math.floor(seconds / 60);
     return `${mins} min`;
   };
-
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-sm p-8">
@@ -150,14 +130,12 @@ const CourseContent: React.FC<CourseContentProps> = ({
       </div>
     );
   }
-
   return (
     <div className="grid lg:grid-cols-3 gap-8">
       {/* Content Sidebar */}
       <div className="lg:col-span-1">
         <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Course Content</h3>
-          
           {/* Progress Overview */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
@@ -171,14 +149,12 @@ const CourseContent: React.FC<CourseContentProps> = ({
               ></div>
             </div>
           </div>
-
           {/* Content List */}
           <div className="space-y-2">
             {courseContent.map((content, index) => {
               const isCompleted = completedContent.has(content.id);
               const isActive = activeContent?.id === content.id;
               const progress = contentProgress[content.id] || 0;
-              
               return (
                 <button
                   key={content.id}
@@ -197,12 +173,10 @@ const CourseContent: React.FC<CourseContentProps> = ({
                         getContentIcon(content.type)
                       )}
                     </div>
-                    
                     <div className="flex-1 min-w-0">
                       <h4 className={`font-medium text-sm mb-1 ${isCompleted ? 'text-green-700' : 'text-gray-900'}`}>
                         {content.title}
                       </h4>
-                      
                       <div className="flex items-center gap-2 text-xs text-gray-500">
                         <span className="capitalize">{content.type}</span>
                         {content.duration && (
@@ -212,7 +186,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
                           </>
                         )}
                       </div>
-                      
                       {/* Progress bar for active/in-progress content */}
                       {progress > 0 && progress < 100 && (
                         <div className="mt-2">
@@ -230,7 +203,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
               );
             })}
           </div>
-
           {/* Course Stats */}
           <div className="mt-6 pt-6 border-t border-gray-200">
             <div className="grid grid-cols-2 gap-4 text-center">
@@ -246,7 +218,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
           </div>
         </div>
       </div>
-
       {/* Main Content Area */}
       <div className="lg:col-span-2">
         {activeContent ? (
@@ -268,7 +239,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
             </div>
           </div>
         )}
-
         {/* Course Resources */}
         <div className="mt-6 p-6 bg-gradient-to-r from-violet-50 to-fuchsia-50 rounded-xl border border-violet-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Course Resources</h3>
@@ -295,7 +265,6 @@ const CourseContent: React.FC<CourseContentProps> = ({
           </div>
         </div>
       </div>
-
       {/* Certificate Modal */}
       {user && (
         <CertificateModal
@@ -310,5 +279,4 @@ const CourseContent: React.FC<CourseContentProps> = ({
     </div>
   );
 };
-
 export default CourseContent;

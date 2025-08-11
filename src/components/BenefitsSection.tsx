@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Infinity, DollarSign, Award } from 'lucide-react';
-
 const BenefitsSection = () => {
   const benefits = [
     {
@@ -25,7 +24,6 @@ const BenefitsSection = () => {
       icon: <Award className="text-white" size={24} />
     }
   ];
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
@@ -35,7 +33,6 @@ const BenefitsSection = () => {
       }
     }
   };
-
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
@@ -43,12 +40,10 @@ const BenefitsSection = () => {
       y: 0 
     }
   };
-
   return (
     <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6 md:px-16 relative overflow-hidden">
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center">
-          
           <motion.div 
             className="text-left lg:w-1/2 w-full"
             initial={{ opacity: 0, x: -50 }}
@@ -66,7 +61,6 @@ const BenefitsSection = () => {
               instructor is optional, but the role of learner is essential.
             </p>
           </motion.div>
-          
           <motion.div 
             className="lg:w-1/2 w-full grid grid-cols-1 md:grid-cols-2 gap-6"
             variants={containerVariants}
@@ -88,7 +82,6 @@ const BenefitsSection = () => {
                 <div className="relative z-20 w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center mb-4 transition-all duration-300">
                   {benefit.icon}
                 </div>
-                
                 <h3 className="font-bold text-lg text-white mb-2 leading-tight">
                   {benefit.title}
                 </h3>
@@ -103,5 +96,4 @@ const BenefitsSection = () => {
     </section>
   );
 };
-
 export default BenefitsSection;

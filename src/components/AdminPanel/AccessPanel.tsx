@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { apiClient } from '../../lib/api';
 import { logError, logInfo } from '../../lib/logger';
 import toast from 'react-hot-toast';
-
 const courses = [
   'Web Development',
   'JavaScript Programming',
@@ -14,16 +13,13 @@ const courses = [
   'UI/UX Design',
   'Cyber Security',
 ];
-
 const AccessPanel: React.FC = () => {
   const [premiumEmail, setPremiumEmail] = useState('');
   const [individualEmail, setIndividualEmail] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-
   const grantPremiumAccess = async () => {
     if (!premiumEmail) return toast.error('Please enter an email address');
-    
     setLoading(true);
     try {
       // Call backend API to grant premium access
@@ -39,7 +35,6 @@ const AccessPanel: React.FC = () => {
           courses: ['all']
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         logInfo('Premium access granted', { email: premiumEmail, result });
@@ -52,7 +47,6 @@ const AccessPanel: React.FC = () => {
     } catch (error) {
       logError('Failed to grant premium access', { email: premiumEmail, error: error.message });
       toast.error('Failed to grant premium access. Please try again.');
-      
       // Fallback to demo mode
       toast.success(`Granted Premium Pass access to ${premiumEmail} (Demo Mode)`);
       setPremiumEmail('');
@@ -60,11 +54,9 @@ const AccessPanel: React.FC = () => {
       setLoading(false);
     }
   };
-
   const grantIndividualAccess = async () => {
     if (!individualEmail) return toast.error('Please enter an email address');
     if (selectedCourses.length === 0) return toast.error('Please select at least one course');
-    
     setLoading(true);
     try {
       // Call backend API to grant individual access
@@ -80,7 +72,6 @@ const AccessPanel: React.FC = () => {
           courses: selectedCourses
         })
       });
-
       if (response.ok) {
         const result = await response.json();
         logInfo('Individual access granted', { email: individualEmail, courses: selectedCourses, result });
@@ -95,7 +86,6 @@ const AccessPanel: React.FC = () => {
     } catch (error) {
       logError('Failed to grant individual access', { email: individualEmail, courses: selectedCourses, error: error.message });
       toast.error('Failed to grant individual access. Please try again.');
-      
       // Fallback to demo mode
       const courseList = selectedCourses.join(', ');
       toast.success(`Granted access to ${courseList} for ${individualEmail} (Demo Mode)`);
@@ -105,7 +95,6 @@ const AccessPanel: React.FC = () => {
       setLoading(false);
     }
   };
-
   const handleCourseToggle = (course: string) => {
     setSelectedCourses(prev => 
       prev.includes(course) 
@@ -113,25 +102,20 @@ const AccessPanel: React.FC = () => {
         : [...prev, course]
     );
   };
-
   const selectAllCourses = () => {
     setSelectedCourses(courses);
   };
-
   const clearAllCourses = () => {
     setSelectedCourses([]);
   };
-
   return (
     <div className="min-h-screen bg-[var(--admin-bg)] p-6">
       <h1 className="text-2xl font-semibold text-[var(--admin-text)] mb-8 text-center">Access Panel</h1>
-      
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Premium Pass Card */}
         <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
           <h2 className="text-lg font-medium text-[var(--admin-text)] mb-4">Premium Pass</h2>
           <p className="text-sm text-[var(--admin-text-secondary)] mb-6">All courses access</p>
-          
           <div className="space-y-4">
             <div>
               <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">Email Address</label>
@@ -153,12 +137,10 @@ const AccessPanel: React.FC = () => {
             </button>
           </div>
         </div>
-
         {/* Individual Pass Card */}
         <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
           <h2 className="text-lg font-medium text-[var(--admin-text)] mb-4">Individual Pass</h2>
           <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Selected courses access</p>
-          
           {/* Course Selection */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
@@ -182,7 +164,6 @@ const AccessPanel: React.FC = () => {
                 </button>
               </div>
             </div>
-            
             <div className="space-y-2 max-h-40 overflow-y-auto bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded p-3">
               {courses.map((course, index) => (
                 <label key={index} className="flex items-center space-x-2 cursor-pointer hover:bg-[var(--admin-card)] p-1 rounded transition-colors">
@@ -197,7 +178,6 @@ const AccessPanel: React.FC = () => {
                 </label>
               ))}
             </div>
-            
             {selectedCourses.length > 0 && (
               <div className="mt-2 p-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded">
                 <p className="text-xs text-[var(--admin-text-secondary)]">
@@ -206,7 +186,6 @@ const AccessPanel: React.FC = () => {
               </div>
             )}
           </div>
-
           <div className="space-y-4">
             <div>
               <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">Email Address</label>
@@ -229,7 +208,6 @@ const AccessPanel: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Info Section */}
       <div className="max-w-5xl mx-auto mt-8">
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -245,5 +223,4 @@ const AccessPanel: React.FC = () => {
     </div>
   );
 };
-
 export default AccessPanel;

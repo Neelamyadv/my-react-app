@@ -3,13 +3,11 @@ import { Search, Download, CreditCard } from 'lucide-react';
 import { apiClient } from '../../lib/api';
 import { logError } from '../../lib/logger';
 import toast from 'react-hot-toast';
-
 interface User {
   id: number;
   email: string;
   name: string;
 }
-
 interface Payment {
   id: string;
   user_id: number;
@@ -22,7 +20,6 @@ interface Payment {
   created_at: string;
   payment_type: string;
 }
-
 // Define a Payment interface based on the enrollment data
 interface Payment {
   id: string;
@@ -34,7 +31,6 @@ interface Payment {
   course_name?: string;
   status: 'success';
 }
-
 const PaymentManagement: React.FC = () => {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -42,26 +38,21 @@ const PaymentManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     loadData();
   }, []);
-
   useEffect(() => {
     filterPayments();
   }, [payments, searchTerm, typeFilter]);
-
   const loadData = async () => {
     try {
       setLoading(true);
-      
       // Get payments from backend API
       const response = await fetch('/api/admin/payments', {
         headers: {
           'Authorization': `Bearer ${apiClient.getToken()}`
         }
       });
-
       if (response.ok) {
         const result = await response.json();
         setPayments(result.data || []);
@@ -71,7 +62,6 @@ const PaymentManagement: React.FC = () => {
     } catch (error) {
       logError('Error loading payment data', { error: error.message });
       toast.error('Failed to load payment data');
-      
       // Fallback to demo data
       const demoPayments: Payment[] = [
         {
@@ -92,58 +82,47 @@ const PaymentManagement: React.FC = () => {
       setLoading(false);
     }
   };
-
   const filterPayments = () => {
     let filtered = payments;
-
     // Search filter
     if (searchTerm) {
       filtered = filtered.filter(payment => {
         const user = users.find(u => u.id === payment.user_id);
         const userName = user ? `${user.first_name} ${user.last_name}` : '';
-        
         return payment.payment_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                (payment.course_name && payment.course_name.toLowerCase().includes(searchTerm.toLowerCase()));
       });
     }
-
     // Type filter
     if (typeFilter !== 'all') {
       filtered = filtered.filter(payment => payment.payment_type === typeFilter);
     }
-
     setFilteredPayments(filtered);
   };
-
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId);
     return user ? `${user.first_name} ${user.last_name}` : 'Unknown User';
   };
-
   const getUserEmail = (userId: string) => {
     const user = users.find(u => u.id === userId);
     return user ? user.email : 'unknown@email.com';
   };
-
   const getTypeBadge = (type: string) => {
     const typeStyles = {
       course: 'bg-purple-100 text-purple-800',
       premium_pass: 'bg-yellow-100 text-yellow-800'
     };
-
     return (
       <span className={`px-2 py-1 text-xs font-medium rounded-full ${typeStyles[type as keyof typeof typeStyles] || 'bg-gray-100 text-gray-800'}`}>
         {type === 'premium_pass' ? 'Premium Pass' : 'Course'}
       </span>
     );
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-
   const exportData = () => {
     const csvData = filteredPayments.map(payment => ({
       'Payment ID': payment.payment_id,
@@ -155,12 +134,10 @@ const PaymentManagement: React.FC = () => {
       'Date': formatDate(payment.payment_date),
       'Status': 'Success'
     }));
-
     const csvContent = [
       Object.keys(csvData[0]).join(','),
       ...csvData.map(row => Object.values(row).join(','))
     ].join('\n');
-
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -168,10 +145,8 @@ const PaymentManagement: React.FC = () => {
     a.download = 'payments.csv';
     a.click();
     window.URL.revokeObjectURL(url);
-
     toast.success('Payment data exported successfully');
   };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -179,7 +154,6 @@ const PaymentManagement: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
@@ -195,7 +169,6 @@ const PaymentManagement: React.FC = () => {
           Export CSV
         </button>
       </div>
-
       {/* Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-4 mb-4 md:mb-0">
@@ -211,7 +184,6 @@ const PaymentManagement: React.FC = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
           <select
             className="block w-full md:w-auto pl-3 pr-10 py-2 text-sm border-[var(--admin-border)] bg-[var(--admin-card)] text-[var(--admin-text)] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md shadow-sm"
             value={typeFilter}
@@ -222,12 +194,10 @@ const PaymentManagement: React.FC = () => {
             <option value="premium_pass">Premium Pass</option>
           </select>
         </div>
-        
         <div className="text-sm text-[var(--admin-text-secondary)]">
           {filteredPayments.length} of {payments.length} payments
         </div>
       </div>
-
       {/* Payments Table */}
       <div className="bg-[var(--admin-card)] shadow-sm overflow-hidden border border-[var(--admin-border)] sm:rounded-lg">
         <div className="overflow-x-auto">
@@ -295,7 +265,6 @@ const PaymentManagement: React.FC = () => {
             </tbody>
           </table>
         </div>
-
         {filteredPayments.length === 0 && (
           <div className="text-center py-12">
             <div className="flex flex-col items-center justify-center">
@@ -308,5 +277,4 @@ const PaymentManagement: React.FC = () => {
     </div>
   );
 };
-
 export default PaymentManagement;

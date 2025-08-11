@@ -6,12 +6,10 @@ import PaymentModal from '../Payment/PaymentModal';
 import { usePayment } from '../../hooks/usePayment';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../lib/auth';
-
 const PremiumPassPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { hasPremiumPass, enrollments } = useEnrollment();
-  
   // Payment integration
   const {
     isPaymentModalOpen,
@@ -20,11 +18,9 @@ const PremiumPassPage = () => {
     closePaymentModal,
     handlePaymentSuccess
   } = usePayment();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
   const handlePurchaseClick = () => {
     if (!user) {
       navigate('/login');
@@ -32,15 +28,12 @@ const PremiumPassPage = () => {
     }
     initiatePremiumPassPayment();
   };
-
   const handleExploreCourses = () => {
     window.scrollTo(0, 0);
     navigate('/courses');
   };
-
   // Get premium pass enrollment details
   const premiumEnrollment = enrollments.find(e => e.enrollment_type === 'premium_pass');
-
   return (
     <div className="min-h-screen yellow-gradient-bg text-gray-800">
       {/* Header */}
@@ -49,7 +42,6 @@ const PremiumPassPage = () => {
           <ChevronLeft size={20} />
           <span className="text-sm sm:text-base">Back</span>
         </Link>
-
         {/* Logo and Title - Made Logo Much Larger */}
         <div className="text-center mb-12 sm:mb-16">
           <div className="flex justify-center mb-4 sm:mb-6">
@@ -64,7 +56,6 @@ const PremiumPassPage = () => {
             <Crown className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-500" />
           </div>
         </div>
-
         {/* Premium Status Banner */}
         {hasPremiumPass && (
           <div className="max-w-4xl mx-auto mb-12 sm:mb-16">
@@ -96,7 +87,6 @@ const PremiumPassPage = () => {
             </div>
           </div>
         )}
-
         {/* Introduction */}
         {!hasPremiumPass && (
           <div className="max-w-3xl mx-auto text-center mb-16 sm:mb-24 glass-card-dark rounded-2xl sm:rounded-3xl p-6 sm:p-8">
@@ -105,7 +95,6 @@ const PremiumPassPage = () => {
             </p>
           </div>
         )}
-
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-3xl mx-auto mb-16 sm:mb-24">
           <div className="glass-card-dark rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center">
@@ -130,7 +119,6 @@ const PremiumPassPage = () => {
             <p className="text-xs text-gray-500 mt-1 sm:mt-2 leading-tight">Watch 100+ well-paced lecture at your comfort</p>
           </div>
         </div>
-
         {/* Premium Benefits for Existing Members */}
         {hasPremiumPass && (
           <div className="max-w-4xl mx-auto mb-16 sm:mb-24">
@@ -158,7 +146,6 @@ const PremiumPassPage = () => {
                   </li>
                 </ul>
               </div>
-
               <div className="glass-card-dark rounded-2xl sm:rounded-3xl p-6 sm:p-8">
                 <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-500 rounded-full flex items-center justify-center">
@@ -181,7 +168,6 @@ const PremiumPassPage = () => {
                   </li>
                 </ul>
               </div>
-
               <div className="glass-card-dark rounded-2xl sm:rounded-3xl p-6 sm:p-8">
                 <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-full flex items-center justify-center">
@@ -204,7 +190,6 @@ const PremiumPassPage = () => {
                   </li>
                 </ul>
               </div>
-
               <div className="glass-card-dark rounded-2xl sm:rounded-3xl p-6 sm:p-8">
                 <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-full flex items-center justify-center">
@@ -230,7 +215,6 @@ const PremiumPassPage = () => {
             </div>
           </div>
         )}
-
         {/* Features for Non-Premium Users */}
         {!hasPremiumPass && (
           <div className="max-w-4xl mx-auto glass-card-dark rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-12 mb-16 sm:mb-24">
@@ -245,7 +229,6 @@ const PremiumPassPage = () => {
                     <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs sm:text-sm font-medium">80% OFF</span>
                   </div>
                 </div>
-
                 <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-violet-400 rounded-full flex-shrink-0"></span>
@@ -264,7 +247,6 @@ const PremiumPassPage = () => {
                     <span className="text-gray-700 text-sm sm:text-base">Complimentary Entry to Zyntiq Academy.</span>
                   </li>
                 </ul>
-
                 <div className="space-y-3 sm:space-y-4">
                   <div className="w-full py-2 rounded-full bg-green-500 text-center font-medium text-white text-sm sm:text-base">
                     Save 80% - Limited Time Offer!
@@ -277,7 +259,6 @@ const PremiumPassPage = () => {
                   </button>
                 </div>
               </div>
-
               {/* Right Column - Features */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
                 <div>
@@ -304,11 +285,9 @@ const PremiumPassPage = () => {
             </div>
           </div>
         )}
-
         {/* Certificate Section */}
         <div className="max-w-4xl mx-auto mb-16 sm:mb-24">
           <h3 className="text-xl sm:text-2xl font-bold text-center mb-8 sm:mb-12 text-gray-800">Why Invest in Professional Certificate?</h3>
-          
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
             <div className="order-2 lg:order-1">
               <img 
@@ -318,18 +297,15 @@ const PremiumPassPage = () => {
               />
               <p className="text-center mt-3 sm:mt-4 text-gray-600 text-sm sm:text-base">Sample certificate</p>
             </div>
-            
             <div className="space-y-6 sm:space-y-8 order-1 lg:order-2">
               <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <h4 className="font-semibold mb-2 text-gray-800 text-sm sm:text-base">Hike</h4>
                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">The dedication invested in obtaining this increased compensation over time.</p>
               </div>
-              
               <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <h4 className="font-semibold mb-2 text-gray-800 text-sm sm:text-base">Advantage</h4>
                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">Acquiring credentials that distinguish you from your peers provides a notable competitive edge in the job market.</p>
               </div>
-              
               <div className="glass-card rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <h4 className="font-semibold mb-2 text-gray-800 text-sm sm:text-base">Productivity</h4>
                 <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">Entering the workforce with industry-recognized certifications positions you for early success and long-term growth.</p>
@@ -338,7 +314,6 @@ const PremiumPassPage = () => {
           </div>
         </div>
       </div>
-
       {/* Embrace Education Strip */}
       <div className="w-full bg-black py-8 sm:py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -358,7 +333,6 @@ const PremiumPassPage = () => {
           </div>
         </div>
       </div>
-
       {/* Payment Modal */}
       {currentPaymentData && (
         <PaymentModal
@@ -371,5 +345,4 @@ const PremiumPassPage = () => {
     </div>
   );
 };
-
 export default PremiumPassPage;

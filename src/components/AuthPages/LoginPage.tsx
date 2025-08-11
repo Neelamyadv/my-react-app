@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth.tsx';
 import toast from 'react-hot-toast';
-
 const LoginPage = () => {
   const navigate = useNavigate();
   const { signIn, signInWithGoogle, isGoogleAuthAvailable } = useAuth();
@@ -12,31 +11,24 @@ const LoginPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     // Validate required fields
     if (!formData.email.trim()) {
       toast.error('Email is required');
       return;
     }
-    
     if (!formData.password) {
       toast.error('Password is required');
       return;
     }
-    
     setLoading(true);
-    
     try {
       const { error } = await signIn(formData.email.trim(), formData.password);
-
       if (error) {
         toast.error(error);
         return;
       }
-
       toast.success('Logged in successfully!');
       navigate('/');
     } catch (error) {
@@ -45,13 +37,11 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
-
   const handleGoogleLogin = async () => {
     if (!isGoogleAuthAvailable) {
       toast.error('Google Sign-In is not available in this environment');
       return;
     }
-
     setGoogleLoading(true);
     try {
       const { error } = await signInWithGoogle();
@@ -67,7 +57,6 @@ const LoginPage = () => {
       setGoogleLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen yellow-gradient-bg flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full glass-card-dark rounded-2xl p-6 sm:p-8">
@@ -79,7 +68,6 @@ const LoginPage = () => {
             <p className="text-xs text-blue-700">Email: john@zyntiq.in, Password: john123</p>
           </div>
         </div>
-
         <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
           <div>
             <input
@@ -92,7 +80,6 @@ const LoginPage = () => {
               disabled={loading}
             />
           </div>
-
           <div>
             <input
               type="password"
@@ -104,7 +91,6 @@ const LoginPage = () => {
               disabled={loading}
             />
           </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -113,7 +99,6 @@ const LoginPage = () => {
             {loading ? 'Logging in...' : 'Log in'}
           </button>
         </form>
-
         {isGoogleAuthAvailable && (
           <div className="mt-4 sm:mt-6">
             <button
@@ -137,7 +122,6 @@ const LoginPage = () => {
             </button>
           </div>
         )}
-
         {!isGoogleAuthAvailable && (
           <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-blue-50/80 backdrop-blur-sm border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800 text-center">
@@ -145,7 +129,6 @@ const LoginPage = () => {
             </p>
           </div>
         )}
-
         <div className="mt-4 sm:mt-6 text-center text-sm">
           <span className="text-gray-600">You don't have an account? </span>
           <Link to="/signup" className="text-violet-600 hover:text-violet-700 font-medium">
@@ -156,5 +139,4 @@ const LoginPage = () => {
     </div>
   );
 };
-
 export default LoginPage;

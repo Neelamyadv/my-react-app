@@ -12,7 +12,6 @@ export interface CourseContent {
   isLocked: boolean;
   prerequisites?: string[];
 }
-
 export interface VideoContent extends CourseContent {
   type: 'video';
   thumbnailUrl: string;
@@ -20,14 +19,12 @@ export interface VideoContent extends CourseContent {
   subtitles?: string[];
   chapters?: VideoChapter[];
 }
-
 export interface VideoChapter {
   id: string;
   title: string;
   startTime: number;
   endTime: number;
 }
-
 export interface QuizContent extends CourseContent {
   type: 'quiz';
   questions: QuizQuestion[];
@@ -35,7 +32,6 @@ export interface QuizContent extends CourseContent {
   timeLimit?: number; // in minutes
   attempts: number;
 }
-
 export interface QuizQuestion {
   id: string;
   question: string;
@@ -45,23 +41,19 @@ export interface QuizQuestion {
   explanation?: string;
   points: number;
 }
-
 class ContentService {
   private baseUrl: string;
   private apiKey: string;
-
   constructor() {
     // Configure based on your chosen provider
     this.baseUrl = import.meta.env.VITE_CONTENT_CDN_URL || 'https://your-cdn.com';
     this.apiKey = import.meta.env.VITE_CONTENT_API_KEY || '';
   }
-
   // Get course content structure
   async getCourseContent(courseId: string): Promise<CourseContent[]> {
     // Return demo content directly to avoid fetch errors with placeholder URL
     return this.getDemoContent(courseId);
   }
-
   // Get signed URL for secure content access
   async getSecureUrl(contentId: string, userId: string): Promise<string> {
     try {
@@ -73,7 +65,6 @@ class ContentService {
         },
         body: JSON.stringify({ userId })
       });
-
       const data = await response.json();
       return data.signedUrl;
     } catch (error) {
@@ -81,7 +72,6 @@ class ContentService {
       throw error;
     }
   }
-
   // Track video progress
   async updateVideoProgress(contentId: string, userId: string, progress: number): Promise<void> {
     try {
@@ -102,7 +92,6 @@ class ContentService {
       console.error('Error updating video progress:', error);
     }
   }
-
   // Submit quiz answers
   async submitQuiz(quizId: string, userId: string, answers: Record<string, any>): Promise<{
     score: number;
@@ -122,14 +111,12 @@ class ContentService {
           submittedAt: new Date().toISOString()
         })
       });
-
       return await response.json();
     } catch (error) {
       console.error('Error submitting quiz:', error);
       throw error;
     }
   }
-
   // Demo content for development
   private getDemoContent(courseId: string): CourseContent[] {
     // ========================================
@@ -144,7 +131,6 @@ class ContentService {
     //    - Vimeo: https://player.vimeo.com/video/123456789
     //    - YouTube: https://www.youtube.com/embed/VIDEO_ID
     //    - Bunny CDN: https://video-cdn.bunnycdn.com/videos/course1/intro.mp4
-    
     const baseContent = [
       {
         id: `${courseId}-intro`,
@@ -179,7 +165,6 @@ class ContentService {
         // 🎥 REPLACE WITH ACTUAL THUMBNAIL URL
         thumbnailUrl: 'https://via.placeholder.com/640x360/8b5cf6/ffffff?text=Lesson+1'
       },
-
       // ========================================
       // 📝 QUIZ CONTENT MANAGEMENT
       // ========================================
@@ -235,7 +220,6 @@ class ContentService {
         timeLimit: null, // 📝 TIME LIMIT IN MINUTES (null for no limit)
         attempts: 3 // 📝 NUMBER OF ALLOWED ATTEMPTS
       } as QuizContent,
-
       // ========================================
       // 📄 PDF CONTENT MANAGEMENT
       // ========================================
@@ -262,7 +246,6 @@ class ContentService {
         order: 4,
         isLocked: false
       }
-
       // ========================================
       // 🔄 TO ADD MORE CONTENT:
       // ========================================
@@ -274,7 +257,6 @@ class ContentService {
       // 5. Adjust 'order' for proper sequencing
       // 6. Set 'isLocked' to true if it should be unlocked by prerequisites
       // 7. Add 'prerequisites' array if needed: ['previous-lesson-id']
-      
       // Example additional video:
       // {
       //   id: `${courseId}-lesson2`,
@@ -290,14 +272,11 @@ class ContentService {
       //   thumbnailUrl: 'https://your-cdn.com/thumbnails/lesson2.jpg'
       // }
     ];
-
     return baseContent;
   }
-
   // ========================================
   // 🛠️ CONTENT MANAGEMENT HELPERS
   // ========================================
-  
   // Add this method to easily add new content
   addContent(courseId: string, content: Omit<CourseContent, 'id' | 'courseId'>): CourseContent {
     return {
@@ -306,7 +285,6 @@ class ContentService {
       ...content
     };
   }
-
   // Add this method to validate video URLs
   async validateVideoUrl(url: string): Promise<boolean> {
     try {
@@ -316,7 +294,6 @@ class ContentService {
       return false;
     }
   }
-
   // Add this method to get video metadata
   async getVideoMetadata(url: string): Promise<{ duration: number; size: number } | null> {
     return new Promise((resolve) => {
@@ -332,47 +309,39 @@ class ContentService {
     });
   }
 }
-
 export const contentService = new ContentService();
-
 // ========================================
 // 📋 CONTENT MANAGEMENT CHECKLIST
 // ========================================
 /*
 For each course, you need to:
-
 1. 🎥 VIDEOS:
    - Upload videos to your CDN (AWS CloudFront, Bunny CDN, etc.)
    - Get the direct URLs or embed codes
    - Create thumbnail images (recommended: 640x360 or 1280x720)
    - Note the duration of each video
    - Update the video objects in getDemoContent()
-
 2. 📄 PDFs:
    - Upload PDF files to your storage service
    - Get the direct download URLs
    - Note the file sizes
    - Update the PDF objects in getDemoContent()
-
 3. 📝 QUIZZES:
    - Write your questions and answers
    - Set the passing score percentage
    - Decide on time limits (if any)
    - Set number of allowed attempts
    - Update the quiz objects in getDemoContent()
-
 4. 🔒 CONTENT SECURITY:
    - For production, implement signed URLs for video/PDF access
    - Add user authentication checks
    - Implement content unlocking based on prerequisites
    - Add progress tracking to your database
-
 5. 📊 ANALYTICS:
    - Track video watch time
    - Monitor quiz completion rates
    - Log content access patterns
    - Implement completion certificates
-
 6. 🎨 CUSTOMIZATION:
    - Add course-specific branding
    - Customize player themes

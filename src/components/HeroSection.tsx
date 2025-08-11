@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 const HeroSection = () => {
   // Icons with proper positioning for both mobile and desktop
   const icons = [
@@ -10,9 +9,7 @@ const HeroSection = () => {
       className: "absolute w-120 h-auto sm:w-100 sm:h-100 md:w-100 md:h-100 floating-delay-1",
       style: { top: '0%', left: '0%' }
     },
-    
   ];
-
   return (
     // MODIFICATION HERE: Increased vertical padding significantly to approximate 16:9
     // The `py-` classes control padding-top and padding-bottom.
@@ -40,7 +37,6 @@ const HeroSection = () => {
             Start Learning
           </Link>
         </div>
-
         {/* Centered Floating Icons Container */}
         {/* Adjusted min-height to allow more vertical space */}
         <div className="relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px] flex items-center justify-center">
@@ -57,7 +53,6 @@ const HeroSection = () => {
                 loading="lazy"
               />
             ))}
-
             {/* Central visual anchor (invisible) */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-transparent"></div>
           </div>
@@ -66,5 +61,4 @@ const HeroSection = () => {
     </section>
   );
 };
-
 export default HeroSection;

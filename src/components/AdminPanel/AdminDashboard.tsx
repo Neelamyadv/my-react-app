@@ -3,7 +3,6 @@ import { Users, CreditCard, Zap, Activity } from 'lucide-react';
 import { apiClient } from '../../lib/api';
 import { logError } from '../../lib/logger';
 import toast from 'react-hot-toast';
-
 interface DashboardStats {
   totalUsers: number;
   totalEnrollments: number;
@@ -12,11 +11,9 @@ interface DashboardStats {
   premiumUsers: number;
   courseCompletions: number;
 }
-
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
 }
-
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
@@ -27,31 +24,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     courseCompletions: 0
   });
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     loadDashboardStats();
   }, []);
-
   const loadDashboardStats = async () => {
     try {
       setLoading(true);
-      
       // Get data from backend API
       const [usersResponse, paymentsResponse, messagesResponse] = await Promise.all([
         fetch('/api/admin/users').then(res => res.json()).catch(() => ({ data: [] })),
         fetch('/api/admin/payments').then(res => res.json()).catch(() => ({ data: [] })),
         fetch('/api/admin/messages').then(res => res.json()).catch(() => ({ data: [] }))
       ]);
-
       const users = usersResponse.data || [];
       const payments = paymentsResponse.data || [];
       const messages = messagesResponse.data || [];
-
       // Calculate stats
       const totalRevenue = payments.reduce((sum: number, payment: any) => sum + (payment.amount || 0), 0);
       const premiumUsers = payments.filter((p: any) => p.payment_type === 'premium_pass').length;
       const courseCompletions = users.filter((u: any) => u.status === 'completed').length;
-
       setStats({
         totalUsers: users.length,
         totalEnrollments: payments.length,
@@ -63,7 +54,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     } catch (error) {
       logError('Error loading dashboard stats', { error: error.message });
       toast.error('Failed to load dashboard statistics');
-      
       // Fallback to demo data if API is not available
       const demoStats = {
         totalUsers: 25,
@@ -78,7 +68,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       setLoading(false);
     }
   };
-
   const statCards = [
     {
       title: 'Total Users',
@@ -109,7 +98,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       page: 'messages'
     }
   ];
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -117,7 +105,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       </div>
     );
   }
-
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8">
@@ -129,7 +116,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
           <span className="text-sm text-gray-600 font-medium">{new Date().toLocaleDateString()}</span>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-6 md:mb-8">
         {statCards.map((card, index) => {
           const IconComponent = card.icon;
@@ -152,7 +138,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
           );
         })}
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
         {/* Recent Activity */}
         <div className="bg-[var(--admin-card)] rounded-lg shadow-sm p-4 md:p-5 border border-[var(--admin-border)]">
@@ -168,7 +153,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
             <p className="text-xs text-[var(--admin-text-secondary)] mt-1">Activity will appear here as users interact with the platform</p>
           </div>
         </div>
-
         {/* Quick Actions */}
         <div className="bg-[var(--admin-card)] rounded-lg shadow-sm p-4 md:p-5 border border-[var(--admin-border)]">
           <h3 className="text-md font-medium text-[var(--admin-text)] mb-4 flex items-center">
@@ -183,7 +167,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
               <Users className="h-5 w-5 text-indigo-500 mb-2" />
               <span className="text-sm font-medium text-[var(--admin-text)]">Manage Users</span>
             </button>
-
             <button
               onClick={() => onNavigate('payments')}
               className="p-4 bg-[var(--admin-border)] bg-opacity-30 hover:bg-opacity-50 rounded-md text-left transition-all duration-200 border border-[var(--admin-border)] hover:border-[var(--admin-border)] min-h-[80px] md:min-h-0"
@@ -191,7 +174,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
               <CreditCard className="h-5 w-5 text-indigo-500 mb-2" />
               <span className="text-sm font-medium text-[var(--admin-text)]">View Payments</span>
             </button>
-
             <button
               onClick={() => onNavigate('messages')}
               className="p-4 bg-[var(--admin-border)] bg-opacity-30 hover:bg-opacity-50 rounded-md text-left transition-all duration-200 border border-[var(--admin-border)] hover:border-[var(--admin-border)] min-h-[80px] md:min-h-0"
@@ -199,7 +181,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
               <Activity className="h-5 w-5 text-indigo-500 mb-2" />
               <span className="text-sm font-medium text-[var(--admin-text)]">Contact Messages</span>
             </button>
-
             <button
               onClick={() => onNavigate('access')}
               className="p-4 bg-[var(--admin-border)] bg-opacity-30 hover:bg-opacity-50 rounded-md text-left transition-all duration-200 border border-[var(--admin-border)] hover:border-[var(--admin-border)] min-h-[80px] md:min-h-0"
@@ -213,5 +194,4 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     </div>
   );
 };
-
 export default AdminDashboard;

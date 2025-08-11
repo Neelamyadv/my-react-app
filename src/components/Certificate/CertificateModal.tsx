@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { X, Download, Share2, Award } from 'lucide-react';
-
 interface CertificateModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -9,7 +8,6 @@ interface CertificateModalProps {
   completionDate: string;
   certificateId: string;
 }
-
 const CertificateModal: React.FC<CertificateModalProps> = ({
   isOpen,
   onClose,
@@ -19,9 +17,7 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
   certificateId
 }) => {
   const certificateRef = useRef<HTMLDivElement>(null);
-
   if (!isOpen) return null;
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -29,55 +25,44 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
       day: 'numeric'
     });
   };
-
   const downloadCertificate = async () => {
     try {
       // Create a high-resolution canvas
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      
       if (!ctx) {
         console.error('Could not get canvas context');
         fallbackDownload();
         return;
       }
-
       // Set high resolution for better quality
       const scale = 2;
       canvas.width = 1200 * scale;
       canvas.height = 800 * scale;
       ctx.scale(scale, scale);
-
       // Load the certificate template image
       const img = new Image();
       img.crossOrigin = 'anonymous';
-      
       img.onload = () => {
         try {
           // Draw the certificate template
           ctx.drawImage(img, 0, 0, 1200, 800);
-          
           // Set text properties for better rendering
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillStyle = '#2d3748';
-          
           // Student name - positioned above the line
           ctx.font = 'bold 48px "Times New Roman", serif';
           ctx.fillText(studentName, 600, 380);
-          
           // Course name - positioned below the line  
           ctx.font = 'bold 32px "Times New Roman", serif';
           ctx.fillText(courseName, 600, 460);
-          
           // Date
           ctx.font = '24px "Times New Roman", serif';
           ctx.fillText(formatDate(completionDate), 600, 580);
-          
           // Certificate ID
           ctx.font = '18px "Arial", sans-serif';
           ctx.fillText(`Certificate ID: ${certificateId}`, 600, 720);
-          
           // Convert to blob and download
           canvas.toBlob((blob) => {
             if (blob) {
@@ -93,27 +78,22 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
               fallbackDownload();
             }
           }, 'image/png', 1.0);
-          
         } catch (error) {
           console.error('Error drawing on canvas:', error);
           fallbackDownload();
         }
       };
-      
       img.onerror = () => {
         console.error('Failed to load certificate image');
         fallbackDownload();
       };
-      
       // Try to load the certificate image
       img.src = '/image copy copy copy copy.png';
-      
     } catch (error) {
       console.error('Error in downloadCertificate:', error);
       fallbackDownload();
     }
   };
-
   const fallbackDownload = () => {
     // Fallback: Create a simple certificate using HTML2Canvas approach
     if (certificateRef.current) {
@@ -209,16 +189,12 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
       }
     }
   };
-
   const shareCertificate = async () => {
     const shareText = `🎓 I've successfully completed the ${courseName} course and earned my certificate from Zyntiq!
-
 📅 Completed: ${formatDate(completionDate)}
 🆔 Certificate ID: ${certificateId}
 🏫 Issued by: Zyntiq
-
 #Zyntiq #OnlineLearning #Certificate #${courseName.replace(/\s+/g, '')}`;
-
     if (navigator.share) {
       try {
         await navigator.share({
@@ -248,7 +224,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
       }
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
@@ -262,7 +237,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
             <X size={20} className="text-gray-600" />
           </button>
         </div>
-
         {/* Certificate Display */}
         <div className="p-4 sm:p-6">
           <div
@@ -282,17 +256,14 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
                 }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  console.log('Image failed to load:', target.src);
                   // Try fallback
                   if (!target.src.includes('placeholder')) {
                     target.src = 'https://via.placeholder.com/800x600/f0f9ff/1e40af?text=Certificate+Template';
                   }
                 }}
                 onLoad={() => {
-                  console.log('Certificate image loaded successfully');
                 }}
               />
-              
               {/* Text Overlay - Positioned to match your certificate exactly */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 {/* Student Name - Above the line */}
@@ -310,7 +281,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
                 >
                   {studentName}
                 </div>
-                
                 {/* Course Name - Below the line */}
                 <div 
                   className="absolute font-semibold text-gray-700 text-center max-w-[80%] break-words"
@@ -326,7 +296,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
                 >
                   {courseName}
                 </div>
-                
                 {/* Date */}
                 <div 
                   className="absolute text-gray-600 text-center"
@@ -341,7 +310,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
                 >
                   {formatDate(completionDate)}
                 </div>
-                
                 {/* Certificate ID */}
                 <div 
                   className="absolute text-gray-500 font-mono text-center"
@@ -358,7 +326,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
               </div>
             </div>
           </div>
-
           {/* Certificate Info */}
           <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
             <div className="text-center">
@@ -384,7 +351,6 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
             </div>
           </div>
         </div>
-
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-4 sm:p-6 border-t border-gray-200">
           <button
@@ -406,5 +372,4 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
     </div>
   );
 };
-
 export default CertificateModal;
