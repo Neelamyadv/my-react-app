@@ -1,4 +1,5 @@
 // Google OAuth integration
+import { escapeHTML } from './utils/security';
 declare global {
   interface Window {
     google: any;

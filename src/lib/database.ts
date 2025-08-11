@@ -1,4 +1,6 @@
 import { User, ContactMessage, Enrollment, Profile } from './supabase';
+import bcrypt from 'bcryptjs';
+import { logError, logInfo, logDebug } from './logger';
 
 // Local storage database implementation
 class LocalStorageDatabase {
@@ -15,7 +17,7 @@ class LocalStorageDatabase {
       const data = localStorage.getItem(this.getStorageKey(tableName));
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      console.error(`Error reading table ${tableName}:`, error);
+      logError(`Error reading table ${tableName}`, error);
       return [];
     }
   }
@@ -31,19 +33,55 @@ class LocalStorageDatabase {
         storageArea: localStorage
       }));
     } catch (error) {
-      console.error(`Error saving table ${tableName}:`, error);
+      logError(`Error saving table ${tableName}`, error);
     }
   }
 
-  // Hash password for storage (simple implementation for demo)
-  private hashPassword(password: string): string {
-    // In production, use proper password hashing like bcrypt
-    return btoa(password + 'zyntiq_salt');
+  // Secure password hashing using bcrypt
+  private async hashPassword(password: string): Promise<string> {
+    const saltRounds = 12;
+    return await bcrypt.hash(password, saltRounds);
   }
 
-  // Verify password
-  private verifyPassword(password: string, hashedPassword: string): boolean {
-    return this.hashPassword(password) === hashedPassword;
+  // Verify password using bcrypt
+  private async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+    return await bcrypt.compare(password, hashedPassword);
+  }
+
+  // Validate password strength
+  private validatePasswordStrength(password: string): { isValid: boolean; error?: string } {
+    if (password.length < 8) {
+      return { isValid: false, error: 'Password must be at least 8 characters long' };
+    }
+    
+    if (!/(?=.*[a-z])/.test(password)) {
+      return { isValid: false, error: 'Password must contain at least one lowercase letter' };
+    }
+    
+    if (!/(?=.*[A-Z])/.test(password)) {
+      return { isValid: false, error: 'Password must contain at least one uppercase letter' };
+    }
+    
+    if (!/(?=.*\d)/.test(password)) {
+      return { isValid: false, error: 'Password must contain at least one number' };
+    }
+    
+    if (!/(?=.*[@$!%*?&])/.test(password)) {
+      return { isValid: false, error: 'Password must contain at least one special character (@$!%*?&)' };
+    }
+    
+    return { isValid: true };
+  }
+
+  // Validate email format
+  private validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Sanitize user input
+  private sanitizeInput(input: string): string {
+    return input.trim().replace(/[<>]/g, '');
   }
 
   async signUp(userData: {
@@ -57,37 +95,47 @@ class LocalStorageDatabase {
     try {
       const users = this.getTable<(User & { password: string })>('users');
       
+      // Sanitize inputs
+      const sanitizedData = {
+        email: this.sanitizeInput(userData.email).toLowerCase(),
+        password: userData.password,
+        first_name: this.sanitizeInput(userData.first_name),
+        middle_name: userData.middle_name ? this.sanitizeInput(userData.middle_name) : '',
+        last_name: this.sanitizeInput(userData.last_name),
+        phone: this.sanitizeInput(userData.phone)
+      };
+      
       // Check if user already exists
-      const existingUser = users.find(user => user.email.toLowerCase() === userData.email.toLowerCase());
+      const existingUser = users.find(user => user.email === sanitizedData.email);
       if (existingUser) {
         return { user: null, error: 'An account with this email already exists' };
       }
 
       // Validate required fields
-      if (!userData.email || !userData.password || !userData.first_name || !userData.last_name || !userData.phone) {
+      if (!sanitizedData.email || !sanitizedData.password || !sanitizedData.first_name || !sanitizedData.last_name || !sanitizedData.phone) {
         return { user: null, error: 'All required fields must be filled' };
       }
 
       // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(userData.email)) {
+      if (!this.validateEmail(sanitizedData.email)) {
         return { user: null, error: 'Please enter a valid email address' };
       }
 
       // Validate password strength
-      if (userData.password.length < 6) {
-        return { user: null, error: 'Password must be at least 6 characters long' };
+      const passwordValidation = this.validatePasswordStrength(sanitizedData.password);
+      if (!passwordValidation.isValid) {
+        return { user: null, error: passwordValidation.error! };
       }
 
       // Create new user with hashed password
       const newUser: User & { password: string } = {
         id: this.generateId(),
-        email: userData.email.toLowerCase(),
-        first_name: userData.first_name,
-        middle_name: userData.middle_name || '',
-        last_name: userData.last_name,
-        phone: userData.phone,
-        password: this.hashPassword(userData.password),
+        email: sanitizedData.email,
+        first_name: sanitizedData.first_name,
+        middle_name: sanitizedData.middle_name,
+        last_name: sanitizedData.last_name,
+        phone: sanitizedData.phone,
+        password: await this.hashPassword(sanitizedData.password),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
@@ -99,7 +147,7 @@ class LocalStorageDatabase {
       const { password, ...userWithoutPassword } = newUser;
       return { user: userWithoutPassword, error: null };
     } catch (error) {
-      console.error('Sign up error:', error);
+      logError('Sign up error', error);
       return { user: null, error: 'Failed to create account. Please try again.' };
     }
   }
@@ -108,8 +156,11 @@ class LocalStorageDatabase {
     try {
       const users = this.getTable<(User & { password: string })>('users');
       
-      // Find user by email (case insensitive)
-      const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+      // Sanitize email input
+      const sanitizedEmail = this.sanitizeInput(email).toLowerCase();
+      
+      // Find user by email
+      const user = users.find(u => u.email === sanitizedEmail);
 
       if (!user) {
         return { user: null, error: 'Invalid email or password' };
@@ -129,21 +180,22 @@ class LocalStorageDatabase {
       }
 
       // Verify password for regular users
-      if (!this.verifyPassword(password, user.password)) {
+      const isPasswordValid = await this.verifyPassword(password, user.password);
+      if (!isPasswordValid) {
         return { user: null, error: 'Invalid email or password' };
       }
 
+      const { password: _, ...userWithoutPassword } = user;
+      
       // Set current user session
       localStorage.setItem('zyntiq_current_user', JSON.stringify({
         id: user.id,
         email: user.email
       }));
 
-      // Return user without password
-      const { password: _, ...userWithoutPassword } = user;
       return { user: userWithoutPassword, error: null };
     } catch (error) {
-      console.error('Sign in error:', error);
+      logError('Sign in error', error);
       return { user: null, error: 'Failed to sign in. Please try again.' };
     }
   }
@@ -161,7 +213,7 @@ class LocalStorageDatabase {
 
       return { user: user || null, error: null };
     } catch (error) {
-      console.error('Get current user error:', error);
+      logError('Get current user error', error);
       return { user: null, error: 'Failed to get current user' };
     }
   }
@@ -171,7 +223,7 @@ class LocalStorageDatabase {
       localStorage.removeItem('zyntiq_current_user');
       return { error: null };
     } catch (error) {
-      console.error('Sign out error:', error);
+      logError('Sign out error', error);
       return { error: 'Failed to sign out' };
     }
   }
@@ -196,7 +248,7 @@ class LocalStorageDatabase {
 
       return { data: profile, error: null };
     } catch (error) {
-      console.error('Get profile error:', error);
+      logError('Get profile error', error);
       return { data: null, error: 'Failed to get profile' };
     }
   }
@@ -220,7 +272,7 @@ class LocalStorageDatabase {
       this.setTable('users', users);
       return { error: null };
     } catch (error) {
-      console.error('Update profile error:', error);
+      logError('Update profile error', error);
       return { error: 'Failed to update profile' };
     }
   }
@@ -245,7 +297,7 @@ class LocalStorageDatabase {
 
       return { error: null };
     } catch (error) {
-      console.error('Insert contact message error:', error);
+      logError('Insert contact message error', error);
       return { error: 'Failed to send message. Please try again.' };
     }
   }
@@ -281,11 +333,11 @@ class LocalStorageDatabase {
       enrollments.push(newEnrollment);
       this.setTable('enrollments', enrollments);
 
-      console.log('Enrollment created and saved to localStorage:', newEnrollment);
+      logInfo('Enrollment created and saved to localStorage', { enrollmentId: newEnrollment.id });
 
       return { enrollment: newEnrollment, error: null };
     } catch (error) {
-      console.error('Create enrollment error:', error);
+      logError('Create enrollment error', error);
       return { enrollment: null, error: 'Failed to create enrollment' };
     }
   }
@@ -295,11 +347,11 @@ class LocalStorageDatabase {
       const enrollments = this.getTable<Enrollment>('enrollments');
       const userEnrollments = enrollments.filter(e => e.user_id === userId);
 
-      console.log(`Found ${userEnrollments.length} enrollments for user ${userId}:`, userEnrollments);
+      logDebug(`Found ${userEnrollments.length} enrollments for user ${userId}`);
 
       return { enrollments: userEnrollments, error: null };
     } catch (error) {
-      console.error('Get user enrollments error:', error);
+      logError('Get user enrollments error', error);
       return { enrollments: [], error: 'Failed to get enrollments' };
     }
   }
@@ -317,7 +369,7 @@ class LocalStorageDatabase {
         error: null 
       };
     } catch (error) {
-      console.error('Check enrollment error:', error);
+      logError('Check enrollment error', error);
       return { enrolled: false, error: 'Failed to check enrollment' };
     }
   }
@@ -339,7 +391,7 @@ class LocalStorageDatabase {
       this.setTable('enrollments', enrollments);
       return { error: null };
     } catch (error) {
-      console.error('Update progress error:', error);
+      logError('Update progress error', error);
       return { error: 'Failed to update progress' };
     }
   }
@@ -353,7 +405,7 @@ class LocalStorageDatabase {
 
       return { hasPremium: !!premiumEnrollment, error: null };
     } catch (error) {
-      console.error('Check premium status error:', error);
+      logError('Check premium status error', error);
       return { hasPremium: false, error: 'Failed to check premium status' };
     }
   }
@@ -376,7 +428,7 @@ const initializeDemoData = () => {
         middle_name: '',
         last_name: 'User',
         phone: '9876543210',
-        password: btoa('demo123' + 'zyntiq_salt'), // password: demo123
+        password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK8e', // password: Demo123!
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       },
@@ -387,7 +439,7 @@ const initializeDemoData = () => {
         middle_name: 'M',
         last_name: 'Doe',
         phone: '9876543211',
-        password: btoa('john123' + 'zyntiq_salt'), // password: john123
+        password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iK8e', // password: Demo123!
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
@@ -443,7 +495,5 @@ const initializeDemoData = () => {
 // Initialize demo data
 initializeDemoData();
 
-console.log('Using local storage database with demo data');
-console.log('Demo accounts:');
-console.log('1. Email: demo@zyntiq.in, Password: demo123');
-console.log('2. Email: john@zyntiq.in, Password: john123');
+logInfo('Using local storage database with demo data');
+logInfo('Demo accounts available');

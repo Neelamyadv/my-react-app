@@ -1,4 +1,6 @@
 // Razorpay payment integration
+import { escapeHTML } from './utils/security';
+
 declare global {
   interface Window {
     Razorpay: any;
@@ -27,13 +29,37 @@ export interface PaymentResponse {
   razorpay_signature?: string;
 }
 
+export interface OrderCreateRequest {
+  amount: number;
+  currency: string;
+  receipt: string;
+  notes?: Record<string, string>;
+}
+
+export interface OrderCreateResponse {
+  id: string;
+  entity: string;
+  amount: number;
+  amount_paid: number;
+  amount_due: number;
+  currency: string;
+  receipt: string;
+  status: string;
+  attempts: number;
+  notes: Record<string, string>;
+  created_at: number;
+}
+
 export class RazorpayService {
   private keyId: string;
+  private secretKey: string;
   private isLoaded: boolean = false;
+  private isProduction: boolean;
 
   constructor() {
-    // Use demo key for development - replace with your actual key
     this.keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_demo_key';
+    this.secretKey = import.meta.env.VITE_RAZORPAY_SECRET_KEY || '';
+    this.isProduction = this.keyId !== 'rzp_test_demo_key' && this.secretKey !== '';
     this.loadRazorpayScript();
   }
 
@@ -44,7 +70,6 @@ export class RazorpayService {
     }
 
     return new Promise((resolve, reject) => {
-      // Check if script is already loaded
       if (document.querySelector('script[src*="checkout.razorpay.com"]')) {
         this.isLoaded = true;
         resolve();
@@ -64,19 +89,104 @@ export class RazorpayService {
     });
   }
 
+  // Create order on server (should be called from backend)
+  async createOrder(orderData: OrderCreateRequest): Promise<{ success: boolean; data?: OrderCreateResponse; error?: string }> {
+    if (!this.isProduction) {
+      // Return mock order for demo
+      return {
+        success: true,
+        data: {
+          id: `order_demo_${Date.now()}`,
+          entity: 'order',
+          amount: orderData.amount,
+          amount_paid: 0,
+          amount_due: orderData.amount,
+          currency: orderData.currency,
+          receipt: orderData.receipt,
+          status: 'created',
+          attempts: 0,
+          notes: orderData.notes || {},
+          created_at: Date.now()
+        }
+      };
+    }
+
+    try {
+      const response = await fetch('/api/razorpay/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, error: 'Failed to create order' };
+    }
+  }
+
+  // Verify payment signature
+  async verifyPaymentSignature(paymentId: string, orderId: string, signature: string): Promise<boolean> {
+    if (!this.isProduction) {
+      return true; // Always return true for demo
+    }
+
+    try {
+      const response = await fetch('/api/razorpay/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          payment_id: paymentId,
+          order_id: orderId,
+          signature: signature
+        })
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+
+      const result = await response.json();
+      return result.verified === true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async createPayment(options: PaymentOptions): Promise<{ success: boolean; data?: PaymentResponse; error?: string }> {
     try {
       await this.loadRazorpayScript();
 
-      // For demo purposes, always use demo payment
-      return this.createDemoPayment(options);
+      // Create order first
+      const orderData: OrderCreateRequest = {
+        amount: options.amount,
+        currency: options.currency,
+        receipt: `receipt_${Date.now()}`,
+        notes: {
+          description: options.description,
+          name: options.name
+        }
+      };
 
-      // Uncomment below for production with real Razorpay key
-      /*
-      if (this.keyId === 'rzp_test_demo_key') {
-        return this.createDemoPayment(options);
+      const orderResult = await this.createOrder(orderData);
+      if (!orderResult.success || !orderResult.data) {
+        return { success: false, error: 'Failed to create order' };
       }
 
+      // Use demo payment for development
+      if (!this.isProduction) {
+        return this.createDemoPayment(options, orderResult.data.id);
+      }
+
+      // Production payment flow
       return new Promise((resolve) => {
         const razorpayOptions = {
           key: this.keyId,
@@ -84,11 +194,22 @@ export class RazorpayService {
           currency: options.currency,
           name: options.name,
           description: options.description,
-          order_id: options.order_id,
+          order_id: orderResult.data!.id,
           prefill: options.prefill,
           theme: options.theme || { color: '#8b5cf6' },
-          handler: (response: PaymentResponse) => {
-            resolve({ success: true, data: response });
+          handler: async (response: PaymentResponse) => {
+            // Verify payment signature
+            const isVerified = await this.verifyPaymentSignature(
+              response.razorpay_payment_id,
+              response.razorpay_order_id!,
+              response.razorpay_signature!
+            );
+
+            if (isVerified) {
+              resolve({ success: true, data: response });
+            } else {
+              resolve({ success: false, error: 'Payment verification failed' });
+            }
           },
           modal: {
             ondismiss: () => {
@@ -100,20 +221,17 @@ export class RazorpayService {
         const rzp = new window.Razorpay(razorpayOptions);
         rzp.open();
       });
-      */
     } catch (error) {
       console.error('Payment initialization error:', error);
       return { success: false, error: 'Failed to initialize payment' };
     }
   }
 
-  private createDemoPayment(options: PaymentOptions): Promise<{ success: boolean; data?: PaymentResponse; error?: string }> {
+  private createDemoPayment(options: PaymentOptions, orderId: string): Promise<{ success: boolean; data?: PaymentResponse; error?: string }> {
     return new Promise((resolve) => {
-      // Create demo payment modal
       const modal = this.createDemoModal(options);
       document.body.appendChild(modal);
 
-      // Handle demo payment success
       const successBtn = modal.querySelector('.demo-success');
       const cancelBtn = modal.querySelector('.demo-cancel');
       const closeBtn = modal.querySelector('.demo-close');
@@ -130,7 +248,7 @@ export class RazorpayService {
           success: true,
           data: {
             razorpay_payment_id: `pay_demo_${Date.now()}`,
-            razorpay_order_id: `order_demo_${Date.now()}`,
+            razorpay_order_id: orderId,
             razorpay_signature: `sig_demo_${Date.now()}`
           }
         });
@@ -146,7 +264,6 @@ export class RazorpayService {
         resolve({ success: false, error: 'Payment cancelled by user' });
       });
 
-      // Close on overlay click
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
           cleanup();
@@ -181,11 +298,11 @@ export class RazorpayService {
         <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 border border-blue-200">
           <div class="flex justify-between items-center mb-2">
             <span class="text-gray-700 font-medium">Course:</span>
-            <span class="font-semibold text-gray-900">${options.name}</span>
+            <span class="font-semibold text-gray-900">${escapeHTML(options.name)}</span>
           </div>
           <div class="flex justify-between items-center mb-2">
             <span class="text-gray-700 font-medium">Description:</span>
-            <span class="text-sm text-gray-700">${options.description}</span>
+            <span class="text-sm text-gray-700">${escapeHTML(options.description)}</span>
           </div>
           <div class="flex justify-between items-center pt-2 border-t border-blue-200">
             <span class="text-gray-700 font-medium">Amount:</span>
@@ -233,6 +350,11 @@ export class RazorpayService {
   // Utility method to format amount for display
   static formatDisplayAmount(amount: number): string {
     return `₹${amount.toLocaleString('en-IN')}`;
+  }
+
+  // Check if running in production mode
+  isProductionMode(): boolean {
+    return this.isProduction;
   }
 }
 
