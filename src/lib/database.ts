@@ -1,5 +1,5 @@
 import { User, ContactMessage, Enrollment, Profile } from './supabase';
-import { logError, logInfo, logDebug } from './logger';
+import { logError, logInfo } from './logger';
 
 // Browser-compatible password hashing (for demo purposes only)
 const hashPassword = async (password: string): Promise<string> => {
@@ -213,10 +213,14 @@ class LocalStorageDatabase {
       if (userIndex === -1) {
         return { error: 'User not found' };
       }
-      // Update user data
+      // Update user data (only update Profile-compatible fields)
+      const { first_name, middle_name, last_name, phone } = profileData;
       users[userIndex] = {
         ...users[userIndex],
-        ...profileData,
+        ...(first_name && { first_name }),
+        ...(middle_name !== undefined && { middle_name }),
+        ...(last_name && { last_name }),
+        ...(phone && { phone }),
         updated_at: new Date().toISOString()
       };
       this.setTable('users', users);
@@ -284,7 +288,7 @@ class LocalStorageDatabase {
     try {
       const enrollments = this.getTable<Enrollment>('enrollments');
       const userEnrollments = enrollments.filter(e => e.user_id === userId);
-      logDebug(`Found ${userEnrollments.length} enrollments for user ${userId}`);
+      logInfo(`Found ${userEnrollments.length} enrollments for user ${userId}`);
       return { enrollments: userEnrollments, error: null };
     } catch (error) {
       logError('Get user enrollments error', error);
