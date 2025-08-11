@@ -1,4 +1,5 @@
 // Razorpay payment integration
+import { escapeHTML } from './utils/security';
 declare global {
   interface Window {
     Razorpay: any;
@@ -181,11 +182,11 @@ export class RazorpayService {
         <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 border border-blue-200">
           <div class="flex justify-between items-center mb-2">
             <span class="text-gray-700 font-medium">Course:</span>
-            <span class="font-semibold text-gray-900">${options.name}</span>
+            <span class="font-semibold text-gray-900">${escapeHTML(options.name)}</span>
           </div>
           <div class="flex justify-between items-center mb-2">
             <span class="text-gray-700 font-medium">Description:</span>
-            <span class="text-sm text-gray-700">${options.description}</span>
+            <span class="text-sm text-gray-700">${escapeHTML(options.description)}</span>
           </div>
           <div class="flex justify-between items-center pt-2 border-t border-blue-200">
             <span class="text-gray-700 font-medium">Amount:</span>
