@@ -1,7 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Download, CreditCard } from 'lucide-react';
-import { Enrollment, User } from '../../lib/supabase';
+import { apiClient } from '../../lib/api';
+import { logError } from '../../lib/logger';
 import toast from 'react-hot-toast';
+
+interface User {
+  id: number;
+  email: string;
+  name: string;
+}
+
+interface Payment {
+  id: string;
+  user_id: number;
+  user_email: string;
+  user_name: string;
+  amount: number;
+  currency: string;
+  status: string;
+  method: string;
+  created_at: string;
+  payment_type: string;
+}
 
 // Define a Payment interface based on the enrollment data
 interface Payment {
@@ -34,26 +54,40 @@ const PaymentManagement: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const enrollmentData: Enrollment[] = JSON.parse(localStorage.getItem('zyntiq_enrollments') || '[]');
-      const userData: User[] = JSON.parse(localStorage.getItem('zyntiq_users') || '[]');
       
-      // Convert enrollments to payments (since payments are derived from enrollments in this demo)
-      const paymentData: Payment[] = enrollmentData.map(enrollment => ({
-        id: enrollment.id,
-        payment_id: enrollment.payment_id,
-        user_id: enrollment.user_id,
-        amount: enrollment.amount_paid,
-        payment_date: enrollment.enrolled_at,
-        payment_type: enrollment.enrollment_type,
-        course_name: enrollment.course_name,
-        status: 'success' // All payments are successful in this demo
-      }));
-      
-      setPayments(paymentData);
-      setUsers(userData);
+      // Get payments from backend API
+      const response = await fetch('/api/admin/payments', {
+        headers: {
+          'Authorization': `Bearer ${apiClient.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setPayments(result.data || []);
+      } else {
+        throw new Error('Failed to fetch payments from API');
+      }
     } catch (error) {
-      console.error('Error loading payment data:', error);
+      logError('Error loading payment data', { error: error.message });
       toast.error('Failed to load payment data');
+      
+      // Fallback to demo data
+      const demoPayments: Payment[] = [
+        {
+          id: 'pay_demo_1',
+          user_id: 1,
+          user_email: 'demo@example.com',
+          user_name: 'Demo User',
+          amount: 1000,
+          currency: 'INR',
+          status: 'captured',
+          method: 'card',
+          created_at: new Date().toISOString(),
+          payment_type: 'success'
+        }
+      ];
+      setPayments(demoPayments);
     } finally {
       setLoading(false);
     }

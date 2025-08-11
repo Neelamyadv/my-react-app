@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Eye, Trash2, Mail, Phone, X } from 'lucide-react';
-import { ContactMessage } from '../../lib/supabase';
+import { apiClient } from '../../lib/api';
+import { logError, logInfo } from '../../lib/logger';
 import toast from 'react-hot-toast';
+
+interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  status: string;
+  created_at: string;
+}
 
 const ContactMessages: React.FC = () => {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -22,15 +32,39 @@ const ContactMessages: React.FC = () => {
   const loadMessages = async () => {
     try {
       setLoading(true);
-      const messageData: ContactMessage[] = JSON.parse(localStorage.getItem('zyntiq_contact_messages') || '[]');
-      // Sort messages by creation date (newest first)
-      const sortedMessages = messageData.sort((a, b) => 
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-      setMessages(sortedMessages);
+      
+      // Get messages from backend API
+      const response = await fetch('/api/admin/messages', {
+        headers: {
+          'Authorization': `Bearer ${apiClient.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        const sortedMessages = (result.data || []).sort((a: ContactMessage, b: ContactMessage) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setMessages(sortedMessages);
+      } else {
+        throw new Error('Failed to fetch messages from API');
+      }
     } catch (error) {
-      console.error('Error loading messages:', error);
+      logError('Error loading messages', { error: error.message });
       toast.error('Failed to load messages');
+      
+      // Fallback to demo data
+      const demoMessages: ContactMessage[] = [
+        {
+          id: 1,
+          name: 'Demo User',
+          email: 'demo@example.com',
+          message: 'This is a demo message for testing purposes.',
+          status: 'unread',
+          created_at: new Date().toISOString()
+        }
+      ];
+      setMessages(demoMessages);
     } finally {
       setLoading(false);
     }

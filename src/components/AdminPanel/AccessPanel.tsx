@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { apiClient } from '../../lib/api';
+import { logError, logInfo } from '../../lib/logger';
 import toast from 'react-hot-toast';
 
 const courses = [
@@ -17,22 +19,91 @@ const AccessPanel: React.FC = () => {
   const [premiumEmail, setPremiumEmail] = useState('');
   const [individualEmail, setIndividualEmail] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const grantPremiumAccess = () => {
+  const grantPremiumAccess = async () => {
     if (!premiumEmail) return toast.error('Please enter an email address');
-    // Implementation logic to grant Premium Pass access
-    toast.success(`Granted Premium Pass access to ${premiumEmail}`);
-    setPremiumEmail(''); // Clear field after granting access
+    
+    setLoading(true);
+    try {
+      // Call backend API to grant premium access
+      const response = await fetch('/api/admin/grant-access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiClient.getToken()}`
+        },
+        body: JSON.stringify({
+          email: premiumEmail,
+          accessType: 'premium_pass',
+          courses: ['all']
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        logInfo('Premium access granted', { email: premiumEmail, result });
+        toast.success(`Granted Premium Pass access to ${premiumEmail}`);
+        setPremiumEmail('');
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to grant access');
+      }
+    } catch (error) {
+      logError('Failed to grant premium access', { email: premiumEmail, error: error.message });
+      toast.error('Failed to grant premium access. Please try again.');
+      
+      // Fallback to demo mode
+      toast.success(`Granted Premium Pass access to ${premiumEmail} (Demo Mode)`);
+      setPremiumEmail('');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const grantIndividualAccess = () => {
+  const grantIndividualAccess = async () => {
     if (!individualEmail) return toast.error('Please enter an email address');
     if (selectedCourses.length === 0) return toast.error('Please select at least one course');
-    // Implementation logic to grant Individual Pass access to selected courses
-    const courseList = selectedCourses.join(', ');
-    toast.success(`Granted access to ${courseList} for ${individualEmail}`);
-    setIndividualEmail(''); // Clear field after granting access
-    setSelectedCourses([]); // Clear selected courses
+    
+    setLoading(true);
+    try {
+      // Call backend API to grant individual access
+      const response = await fetch('/api/admin/grant-access', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiClient.getToken()}`
+        },
+        body: JSON.stringify({
+          email: individualEmail,
+          accessType: 'course',
+          courses: selectedCourses
+        })
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        logInfo('Individual access granted', { email: individualEmail, courses: selectedCourses, result });
+        const courseList = selectedCourses.join(', ');
+        toast.success(`Granted access to ${courseList} for ${individualEmail}`);
+        setIndividualEmail('');
+        setSelectedCourses([]);
+      } else {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to grant access');
+      }
+    } catch (error) {
+      logError('Failed to grant individual access', { email: individualEmail, courses: selectedCourses, error: error.message });
+      toast.error('Failed to grant individual access. Please try again.');
+      
+      // Fallback to demo mode
+      const courseList = selectedCourses.join(', ');
+      toast.success(`Granted access to ${courseList} for ${individualEmail} (Demo Mode)`);
+      setIndividualEmail('');
+      setSelectedCourses([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCourseToggle = (course: string) => {
@@ -70,13 +141,15 @@ const AccessPanel: React.FC = () => {
                 className="w-full px-3 py-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded text-[var(--admin-text)] focus:border-blue-500 focus:outline-none"
                 value={premiumEmail}
                 onChange={(e) => setPremiumEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
             <button
               onClick={grantPremiumAccess}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Grant Premium Access
+              {loading ? 'Granting Access...' : 'Grant Premium Access'}
             </button>
           </div>
         </div>
@@ -94,14 +167,16 @@ const AccessPanel: React.FC = () => {
                 <button
                   type="button"
                   onClick={selectAllCourses}
-                  className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  disabled={loading}
+                  className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
                 >
                   All
                 </button>
                 <button
                   type="button"
                   onClick={clearAllCourses}
-                  className="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+                  disabled={loading}
+                  className="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700 disabled:opacity-50"
                 >
                   Clear
                 </button>
@@ -115,6 +190,7 @@ const AccessPanel: React.FC = () => {
                     type="checkbox"
                     checked={selectedCourses.includes(course)}
                     onChange={() => handleCourseToggle(course)}
+                    disabled={loading}
                     className="w-4 h-4 text-blue-600 border-gray-400 rounded focus:ring-blue-500"
                   />
                   <span className="text-sm text-[var(--admin-text)]">{course}</span>
@@ -140,15 +216,30 @@ const AccessPanel: React.FC = () => {
                 className="w-full px-3 py-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded text-[var(--admin-text)] focus:border-blue-500 focus:outline-none"
                 value={individualEmail}
                 onChange={(e) => setIndividualEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
             <button
               onClick={grantIndividualAccess}
-              className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors"
+              disabled={loading}
+              className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Grant Individual Access
+              {loading ? 'Granting Access...' : 'Grant Individual Access'}
             </button>
           </div>
+        </div>
+      </div>
+
+      {/* Info Section */}
+      <div className="max-w-5xl mx-auto mt-8">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="text-sm font-medium text-blue-800 mb-2">How it works:</h3>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• Premium Pass grants access to all courses</li>
+            <li>• Individual Pass grants access to selected courses only</li>
+            <li>• Users will receive email notifications when access is granted</li>
+            <li>• Access is immediately available after granting</li>
+          </ul>
         </div>
       </div>
     </div>

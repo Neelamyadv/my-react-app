@@ -1,7 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Edit, Trash2, UserPlus, Mail, Phone, X, Plus, Minus } from 'lucide-react';
-import { User, Enrollment } from '../../lib/supabase';
+import { apiClient } from '../../lib/api';
+import { logError, logInfo } from '../../lib/logger';
 import toast from 'react-hot-toast';
+
+interface User {
+  id: number;
+  email: string;
+  name: string;
+  created_at: string;
+}
+
+interface Enrollment {
+  id: number;
+  course_name: string;
+  status: string;
+  enrolled_at: string;
+  completed_at?: string;
+  progress: number;
+}
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -38,11 +55,30 @@ const UserManagement: React.FC = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const userData: User[] = JSON.parse(localStorage.getItem('zyntiq_users') || '[]');
-      setUsers(userData);
+      
+      // Try to get users from backend API
+      const response = await fetch('/api/admin/users', {
+        headers: {
+          'Authorization': `Bearer ${apiClient.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUsers(result.data || []);
+      } else {
+        throw new Error('Failed to fetch users from API');
+      }
     } catch (error) {
-      console.error('Error loading users:', error);
+      logError('Error loading users', { error: error.message });
       toast.error('Failed to load users');
+      
+      // Fallback to demo data
+      const demoUsers: User[] = [
+        { id: 1, email: 'demo@example.com', name: 'Demo User', created_at: new Date().toISOString() },
+        { id: 2, email: 'test@example.com', name: 'Test User', created_at: new Date().toISOString() }
+      ];
+      setUsers(demoUsers);
     } finally {
       setLoading(false);
     }
@@ -69,13 +105,22 @@ const UserManagement: React.FC = () => {
     setShowEditModal(true);
   };
 
-  const loadUserEnrollments = (userId: string) => {
+  const loadUserEnrollments = async (userId: number) => {
     try {
-      const enrollmentData: Enrollment[] = JSON.parse(localStorage.getItem('zyntiq_enrollments') || '[]');
-      const userEnrollments = enrollmentData.filter(enrollment => enrollment.user_id === userId);
-      setUserEnrollments(userEnrollments);
+      const response = await fetch(`/api/admin/users/${userId}/enrollments`, {
+        headers: {
+          'Authorization': `Bearer ${apiClient.getToken()}`
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUserEnrollments(result.data || []);
+      } else {
+        throw new Error('Failed to fetch user enrollments');
+      }
     } catch (error) {
-      console.error('Error loading user enrollments:', error);
+      logError('Error loading user enrollments', { userId, error: error.message });
       setUserEnrollments([]);
     }
   };

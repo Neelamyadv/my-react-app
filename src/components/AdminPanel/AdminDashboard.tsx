@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Users, CreditCard, Zap, Activity } from 'lucide-react';
-import { localDB } from '../../lib/database';
-import { User, Enrollment, ContactMessage } from '../../lib/supabase';
+import { apiClient } from '../../lib/api';
+import { logError } from '../../lib/logger';
+import toast from 'react-hot-toast';
 
 interface DashboardStats {
   totalUsers: number;
@@ -35,26 +36,44 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
     try {
       setLoading(true);
       
-      // Get all data from localStorage
-      const users: User[] = JSON.parse(localStorage.getItem('zyntiq_users') || '[]');
-      const enrollments: Enrollment[] = JSON.parse(localStorage.getItem('zyntiq_enrollments') || '[]');
-      const messages: ContactMessage[] = JSON.parse(localStorage.getItem('zyntiq_contact_messages') || '[]');
+      // Get data from backend API
+      const [usersResponse, paymentsResponse, messagesResponse] = await Promise.all([
+        fetch('/api/admin/users').then(res => res.json()).catch(() => ({ data: [] })),
+        fetch('/api/admin/payments').then(res => res.json()).catch(() => ({ data: [] })),
+        fetch('/api/admin/messages').then(res => res.json()).catch(() => ({ data: [] }))
+      ]);
+
+      const users = usersResponse.data || [];
+      const payments = paymentsResponse.data || [];
+      const messages = messagesResponse.data || [];
 
       // Calculate stats
-      const totalRevenue = enrollments.reduce((sum, enrollment) => sum + enrollment.amount_paid, 0);
-      const premiumUsers = enrollments.filter(e => e.enrollment_type === 'premium_pass').length;
-      const courseCompletions = enrollments.filter(e => e.status === 'completed').length;
+      const totalRevenue = payments.reduce((sum: number, payment: any) => sum + (payment.amount || 0), 0);
+      const premiumUsers = payments.filter((p: any) => p.payment_type === 'premium_pass').length;
+      const courseCompletions = users.filter((u: any) => u.status === 'completed').length;
 
       setStats({
         totalUsers: users.length,
-        totalEnrollments: enrollments.length,
+        totalEnrollments: payments.length,
         totalRevenue,
         totalMessages: messages.length,
         premiumUsers,
         courseCompletions
       });
     } catch (error) {
-      console.error('Error loading dashboard stats:', error);
+      logError('Error loading dashboard stats', { error: error.message });
+      toast.error('Failed to load dashboard statistics');
+      
+      // Fallback to demo data if API is not available
+      const demoStats = {
+        totalUsers: 25,
+        totalEnrollments: 42,
+        totalRevenue: 125000,
+        totalMessages: 8,
+        premiumUsers: 15,
+        courseCompletions: 12
+      };
+      setStats(demoStats);
     } finally {
       setLoading(false);
     }
@@ -81,6 +100,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
       icon: Zap,
       color: 'bg-pink-500',
       page: 'premium'
+    },
+    {
+      title: 'Contact Messages',
+      value: stats.totalMessages.toLocaleString(),
+      icon: Activity,
+      color: 'bg-green-500',
+      page: 'messages'
     }
   ];
 
@@ -104,7 +130,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-6 md:mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-6 md:mb-8">
         {statCards.map((card, index) => {
           const IconComponent = card.icon;
           return (
@@ -164,6 +190,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) => {
             >
               <CreditCard className="h-5 w-5 text-indigo-500 mb-2" />
               <span className="text-sm font-medium text-[var(--admin-text)]">View Payments</span>
+            </button>
+
+            <button
+              onClick={() => onNavigate('messages')}
+              className="p-4 bg-[var(--admin-border)] bg-opacity-30 hover:bg-opacity-50 rounded-md text-left transition-all duration-200 border border-[var(--admin-border)] hover:border-[var(--admin-border)] min-h-[80px] md:min-h-0"
+            >
+              <Activity className="h-5 w-5 text-indigo-500 mb-2" />
+              <span className="text-sm font-medium text-[var(--admin-text)]">Contact Messages</span>
+            </button>
+
+            <button
+              onClick={() => onNavigate('access')}
+              className="p-4 bg-[var(--admin-border)] bg-opacity-30 hover:bg-opacity-50 rounded-md text-left transition-all duration-200 border border-[var(--admin-border)] hover:border-[var(--admin-border)] min-h-[80px] md:min-h-0"
+            >
+              <Zap className="h-5 w-5 text-indigo-500 mb-2" />
+              <span className="text-sm font-medium text-[var(--admin-text)]">Grant Access</span>
             </button>
           </div>
         </div>

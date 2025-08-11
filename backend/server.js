@@ -15,6 +15,7 @@ const { logger } = require('./config/logger');
 const authRoutes = require('./routes/auth');
 const paymentRoutes = require('./routes/payments');
 const contactRoutes = require('./routes/contact');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -96,6 +97,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Serve static files from the React app build directory
 if (process.env.NODE_ENV === 'production') {
