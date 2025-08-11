@@ -4,6 +4,7 @@ import { PaymentData, PaymentType, PRICING } from '../lib/razorpay';
 import { useAuth } from '../lib/auth';
 import { localDB } from '../lib/database';
 import toast from 'react-hot-toast';
+import { logError, logInfo } from '../lib/logger';
 
 export const usePayment = () => {
   const { user } = useAuth();
@@ -28,7 +29,7 @@ export const usePayment = () => {
       userPhone: user.phone
     };
 
-    console.log('Initiating course payment:', paymentData);
+    logInfo('Initiating course payment', { courseId, courseName });
     setCurrentPaymentData(paymentData);
     setIsPaymentModalOpen(true);
   };
@@ -49,7 +50,7 @@ export const usePayment = () => {
       userPhone: user.phone
     };
 
-    console.log('Initiating premium pass payment:', paymentData);
+    logInfo('Initiating premium pass payment');
     setCurrentPaymentData(paymentData);
     setIsPaymentModalOpen(true);
   };
@@ -60,7 +61,7 @@ export const usePayment = () => {
   };
 
   const handlePaymentSuccess = async (paymentResponse: any) => {
-    console.log('Payment successful:', paymentResponse);
+    logInfo('Payment successful', { paymentId: paymentResponse.razorpay_payment_id });
     
     if (!user || !currentPaymentData) {
       toast.error('Payment processing error. Please contact support.');
@@ -80,12 +81,12 @@ export const usePayment = () => {
         });
 
         if (error) {
-          console.error('Failed to create enrollment:', error);
+          logError('Failed to create enrollment', error);
           toast.error('Payment successful but enrollment failed. Please contact support.');
           return;
         }
 
-        console.log('Course enrollment created:', enrollment);
+        logInfo('Course enrollment created', { enrollmentId: enrollment?.id });
         
       } else if (currentPaymentData.type === PaymentType.PREMIUM_PASS) {
         // For premium pass, create a special enrollment record
@@ -99,7 +100,7 @@ export const usePayment = () => {
         });
 
         if (error) {
-          console.error('Failed to create premium enrollment:', error);
+          logError('Failed to create premium enrollment', error);
           toast.error('Payment successful but premium activation failed. Please contact support.');
           return;
         }
@@ -156,7 +157,7 @@ export const usePayment = () => {
       }, 2000);
 
     } catch (error) {
-      console.error('Post-payment processing error:', error);
+      logError('Post-payment processing error', error);
       toast.error('Payment successful but there was an issue processing your enrollment. Please contact support.');
     }
   };

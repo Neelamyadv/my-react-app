@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://accounts.google.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' https://api.razorpay.com https://accounts.google.com;
+      frame-src https://checkout.razorpay.com https://accounts.google.com;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+    ">
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://checkout.razorpay.com">
+    
+    <title>Zyntiq - Online Learning Platform</title>
+    
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="Transform your career with Zyntiq's comprehensive online courses. Learn from industry experts and master in-demand skills.">
+    <meta name="keywords" content="online learning, courses, web development, UI/UX design, digital marketing, programming">
+    <meta name="author" content="Zyntiq">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Zyntiq - Online Learning Platform">
+    <meta property="og:description" content="Transform your career with comprehensive online courses from industry experts.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zyntiq.in">
+    <meta property="og:image" content="/images/og-image.png">
+    
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Zyntiq - Online Learning Platform">
+    <meta name="twitter:description" content="Transform your career with comprehensive online courses from industry experts.">
+    <meta name="twitter:image" content="/images/og-image.png">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

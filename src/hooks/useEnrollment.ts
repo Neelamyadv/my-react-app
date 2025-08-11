@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { localDB } from '../lib/database';
 import { useAuth } from '../lib/auth';
+import { logError, logDebug } from '../lib/logger';
 
 interface Enrollment {
   id: string;
@@ -31,25 +32,25 @@ export const useEnrollment = () => {
 
     try {
       setLoading(true);
-      console.log('Loading enrollments for user:', user.id);
+      logDebug('Loading enrollments for user', { userId: user.id });
       
       const { enrollments: userEnrollments, error } = await localDB.getUserEnrollments(user.id);
       if (error) {
-        console.error('Failed to load enrollments:', error);
+        logError('Failed to load enrollments', error);
         return;
       }
       
-      console.log('Loaded enrollments:', userEnrollments);
+      logDebug('Loaded enrollments', { count: userEnrollments.length });
       setEnrollments(userEnrollments);
 
       // Check for premium pass
       const premiumEnrollment = userEnrollments.find(e => e.enrollment_type === 'premium_pass');
       const hasPremium = !!premiumEnrollment;
       setHasPremiumPass(hasPremium);
-      console.log('Premium status updated:', hasPremium, premiumEnrollment);
+      logDebug('Premium status updated', { hasPremium });
       
     } catch (error) {
-      console.error('Error loading enrollments:', error);
+      logError('Error loading enrollments', error);
     } finally {
       setLoading(false);
     }
@@ -62,7 +63,7 @@ export const useEnrollment = () => {
   // Listen for enrollment updates
   useEffect(() => {
     const handleEnrollmentUpdate = () => {
-      console.log('Enrollment update event received, refreshing enrollments...');
+      logDebug('Enrollment update event received, refreshing enrollments');
       loadUserEnrollments();
     };
 
@@ -72,7 +73,7 @@ export const useEnrollment = () => {
     // Also listen for storage changes (in case of multiple tabs)
     window.addEventListener('storage', (e) => {
       if (e.key === 'uplern_enrollments') {
-        console.log('Storage change detected for enrollments');
+        logDebug('Storage change detected for enrollments');
         loadUserEnrollments();
       }
     });
@@ -90,7 +91,7 @@ export const useEnrollment = () => {
       const { enrolled } = await localDB.isUserEnrolledInCourse(user.id, courseId);
       return enrolled;
     } catch (error) {
-      console.error('Error checking course enrollment:', error);
+      logError('Error checking course enrollment', error);
       return false;
     }
   };
@@ -125,7 +126,7 @@ export const useEnrollment = () => {
     try {
       const { error } = await localDB.updateEnrollmentProgress(enrollmentId, progress);
       if (error) {
-        console.error('Failed to update progress:', error);
+        logError('Failed to update progress', error);
         return;
       }
       
@@ -138,7 +139,7 @@ export const useEnrollment = () => {
         )
       );
     } catch (error) {
-      console.error('Error updating progress:', error);
+      logError('Error updating progress', error);
     }
   };
 
