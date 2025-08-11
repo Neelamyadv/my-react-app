@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, CreditCard, Shield, CheckCircle, AlertCircle } from 'lucide-react';
-import { razorpayService, RazorpayService, PaymentData, PRICING } from '../../lib/razorpay';
+import { razorpayService, PRICING, PaymentData } from '../../lib/razorpay';
 import { useAuth } from '../../lib/auth';
 import toast from 'react-hot-toast';
 
@@ -37,7 +37,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       const userPhone = user.phone || '';
 
       const paymentOptions = {
-        amount: RazorpayService.formatAmount(paymentData.amount),
+        amount: paymentData.amount,
         currency: 'INR',
         name: paymentData.itemName,
         description: `Purchase of ${paymentData.itemName} from Zyntiq`,
