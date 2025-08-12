@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import BenefitsSection from './components/BenefitsSection';
 import OfferingsSection from './components/OfferingsSection';
+import TrainingSection from './components/Trainingsection';
 import CoursesSection from './components/CoursesSection';
 import TestimonialsSection from './components/TestimonialsSection';
 import PricingSection from './components/PricingSection';
@@ -65,6 +66,7 @@ const AppContent = () => {
             <HeroSection />
             <BenefitsSection />
             <OfferingsSection />
+            <TrainingSection />
             <CoursesSection />
             <TestimonialsSection />
             <PricingSection />
@@ -88,6 +90,7 @@ const AppContent = () => {
         <Route path="/support" element={<SupportPage />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/access" element={<AccessPanel />} />
+        <Route path="/live-training" element={<Training />} />
       </Routes>
       {footer}
       
