@@ -246,7 +246,7 @@ const CertificateSection = () => {
           {/* This is a placeholder for your certificate image. 
               You can replace the src attribute with the URL of your actual certificate design. */}
           <img
-            src="images\demo cert.png" // Replace with your image path
+            src="images/demo cert.png" // Replace with your image path
             alt="Certificate of Completion"
             className="w-full max-w-2xl rounded-xl shadow-2xl transition-transform duration-300 hover:scale-105"
           />
@@ -343,6 +343,10 @@ const VideoCollageSection = () => {
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                    onError={(e) => {
+                      console.error('Video failed to load:', video.title);
+                      e.target.style.display = 'none';
+                    }}
                   ></iframe>
                 </div>
               </div>
