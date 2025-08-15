@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { vacTopics } from "../../src/vacConfig";
+import { vacTopics } from "../../vacConfig";
 
 
 export default function VAC_TopicSelect() {
