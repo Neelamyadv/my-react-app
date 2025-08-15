@@ -222,6 +222,15 @@ const EbookStorePage = () => {
     return false;
   };
 
+  // Check if user has access to all eBooks bundle
+  const hasAllEbooksAccess = () => {
+    if (!user) return false;
+    if (hasPremiumPass) return true;
+    
+    // Check if user has purchased the all-ebooks bundle
+    return enrolledCourses.some(course => course.id === 'all-ebooks-bundle');
+  };
+
   const handleEbookPurchase = (ebookId: string) => {
     if (!user) {
       toast.error('Please login to purchase eBooks');
@@ -256,6 +265,22 @@ const EbookStorePage = () => {
       courseName: bundle.title,
       price: bundle.price,
       originalPrice: bundle.originalPrice,
+      type: PaymentType.EBOOK_BUNDLE
+    });
+  };
+
+  const handleAllEbooksPurchase = () => {
+    if (!user) {
+      toast.error('Please login to purchase the All eBooks Bundle');
+      navigate('/login');
+      return;
+    }
+
+    initiateCoursePayment({
+      courseId: 'all-ebooks-bundle',
+      courseName: 'Complete All eBooks Collection',
+      price: 495,
+      originalPrice: 2691,
       type: PaymentType.EBOOK_BUNDLE
     });
   };
@@ -317,6 +342,21 @@ const EbookStorePage = () => {
     }
   };
 
+  const handleAllEbooksAccess = () => {
+    if (!user) {
+      toast.error('Please login to access the All eBooks Bundle');
+      navigate('/login');
+      return;
+    }
+
+    if (hasAllEbooksAccess()) {
+      // Navigate to all eBooks viewer
+      navigate('/all-ebooks-viewer');
+    } else {
+      toast.error('Please purchase the All eBooks Bundle to access it');
+    }
+  };
+
   return (
     <div className="min-h-screen yellow-gradient-bg relative overflow-hidden">
       {/* 🎨 Background Decorative Elements */}
@@ -351,6 +391,104 @@ const EbookStorePage = () => {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* 🎯 All eBooks Bundle Section */}
+        <div className="mb-12">
+          <div className="glass-card-dark rounded-3xl shadow-lg p-8 relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl"></div>
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-gradient-to-tr from-blue-400/20 to-cyan-400/20 rounded-full blur-xl"></div>
+            </div>
+
+            <div className="relative z-10">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full text-sm font-medium mb-4">
+                  <span className="text-lg">🎯</span>
+                  <span>SPECIAL OFFER</span>
+                </div>
+                <h2 className="text-4xl font-bold text-gray-900 mb-4">Complete All eBooks Collection</h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Get access to all 9 comprehensive eBooks at an incredible price! 
+                  Perfect for learners who want to master multiple skills.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                {/* Left: eBook Covers Grid */}
+                <div className="lg:col-span-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">What You'll Get:</h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {ebookData.map((ebook, index) => (
+                      <div key={ebook.id} className="relative group">
+                        <img
+                          src={ebook.image}
+                          alt={ebook.title}
+                          className="w-full h-20 object-cover rounded-lg shadow-md group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <span className="text-white text-xs font-medium text-center px-1">
+                            {ebook.title}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right: Pricing and CTA */}
+                <div className="text-center lg:text-left">
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
+                    <div className="mb-4">
+                      <span className="text-4xl font-bold text-gray-900">₹495</span>
+                      <span className="text-xl text-gray-500 line-through ml-2">₹2691</span>
+                    </div>
+                    <div className="text-green-600 font-semibold mb-4">
+                      Save ₹2196 (82% OFF!)
+                    </div>
+                    
+                    <div className="space-y-2 mb-6 text-sm text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>All 9 eBooks included</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>Lifetime access</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>Instant download access</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                        <span>Best value for money</span>
+                      </div>
+                    </div>
+
+                    {hasAllEbooksAccess() ? (
+                      <button
+                        onClick={handleAllEbooksAccess}
+                        className="w-full bg-green-600 text-white py-4 rounded-xl font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <Eye className="w-5 h-5" />
+                        Access All eBooks
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleAllEbooksPurchase}
+                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <span className="text-xl">🎯</span>
+                        Buy All eBooks - ₹495
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
           <div className="glass-card-dark rounded-xl p-1 shadow-sm">

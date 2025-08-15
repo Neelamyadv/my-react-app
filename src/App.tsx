@@ -37,6 +37,7 @@ import VAC_Quiz from "./components/ValueaddedPage/VAC_Quiz";
 import VAC_Certificate from "./components/ValueaddedPage/VAC_Certificate";
 import EbookStorePage from './components/EbookStore/EbookStorePage';
 import EbookViewer from './components/EbookStore/EbookViewer';
+import AllEbooksViewer from './components/EbookStore/AllEbooksViewer';
 import ContentProtection from './components/ContentProtection';
 
 
@@ -112,6 +113,7 @@ const AppContent = () => {
         <Route path="/value-certificate/certificate" element={<VAC_Certificate />} />
         <Route path="/ebooks" element={<EbookStorePage />} />
         <Route path="/ebook-viewer/:ebookId" element={<EbookViewer />} />
+        <Route path="/all-ebooks-viewer" element={<AllEbooksViewer />} />
         
       </Routes>
       {footer}
