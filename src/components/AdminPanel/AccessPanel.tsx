@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Mail, BookOpen, GraduationCap, Users, Plus, CheckCircle, Eye } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, BookOpen, GraduationCap, Users, Plus, CheckCircle, Eye, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
+import AdminAuthGuard from '../Auth/AdminAuthGuard';
 
 // Course data
 const courses = [
@@ -44,6 +45,25 @@ const AccessPanel: React.FC = () => {
   // Premium pass states
   const [premiumEmail, setPremiumEmail] = useState('');
   const [premiumUserName, setPremiumUserName] = useState('');
+
+  // Access control
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
+
+  // Access control functions
+  useEffect(() => {
+    const accessPanelAccess = sessionStorage.getItem('access_panel_access') === 'true';
+    setHasAccess(accessPanelAccess);
+  }, []);
+
+  const handleAccessGranted = () => {
+    setHasAccess(true);
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('access_panel_access');
+    setHasAccess(false);
+    toast.success('Logged out successfully');
+  };
 
   // Validation function
   const validateEmail = (email: string) => {
@@ -196,19 +216,32 @@ const AccessPanel: React.FC = () => {
     setPremiumUserName('');
   };
 
+  if (!hasAccess) {
+    return <AdminAuthGuard onAccessGranted={handleAccessGranted} panelType="access" />;
+  }
+
   return (
     <div className="min-h-screen bg-[var(--admin-bg)] p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <a
+              href="/admin"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+            >
+              ← Back to Admin Panel
+            </a>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
           <h1 className="text-3xl font-bold text-[var(--admin-text)] mb-2">Access Panel</h1>
           <p className="text-[var(--admin-text-secondary)] mb-4">Grant access to users by email - perfect for HR and managers</p>
-          <a
-            href="/admin"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
-          >
-            ← Back to Admin Panel
-          </a>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

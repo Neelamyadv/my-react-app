@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, MessageSquare, BarChart3, Settings, LogOut, CreditCard, Menu, X, BookOpen, GraduationCap } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import UserManagement from './UserManagement';
@@ -6,11 +6,13 @@ import ContactMessages from './ContactMessages';
 import PaymentManagement from './PaymentManagement';
 import EbookAccessManagement from './EbookAccessManagement';
 import CourseAccessManagement from './CourseAccessManagement';
+import AdminAuthGuard from '../Auth/AdminAuthGuard';
 import { useAuth } from '../../lib/auth';
 
 const AdminPanel: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
   const { signOut } = useAuth();
 
   const navigation = [
@@ -27,8 +29,21 @@ const AdminPanel: React.FC = () => {
     setCurrentPage(pageId);
   };
 
+  useEffect(() => {
+    // Check if user has admin access
+    const adminAccess = sessionStorage.getItem('admin_access') === 'true';
+    setHasAccess(adminAccess);
+  }, []);
+
+  const handleAccessGranted = () => {
+    setHasAccess(true);
+  };
+
   const handleSignOut = async () => {
     try {
+      // Clear admin access
+      sessionStorage.removeItem('admin_access');
+      setHasAccess(false);
       await signOut();
       window.location.href = '/';
     } catch (error) {
@@ -274,4 +289,24 @@ const AdminPanel: React.FC = () => {
   );
 };
 
-export default AdminPanel;
+// Wrap the component with authentication guard
+const AdminPanelWithAuth: React.FC = () => {
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
+
+  useEffect(() => {
+    const adminAccess = sessionStorage.getItem('admin_access') === 'true';
+    setHasAccess(adminAccess);
+  }, []);
+
+  const handleAccessGranted = () => {
+    setHasAccess(true);
+  };
+
+  if (!hasAccess) {
+    return <AdminAuthGuard onAccessGranted={handleAccessGranted} panelType="admin" />;
+  }
+
+  return <AdminPanel />;
+};
+
+export default AdminPanelWithAuth;

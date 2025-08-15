@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { ADMIN_PASSWORDS } from '../../config/adminPasswords';
 
 interface AnalyticsAccessControlProps {
   onAccessGranted: () => void;
@@ -21,9 +22,8 @@ const AnalyticsAccessControl: React.FC<AnalyticsAccessControlProps> = ({ onAcces
 
     setIsLoading(true);
     
-    // Simple password check - you can change this password
-    // In production, this should be more secure
-    const correctPassword = 'hr2024'; // Change this to your desired password
+    // Password from configuration
+    const correctPassword = ADMIN_PASSWORDS.ANALYTICS;
     
     setTimeout(() => {
       if (password === correctPassword) {
