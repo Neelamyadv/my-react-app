@@ -27,6 +27,21 @@ const UserManagement: React.FC = () => {
     'Premium Pass'
   ]);
 
+  const filterUsers = useCallback(() => {
+    if (!searchTerm) {
+      setFilteredUsers(users);
+      return;
+    }
+
+    const filtered = users.filter(user =>
+      user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.phone.includes(searchTerm)
+    );
+    setFilteredUsers(filtered);
+  }, [users, searchTerm]);
+
   useEffect(() => {
     console.log('UserManagement: Component mounted');
     loadUsers();
@@ -50,21 +65,6 @@ const UserManagement: React.FC = () => {
       setLoading(false);
     }
   };
-
-  const filterUsers = useCallback(() => {
-    if (!searchTerm) {
-      setFilteredUsers(users);
-      return;
-    }
-
-    const filtered = users.filter(user =>
-      user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.includes(searchTerm)
-    );
-    setFilteredUsers(filtered);
-  }, [users, searchTerm]);
 
   const handleEditUser = (user: User) => {
     setSelectedUser(user);

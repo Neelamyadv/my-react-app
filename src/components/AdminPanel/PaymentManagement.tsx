@@ -24,6 +24,29 @@ const PaymentManagement: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
 
+  const filterPayments = useCallback(() => {
+    let filtered = payments;
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(payment => {
+        const user = users.find(u => u.id === payment.user_id);
+        const userName = user ? `${user.first_name} ${user.last_name}` : '';
+        
+        return payment.payment_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               (payment.course_name && payment.course_name.toLowerCase().includes(searchTerm.toLowerCase()));
+      });
+    }
+
+    // Type filter
+    if (typeFilter !== 'all') {
+      filtered = filtered.filter(payment => payment.payment_type === typeFilter);
+    }
+
+    setFilteredPayments(filtered);
+  }, [payments, searchTerm, typeFilter, users]);
+
   useEffect(() => {
     console.log('PaymentManagement: Component mounted');
     loadData();
@@ -64,29 +87,6 @@ const PaymentManagement: React.FC = () => {
       setLoading(false);
     }
   };
-
-  const filterPayments = useCallback(() => {
-    let filtered = payments;
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(payment => {
-        const user = users.find(u => u.id === payment.user_id);
-        const userName = user ? `${user.first_name} ${user.last_name}` : '';
-        
-        return payment.payment_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-               (payment.course_name && payment.course_name.toLowerCase().includes(searchTerm.toLowerCase()));
-      });
-    }
-
-    // Type filter
-    if (typeFilter !== 'all') {
-      filtered = filtered.filter(payment => payment.payment_type === typeFilter);
-    }
-
-    setFilteredPayments(filtered);
-  }, [payments, searchTerm, typeFilter, users]);
 
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId);

@@ -11,6 +11,21 @@ const ContactMessages: React.FC = () => {
   const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null);
   const [showModal, setShowModal] = useState(false);
 
+  const filterMessages = useCallback(() => {
+    if (!searchTerm) {
+      setFilteredMessages(messages);
+      return;
+    }
+
+    const filtered = messages.filter(message =>
+      message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      message.phone.includes(searchTerm) ||
+      message.message.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredMessages(filtered);
+  }, [messages, searchTerm]);
+
   useEffect(() => {
     console.log('ContactMessages: Component mounted');
     loadMessages();
@@ -39,21 +54,6 @@ const ContactMessages: React.FC = () => {
       setLoading(false);
     }
   };
-
-  const filterMessages = useCallback(() => {
-    if (!searchTerm) {
-      setFilteredMessages(messages);
-      return;
-    }
-
-    const filtered = messages.filter(message =>
-      message.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      message.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      message.phone.includes(searchTerm) ||
-      message.message.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredMessages(filtered);
-  }, [messages, searchTerm]);
 
   const handleDeleteMessage = (messageId: string) => {
     if (window.confirm('Are you sure you want to delete this message? This action cannot be undone.')) {
