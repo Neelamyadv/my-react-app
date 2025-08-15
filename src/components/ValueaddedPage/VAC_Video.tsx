@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { vacTopics } from "../vacConfig";
+import { vacTopics } from "../../vacConfig";
 import ReactPlayer from "react-player";
 
 export default function VAC_Video() {
