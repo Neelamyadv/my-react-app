@@ -28,6 +28,7 @@ const UserManagement: React.FC = () => {
   ]);
 
   useEffect(() => {
+    console.log('UserManagement: Component mounted');
     loadUsers();
   }, []);
 
@@ -38,7 +39,9 @@ const UserManagement: React.FC = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
+      console.log('UserManagement: Loading users from localStorage');
       const userData: User[] = JSON.parse(localStorage.getItem('zyntiq_users') || '[]');
+      console.log('UserManagement: Loaded users:', userData);
       setUsers(userData);
     } catch (error) {
       console.error('Error loading users:', error);
@@ -269,6 +272,7 @@ const UserManagement: React.FC = () => {
   };
 
   if (loading) {
+    console.log('UserManagement: Showing loading state');
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -276,6 +280,7 @@ const UserManagement: React.FC = () => {
     );
   }
 
+  console.log('UserManagement: Rendering component with', filteredUsers.length, 'users');
   return (
     <div className="p-4 md:p-6 max-w-7xl mx-auto bg-[var(--admin-bg)] min-h-screen">
       <div className="flex items-center justify-between mb-6">

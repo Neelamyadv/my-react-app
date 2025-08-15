@@ -25,6 +25,7 @@ const PaymentManagement: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('PaymentManagement: Component mounted');
     loadData();
   }, []);
 
@@ -35,8 +36,11 @@ const PaymentManagement: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
+      console.log('PaymentManagement: Loading data from localStorage');
       const enrollmentData: Enrollment[] = JSON.parse(localStorage.getItem('zyntiq_enrollments') || '[]');
       const userData: User[] = JSON.parse(localStorage.getItem('zyntiq_users') || '[]');
+      console.log('PaymentManagement: Loaded enrollments:', enrollmentData);
+      console.log('PaymentManagement: Loaded users:', userData);
       
       // Convert enrollments to payments (since payments are derived from enrollments in this demo)
       const paymentData: Payment[] = enrollmentData.map(enrollment => ({
@@ -50,6 +54,7 @@ const PaymentManagement: React.FC = () => {
         status: 'success' // All payments are successful in this demo
       }));
       
+      console.log('PaymentManagement: Converted to payments:', paymentData);
       setPayments(paymentData);
       setUsers(userData);
     } catch (error) {

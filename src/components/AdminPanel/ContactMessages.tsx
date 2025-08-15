@@ -12,6 +12,7 @@ const ContactMessages: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    console.log('ContactMessages: Component mounted');
     loadMessages();
   }, []);
 
@@ -22,11 +23,14 @@ const ContactMessages: React.FC = () => {
   const loadMessages = async () => {
     try {
       setLoading(true);
+      console.log('ContactMessages: Loading messages from localStorage');
       const messageData: ContactMessage[] = JSON.parse(localStorage.getItem('zyntiq_contact_messages') || '[]');
+      console.log('ContactMessages: Loaded messages:', messageData);
       // Sort messages by creation date (newest first)
       const sortedMessages = messageData.sort((a, b) => 
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );
+      console.log('ContactMessages: Sorted messages:', sortedMessages);
       setMessages(sortedMessages);
     } catch (error) {
       console.error('Error loading messages:', error);
