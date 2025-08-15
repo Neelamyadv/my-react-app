@@ -115,7 +115,17 @@ const EbookViewer = () => {
     
     // Check if user has enrolled in the corresponding course
     const courseId = ebookId?.replace('-ebook', '');
-    return enrolledCourses.some(course => course.id === courseId);
+    const hasCourseEnrollment = enrolledCourses.some(course => course.id === courseId);
+    if (hasCourseEnrollment) return true;
+    
+    // Check if user has manual access granted (this would be from the backend in real app)
+    // For now, we'll simulate this with localStorage
+    if (ebookId) {
+      const manualAccess = localStorage.getItem(`ebook_access_${user.email}_${ebookId}`);
+      return manualAccess === 'true';
+    }
+    
+    return false;
   };
 
   if (!ebook) {

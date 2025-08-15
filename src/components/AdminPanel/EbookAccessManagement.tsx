@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, UserCheck, UserX, BookOpen, Download, Eye, Lock, Unlock, Plus, Users, BookOpenCheck } from 'lucide-react';
+import { Search, Filter, UserCheck, UserX, BookOpen, Download, Eye, Lock, Unlock, Plus, Users, BookOpenCheck, Mail } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 
 interface EbookAccess {
@@ -34,15 +34,6 @@ const ebookData: EbookData[] = [
   { id: 'business-analytics-ebook', title: 'Business Analytics & Insights', category: 'Business', price: 345 },
   { id: 'mobile-development-ebook', title: 'Mobile App Development', category: 'Programming', price: 345 },
   { id: 'cybersecurity-ebook', title: 'Cybersecurity Fundamentals', category: 'Programming', price: 345 }
-];
-
-// Mock user data
-const mockUsers = [
-  { id: 'user1', email: 'john@example.com', name: 'John Doe' },
-  { id: 'user2', email: 'jane@example.com', name: 'Jane Smith' },
-  { id: 'user3', email: 'bob@example.com', name: 'Bob Johnson' },
-  { id: 'user4', email: 'alice@example.com', name: 'Alice Brown' },
-  { id: 'user5', email: 'mike@example.com', name: 'Mike Wilson' }
 ];
 
 // Mock access data
@@ -93,11 +84,13 @@ const EbookAccessManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'purchased' | 'manual' | 'premium'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
-  const [selectedUser, setSelectedUser] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
   const [selectedEbooks, setSelectedEbooks] = useState<string[]>([]);
   const [showGrantModal, setShowGrantModal] = useState(false);
   const [grantType, setGrantType] = useState<'single' | 'multiple' | 'all'>('single');
   const [selectedAccess, setSelectedAccess] = useState<EbookAccess | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Filter data based on search and filters
   const filterData = useCallback(() => {
@@ -131,14 +124,23 @@ const EbookAccessManagement = () => {
     filterData();
   }, [filterData]);
 
-  const handleGrantAccess = () => {
-    if (!selectedUser) {
-      alert('Please select a user');
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleGrantAccess = async () => {
+    // Validate email
+    if (!userEmail || !validateEmail(userEmail)) {
+      alert('Please enter a valid email address');
       return;
     }
 
-    const userData = mockUsers.find(u => u.id === selectedUser);
-    if (!userData) return;
+    // Validate name
+    if (!userName.trim()) {
+      alert('Please enter the user name');
+      return;
+    }
 
     let ebooksToGrant: string[] = [];
 
@@ -158,27 +160,52 @@ const EbookAccessManagement = () => {
       ebooksToGrant = ebookData.map(ebook => ebook.id);
     }
 
-    const newAccesses: EbookAccess[] = ebooksToGrant.map(ebookId => {
-      const ebook = ebookData.find(e => e.id === ebookId);
-      return {
-        id: Date.now().toString() + Math.random(),
-        userId: selectedUser,
-        userEmail: userData.email,
-        userName: userData.name,
-        ebookId: ebookId,
-        ebookTitle: ebook?.title || 'Unknown eBook',
-        accessType: 'manual',
-        grantedBy: user?.email || 'admin',
-        grantedAt: new Date().toISOString(),
-        isActive: true
-      };
-    });
+    setIsLoading(true);
 
-    setAccessData(prev => [...prev, ...newAccesses]);
-    setShowGrantModal(false);
-    setSelectedUser('');
-    setSelectedEbooks([]);
-    setGrantType('single');
+    try {
+      // Generate a unique user ID based on email
+      const userId = `user_${userEmail.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+      const newAccesses: EbookAccess[] = ebooksToGrant.map(ebookId => {
+        const ebook = ebookData.find(e => e.id === ebookId);
+        return {
+          id: Date.now().toString() + Math.random(),
+          userId: userId,
+          userEmail: userEmail.toLowerCase(),
+          userName: userName.trim(),
+          ebookId: ebookId,
+          ebookTitle: ebook?.title || 'Unknown eBook',
+          accessType: 'manual',
+          grantedBy: user?.email || 'admin',
+          grantedAt: new Date().toISOString(),
+          isActive: true
+        };
+      });
+
+             setAccessData(prev => [...prev, ...newAccesses]);
+       
+       // Store access in localStorage for the user (simulating backend storage)
+       ebooksToGrant.forEach(ebookId => {
+         localStorage.setItem(`ebook_access_${userEmail.toLowerCase()}_${ebookId}`, 'true');
+       });
+       
+       // Show success message
+       const ebookCount = ebooksToGrant.length;
+       const ebookNames = ebooksToGrant.map(id => ebookData.find(e => e.id === id)?.title).join(', ');
+       
+       alert(`✅ Access granted successfully!\n\nUser: ${userName}\nEmail: ${userEmail}\nAccess granted to: ${ebookCount} eBook${ebookCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${userEmail}", they will automatically see these eBooks in their account.`);
+      
+      // Reset form
+      setShowGrantModal(false);
+      setUserEmail('');
+      setUserName('');
+      setSelectedEbooks([]);
+      setGrantType('single');
+    } catch (error) {
+      alert('Error granting access. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRevokeAccess = (accessId: string) => {
@@ -191,12 +218,24 @@ const EbookAccessManagement = () => {
     setAccessData(prev => prev.map(access => 
       access.userId === userId ? { ...access, isActive: false } : access
     ));
+    
+    // Also remove from localStorage
+    const userAccesses = accessData.filter(access => access.userId === userId);
+    userAccesses.forEach(access => {
+      localStorage.removeItem(`ebook_access_${access.userEmail}_${access.ebookId}`);
+    });
   };
 
   const handleBulkActivate = (userId: string) => {
     setAccessData(prev => prev.map(access => 
       access.userId === userId ? { ...access, isActive: true } : access
     ));
+    
+    // Also add back to localStorage
+    const userAccesses = accessData.filter(access => access.userId === userId);
+    userAccesses.forEach(access => {
+      localStorage.setItem(`ebook_access_${access.userEmail}_${access.ebookId}`, 'true');
+    });
   };
 
   const toggleEbookSelection = (ebookId: string) => {
@@ -205,6 +244,14 @@ const EbookAccessManagement = () => {
         ? prev.filter(id => id !== ebookId)
         : [...prev, ebookId]
     );
+  };
+
+  const selectAllEbooks = () => {
+    setSelectedEbooks(ebookData.map(ebook => ebook.id));
+  };
+
+  const clearEbookSelection = () => {
+    setSelectedEbooks([]);
   };
 
   const getAccessTypeColor = (type: string) => {
@@ -240,7 +287,7 @@ const EbookAccessManagement = () => {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">eBook Access Management</h2>
-          <p className="text-gray-600">Manage user access to eBooks and learning materials</p>
+          <p className="text-gray-600">Grant access to users by email - they'll see eBooks when they login</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -473,27 +520,57 @@ const EbookAccessManagement = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User
+                  User Email <span className="text-red-500">*</span>
                 </label>
-                <select
-                  value={selectedUser}
-                  onChange={(e) => setSelectedUser(e.target.value)}
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    placeholder="Enter user's email address"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  User will see eBooks when they login with this email
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  User Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="Enter user's full name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Select a user</option>
-                  {mockUsers.map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name} ({user.email})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
               
               {(grantType === 'single' || grantType === 'multiple') && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {grantType === 'single' ? 'eBook' : 'eBooks'}
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      {grantType === 'single' ? 'Select eBook' : 'Select eBooks'}
+                    </label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={selectAllEbooks}
+                        className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        onClick={clearEbookSelection}
+                        className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
                     {ebookData.map((ebook) => (
                       <label key={ebook.id} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
@@ -518,7 +595,10 @@ const EbookAccessManagement = () => {
               {grantType === 'all' && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <p className="text-sm text-blue-800">
-                    This will grant access to all {ebookData.length} eBooks for the selected user.
+                    This will grant access to all {ebookData.length} eBooks for the user.
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">
+                    User will see all eBooks when they login with the provided email.
                   </p>
                 </div>
               )}
@@ -528,19 +608,32 @@ const EbookAccessManagement = () => {
               <button
                 onClick={() => {
                   setShowGrantModal(false);
-                  setSelectedUser('');
+                  setUserEmail('');
+                  setUserName('');
                   setSelectedEbooks([]);
                   setGrantType('single');
                 }}
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                disabled={isLoading}
               >
                 Cancel
               </button>
               <button
                 onClick={handleGrantAccess}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                disabled={isLoading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                Grant Access
+                {isLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Granting...
+                  </>
+                ) : (
+                  <>
+                    <UserCheck className="w-4 h-4" />
+                    Grant Access
+                  </>
+                )}
               </button>
             </div>
           </div>

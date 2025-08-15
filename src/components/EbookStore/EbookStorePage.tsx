@@ -202,10 +202,14 @@ const EbookStorePage = () => {
     const ebook = ebookData.find(e => e.id === ebookId);
     if (ebook) {
       // Check if user has enrolled in the corresponding course
-      return enrolledCourses.some(course => course.id === ebook.courseId);
+      const hasCourseEnrollment = enrolledCourses.some(course => course.id === ebook.courseId);
+      if (hasCourseEnrollment) return true;
     }
     
-    return false;
+    // Check if user has manual access granted (this would be from the backend in real app)
+    // For now, we'll simulate this with localStorage
+    const manualAccess = localStorage.getItem(`ebook_access_${user.email}_${ebookId}`);
+    return manualAccess === 'true';
   };
 
   // Check if user has access to bundle

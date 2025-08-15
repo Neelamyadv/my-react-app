@@ -132,7 +132,16 @@ const AllEbooksViewer = () => {
     if (hasPremiumPass) return true;
     
     // Check if user has purchased the all-ebooks bundle
-    return enrolledCourses.some(course => course.id === 'all-ebooks-bundle');
+    const hasBundleEnrollment = enrolledCourses.some(course => course.id === 'all-ebooks-bundle');
+    if (hasBundleEnrollment) return true;
+    
+    // Check if user has manual access to all eBooks (this would be from the backend in real app)
+    // For now, we'll simulate this with localStorage
+    const allEbookIds = ebookData.map(ebook => ebook.id);
+    const hasManualAccess = allEbookIds.every(ebookId => 
+      localStorage.getItem(`ebook_access_${user.email}_${ebookId}`) === 'true'
+    );
+    return hasManualAccess;
   };
 
   // Filter eBooks based on search and category
