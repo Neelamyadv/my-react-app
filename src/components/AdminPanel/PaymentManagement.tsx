@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Download, CreditCard } from 'lucide-react';
+import { Search, Download, CreditCard, BookOpen, GraduationCap, Users, Video, Award } from 'lucide-react';
 import { Enrollment, User } from '../../lib/supabase';
+import { PaymentType } from '../../lib/razorpay';
 import toast from 'react-hot-toast';
 
 // Define a Payment interface based on the enrollment data
@@ -10,9 +11,9 @@ interface Payment {
   user_id: string;
   amount: number;
   payment_date: string;
-  payment_type: 'course' | 'premium_pass';
+  payment_type: PaymentType;
   course_name?: string;
-  status: 'success';
+  status: 'success' | 'pending' | 'failed';
 }
 
 const PaymentManagement: React.FC = () => {
@@ -44,7 +45,7 @@ const PaymentManagement: React.FC = () => {
         user_id: enrollment.user_id,
         amount: enrollment.amount_paid,
         payment_date: enrollment.enrolled_at,
-        payment_type: enrollment.enrollment_type,
+        payment_type: enrollment.enrollment_type as PaymentType,
         course_name: enrollment.course_name,
         status: 'success' // All payments are successful in this demo
       }));
@@ -92,17 +93,49 @@ const PaymentManagement: React.FC = () => {
     return user ? user.email : 'unknown@email.com';
   };
 
-  const getTypeBadge = (type: string) => {
+  const getTypeBadge = (type: PaymentType) => {
     const typeStyles = {
-      course: 'bg-purple-100 text-purple-800',
-      premium_pass: 'bg-yellow-100 text-yellow-800'
+      [PaymentType.COURSE]: 'bg-purple-100 text-purple-800',
+      [PaymentType.PREMIUM_PASS]: 'bg-yellow-100 text-yellow-800',
+      [PaymentType.LIVE_TRAINING]: 'bg-blue-100 text-blue-800',
+      [PaymentType.VAC]: 'bg-green-100 text-green-800',
+      [PaymentType.EBOOK]: 'bg-orange-100 text-orange-800',
+      [PaymentType.EBOOK_BUNDLE]: 'bg-red-100 text-red-800'
+    };
+
+    const typeLabels = {
+      [PaymentType.COURSE]: 'Course',
+      [PaymentType.PREMIUM_PASS]: 'Premium Pass',
+      [PaymentType.LIVE_TRAINING]: 'Live Training',
+      [PaymentType.VAC]: 'VAC Certificate',
+      [PaymentType.EBOOK]: 'eBook',
+      [PaymentType.EBOOK_BUNDLE]: 'eBook Bundle'
     };
 
     return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${typeStyles[type as keyof typeof typeStyles] || 'bg-gray-100 text-gray-800'}`}>
-        {type === 'premium_pass' ? 'Premium Pass' : 'Course'}
+      <span className={`px-2 py-1 text-xs font-medium rounded-full ${typeStyles[type] || 'bg-gray-100 text-gray-800'}`}>
+        {typeLabels[type] || type}
       </span>
     );
+  };
+
+  const getTypeIcon = (type: PaymentType) => {
+    switch (type) {
+      case PaymentType.COURSE:
+        return <GraduationCap className="w-4 h-4" />;
+      case PaymentType.PREMIUM_PASS:
+        return <Users className="w-4 h-4" />;
+      case PaymentType.LIVE_TRAINING:
+        return <Video className="w-4 h-4" />;
+      case PaymentType.VAC:
+        return <Award className="w-4 h-4" />;
+      case PaymentType.EBOOK:
+        return <BookOpen className="w-4 h-4" />;
+      case PaymentType.EBOOK_BUNDLE:
+        return <BookOpen className="w-4 h-4" />;
+      default:
+        return <CreditCard className="w-4 h-4" />;
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -116,10 +149,10 @@ const PaymentManagement: React.FC = () => {
       'User Name': getUserName(payment.user_id),
       'Email': getUserEmail(payment.user_id),
       'Amount': payment.amount,
-      'Type': payment.payment_type === 'premium_pass' ? 'Premium Pass' : 'Course',
+      'Type': getTypeBadge(payment.payment_type).props.children,
       'Course/Item': payment.course_name || 'Premium Pass',
       'Date': formatDate(payment.payment_date),
-      'Status': 'Success'
+      'Status': payment.status
     }));
 
     const csvContent = [
@@ -137,6 +170,14 @@ const PaymentManagement: React.FC = () => {
 
     toast.success('Payment data exported successfully');
   };
+
+  // Calculate summary statistics
+  const totalRevenue = payments.reduce((sum, payment) => sum + payment.amount, 0);
+  const totalPayments = payments.length;
+  const paymentTypeCounts = payments.reduce((acc, payment) => {
+    acc[payment.payment_type] = (acc[payment.payment_type] || 0) + 1;
+    return acc;
+  }, {} as Record<PaymentType, number>);
 
   if (loading) {
     return (
@@ -162,6 +203,46 @@ const PaymentManagement: React.FC = () => {
         </button>
       </div>
 
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Total Revenue</p>
+              <p className="text-2xl font-bold text-[var(--admin-text)]">₹{totalRevenue.toLocaleString()}</p>
+            </div>
+            <CreditCard className="w-8 h-8 text-green-600" />
+          </div>
+        </div>
+        <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Total Payments</p>
+              <p className="text-2xl font-bold text-[var(--admin-text)]">{totalPayments}</p>
+            </div>
+            <Users className="w-8 h-8 text-blue-600" />
+          </div>
+        </div>
+        <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Course Sales</p>
+              <p className="text-2xl font-bold text-[var(--admin-text)]">{paymentTypeCounts[PaymentType.COURSE] || 0}</p>
+            </div>
+            <GraduationCap className="w-8 h-8 text-purple-600" />
+          </div>
+        </div>
+        <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[var(--admin-text-secondary)]">eBook Sales</p>
+              <p className="text-2xl font-bold text-[var(--admin-text)]">{(paymentTypeCounts[PaymentType.EBOOK] || 0) + (paymentTypeCounts[PaymentType.EBOOK_BUNDLE] || 0)}</p>
+            </div>
+            <BookOpen className="w-8 h-8 text-orange-600" />
+          </div>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-4 mb-4 md:mb-0">
@@ -184,8 +265,12 @@ const PaymentManagement: React.FC = () => {
             onChange={(e) => setTypeFilter(e.target.value)}
           >
             <option value="all">All Types</option>
-            <option value="course">Course</option>
-            <option value="premium_pass">Premium Pass</option>
+            <option value={PaymentType.COURSE}>Courses</option>
+            <option value={PaymentType.PREMIUM_PASS}>Premium Pass</option>
+            <option value={PaymentType.LIVE_TRAINING}>Live Training</option>
+            <option value={PaymentType.VAC}>VAC Certificates</option>
+            <option value={PaymentType.EBOOK}>eBooks</option>
+            <option value={PaymentType.EBOOK_BUNDLE}>eBook Bundles</option>
           </select>
         </div>
         
@@ -240,10 +325,13 @@ const PaymentManagement: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-[var(--admin-text)]">
-                    {payment.course_name || 'Premium Pass'}
+                    {payment.course_name || getTypeBadge(payment.payment_type).props.children}
                   </td>
                   <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                    {getTypeBadge(payment.payment_type)}
+                    <div className="flex items-center gap-2">
+                      {getTypeIcon(payment.payment_type)}
+                      {getTypeBadge(payment.payment_type)}
+                    </div>
                   </td>
                   <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--admin-text)]">
                     ₹{payment.amount.toLocaleString()}
@@ -252,8 +340,14 @@ const PaymentManagement: React.FC = () => {
                     {formatDate(payment.payment_date)}
                   </td>
                   <td className="px-4 md:px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-900 bg-opacity-30 text-green-400">
-                      Success
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      payment.status === 'success' 
+                        ? 'bg-green-900 bg-opacity-30 text-green-400'
+                        : payment.status === 'pending'
+                        ? 'bg-yellow-900 bg-opacity-30 text-yellow-400'
+                        : 'bg-red-900 bg-opacity-30 text-red-400'
+                    }`}>
+                      {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
                     </span>
                   </td>
                 </tr>
