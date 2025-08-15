@@ -281,8 +281,8 @@ const EbookAccessManagement = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">eBook Access Management</h2>
-          <p className="text-gray-600">Grant access to users by email - they'll see eBooks when they login</p>
+          <h2 className="text-2xl font-bold text-[var(--admin-text)]">eBook Access Management</h2>
+          <p className="text-[var(--admin-text-secondary)]">Grant access to users by email - they'll see eBooks when they login</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -320,37 +320,37 @@ const EbookAccessManagement = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-[var(--admin-card)] rounded-lg p-4 shadow-sm border border-[var(--admin-border)]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Access</p>
-              <p className="text-2xl font-bold text-gray-900">{accessData.length}</p>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Total Access</p>
+              <p className="text-2xl font-bold text-[var(--admin-text)]">{accessData.length}</p>
             </div>
             <BookOpen className="w-8 h-8 text-blue-600" />
           </div>
         </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-[var(--admin-card)] rounded-lg p-4 shadow-sm border border-[var(--admin-border)]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Active Access</p>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Active Access</p>
               <p className="text-2xl font-bold text-green-600">{accessData.filter(a => a.isActive).length}</p>
             </div>
             <UserCheck className="w-8 h-8 text-green-600" />
           </div>
         </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-[var(--admin-card)] rounded-lg p-4 shadow-sm border border-[var(--admin-border)]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Manual Grants</p>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Manual Grants</p>
               <p className="text-2xl font-bold text-blue-600">{accessData.filter(a => a.accessType === 'manual').length}</p>
             </div>
             <UserCheck className="w-8 h-8 text-blue-600" />
           </div>
         </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-[var(--admin-card)] rounded-lg p-4 shadow-sm border border-[var(--admin-border)]">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Unique Users</p>
+              <p className="text-sm text-[var(--admin-text-secondary)]">Unique Users</p>
               <p className="text-2xl font-bold text-purple-600">{Object.keys(groupedAccess).length}</p>
             </div>
             <Users className="w-8 h-8 text-purple-600" />
@@ -359,17 +359,17 @@ const EbookAccessManagement = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg p-4 shadow-sm">
+      <div className="bg-[var(--admin-card)] rounded-lg p-4 shadow-sm border border-[var(--admin-border)]">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--admin-text-secondary)] w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search by user name, email, or eBook title..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-[var(--admin-border)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-[var(--admin-bg)] text-[var(--admin-text)] placeholder-[var(--admin-text-secondary)]"
               />
             </div>
           </div>
@@ -377,7 +377,7 @@ const EbookAccessManagement = () => {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-[var(--admin-border)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-[var(--admin-bg)] text-[var(--admin-text)]"
             >
               <option value="all">All Types</option>
               <option value="purchased">Purchased</option>
@@ -387,7 +387,7 @@ const EbookAccessManagement = () => {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-3 py-2 border border-[var(--admin-border)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-[var(--admin-bg)] text-[var(--admin-text)]"
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
@@ -398,47 +398,47 @@ const EbookAccessManagement = () => {
       </div>
 
       {/* Access Table - Grouped by User */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-[var(--admin-card)] rounded-lg shadow-sm overflow-hidden border border-[var(--admin-border)]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-[var(--admin-border)]">
+            <thead className="bg-[var(--admin-border)] bg-opacity-30">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--admin-text-secondary)] uppercase tracking-wider">
                   User
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--admin-text-secondary)] uppercase tracking-wider">
                   eBooks
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--admin-text-secondary)] uppercase tracking-wider">
                   Access Types
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--admin-text-secondary)] uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-[var(--admin-text-secondary)] uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[var(--admin-card)] divide-y divide-[var(--admin-border)]">
               {Object.entries(groupedAccess).map(([userId, userAccesses]) => {
                 const firstAccess = userAccesses[0];
                 const activeCount = userAccesses.filter(a => a.isActive).length;
                 const totalCount = userAccesses.length;
                 
                 return (
-                  <tr key={userId} className="hover:bg-gray-50">
+                  <tr key={userId} className="hover:bg-[var(--admin-border)] hover:bg-opacity-30">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{firstAccess.userName}</div>
-                        <div className="text-sm text-gray-500">{firstAccess.userEmail}</div>
+                        <div className="text-sm font-medium text-[var(--admin-text)]">{firstAccess.userName}</div>
+                        <div className="text-sm text-[var(--admin-text-secondary)]">{firstAccess.userEmail}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
+                      <div className="text-sm text-[var(--admin-text)]">
                         {userAccesses.length} eBook{userAccesses.length !== 1 ? 's' : ''}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-[var(--admin-text-secondary)]">
                         {userAccesses.slice(0, 3).map(access => access.ebookTitle).join(', ')}
                         {userAccesses.length > 3 && ` +${userAccesses.length - 3} more`}
                       </div>
