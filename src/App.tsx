@@ -36,14 +36,17 @@ import VAC_Video from "./components/ValueaddedPage/VAC_Video";
 import VAC_Quiz from "./components/ValueaddedPage/VAC_Quiz";
 import VAC_Certificate from "./components/ValueaddedPage/VAC_Certificate";
 import EbookStorePage from './components/EbookStore/EbookStorePage';
+import ContentProtection from './components/ContentProtection';
 
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <ContentProtection isActive={true}>
+        <Router>
+          <AppContent />
+        </Router>
+      </ContentProtection>
     </AuthProvider>
   );
 }
