@@ -105,6 +105,26 @@ export const useEnrollment = () => {
       }
     }
     
+    // Check for manual course access (this would be from the backend in real app)
+    // For now, we'll simulate this with localStorage
+    if (user) {
+      const manualAccess = localStorage.getItem(`course_access_${user.email}_${courseId}`);
+      if (manualAccess === 'true') {
+        return {
+          id: `manual-${courseId}`,
+          user_id: user.id,
+          course_id: courseId,
+          course_name: 'Manual Access',
+          payment_id: 'manual-grant',
+          enrollment_type: 'course',
+          amount_paid: 0,
+          enrolled_at: new Date().toISOString(),
+          status: 'active',
+          progress: 0
+        };
+      }
+    }
+    
     // Check for specific course enrollment
     const enrollment = enrollments.find(e => e.course_id === courseId);
     console.log(`Getting enrollment for course ${courseId}:`, enrollment);
@@ -115,6 +135,15 @@ export const useEnrollment = () => {
     // Check if user has premium pass
     if (hasPremiumPass) {
       return true;
+    }
+    
+    // Check for manual course access (this would be from the backend in real app)
+    // For now, we'll simulate this with localStorage
+    if (user) {
+      const manualAccess = localStorage.getItem(`course_access_${user.email}_${courseId}`);
+      if (manualAccess === 'true') {
+        return true;
+      }
     }
     
     // Check for specific course enrollment
