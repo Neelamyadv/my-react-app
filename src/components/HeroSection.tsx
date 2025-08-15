@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   // Icons with proper positioning for both mobile and desktop
   const icons = [
     {
@@ -14,53 +16,39 @@ const HeroSection = () => {
   ];
 
   return (
-    // MODIFICATION HERE: Increased vertical padding significantly to approximate 16:9
-    // The `py-` classes control padding-top and padding-bottom.
-    // I've added a custom class `aspect-16-9-approx` that will be defined in your CSS.
-    <section className="py-10 sm:py-50 md:py-15 px-4 sm:px-6 md:px-16 relative overflow-hidden flex items-center min-h-[500px] sm:min-h-[600px] md:min-h-[700px]">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
-        {/* Content */}
-        <div className="z-10 text-center md:text-left">
-          <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-5 sm:mb-7 leading-tight text-gray-100">
-            Learn From<br className="hidden sm:block" />
-            <span className="block sm:inline">The Experts</span><br className="hidden sm:block" />
-            <span className="block sm:inline">Elevate</span><br className="hidden sm:block" />
-            <span className="gradient-text">Your Skills</span>
+    <section className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 text-white">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32">
+        <div className="text-center">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+            Learn <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Smart</span>
+            <br />
+            Learn <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Fast</span>
           </h1>
-          <p className="text-neutral-100 mb-6 sm:mb-8 max-w-lg mx-auto md:mx-0 text-base sm:text-lg leading-relaxed">
-            Unlock your full potential with our training program & comprehensive online courses.
-            Dive into a world of knowledge and transform your career with our
-            expertly designed learning.
+          
+          <p className="text-xl sm:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            Master in-demand skills with our comprehensive courses, live training, and professional certifications
           </p>
-          <Link
-            to="/courses"
-            className="inline-block gradient-button px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium hover:shadow-lg transition-all duration-300 text-base sm:text-lg"
-            onClick={() => window.scrollTo(0, 0)}
-          >
-            Start Learning
-          </Link>
-        </div>
-
-        {/* Centered Floating Icons Container */}
-        {/* Adjusted min-height to allow more vertical space */}
-        <div className="relative min-h-[300px] sm:min-h-[380px] md:min-h-[480px] flex items-center justify-center">
-          {/* Central container for icons - properly centered */}
-          <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 mx-auto">
-            {/* Floating Icons - All positioned relative to the centered container */}
-            {icons.map((icon, index) => (
-              <img
-                key={index}
-                src={icon.src}
-                alt={icon.alt}
-                className={`${icon.className} z-10`}
-                style={icon.style}
-                loading="lazy"
-              />
-            ))}
-
-            {/* Central visual anchor (invisible) */}
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-transparent"></div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <button
+              onClick={() => navigate('/courses')}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
+            >
+              Explore Courses
+            </button>
+            
+            <button
+              onClick={() => navigate('/ebooks')}
+              className="bg-gradient-to-r from-green-500 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+            >
+              📚 eBook Store
+              <span className="text-sm bg-white/20 px-2 py-1 rounded-full">Instant Access</span>
+            </button>
           </div>
+          
+          <p className="text-gray-400 text-sm">
+            Join 10,000+ students already learning with Zyntiq
+          </p>
         </div>
       </div>
     </section>
