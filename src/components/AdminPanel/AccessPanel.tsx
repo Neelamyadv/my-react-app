@@ -213,11 +213,13 @@ const AccessPanel: React.FC = () => {
           <p className="text-[var(--admin-text-secondary)] mb-4">Grant course and eBook access to users by email - Standalone panel for HR team and managers</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Premium Pass Card */}
-          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="w-6 h-6 text-purple-600" />
+          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-purple-100 p-2 rounded-lg">
+                <Users className="w-6 h-6 text-purple-600" />
+              </div>
               <h2 className="text-lg font-medium text-[var(--admin-text)]">Premium Pass</h2>
             </div>
             <p className="text-sm text-[var(--admin-text-secondary)] mb-6">Complete access to all courses and eBooks</p>
@@ -257,9 +259,11 @@ const AccessPanel: React.FC = () => {
           </div>
 
           {/* Course Access Card */}
-          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <GraduationCap className="w-6 h-6 text-blue-600" />
+          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <GraduationCap className="w-6 h-6 text-blue-600" />
+              </div>
               <h2 className="text-lg font-medium text-[var(--admin-text)]">Course Access</h2>
             </div>
             <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Select one or multiple courses to grant access</p>
@@ -342,9 +346,11 @@ const AccessPanel: React.FC = () => {
           </div>
 
           {/* eBook Access Card */}
-          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <BookOpen className="w-6 h-6 text-green-600" />
+          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <BookOpen className="w-6 h-6 text-green-600" />
+              </div>
               <h2 className="text-lg font-medium text-[var(--admin-text)]">eBook Access</h2>
             </div>
             <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Select one or multiple eBooks to grant access</p>
@@ -428,30 +434,52 @@ const AccessPanel: React.FC = () => {
         </div>
 
         {/* Instructions */}
-        <div className="mt-8 bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
+        <div className="mt-12 bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-8">
           <h3 className="text-lg font-medium text-[var(--admin-text)] mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5 text-blue-600" />
             How to Use This HR & Manager Access Panel
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-[var(--admin-text-secondary)]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-[var(--admin-text-secondary)]">
             <div>
-              <h4 className="font-medium text-[var(--admin-text)] mb-2">For HR/Managers:</h4>
-              <ul className="space-y-1">
-                <li>• Enter user's full name and email address</li>
-                <li>• Select one or multiple courses/eBooks using checkboxes</li>
-                <li>• Use "Select All" to choose everything in that category</li>
-                <li>• Click the grant button to provide access</li>
-                <li>• Users will see their content when they login</li>
+              <h4 className="font-medium text-[var(--admin-text)] mb-3">Quick Steps:</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
+                  <span>Enter user's full name and email address</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>
+                  <span>Select courses/eBooks using checkboxes (or use "Select All")</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">3</span>
+                  <span>Click the grant button to provide access</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">4</span>
+                  <span>User will see content when they login with that email</span>
+                </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium text-[var(--admin-text)] mb-2">Access Types:</h4>
-              <ul className="space-y-1">
-                <li>• <strong>Premium Pass:</strong> Complete access to all courses and eBooks</li>
-                <li>• <strong>Course Access:</strong> Select specific courses to grant access</li>
-                <li>• <strong>eBook Access:</strong> Select specific eBooks to grant access</li>
-                <li>• <strong>Flexible Selection:</strong> Choose any combination of items</li>
-                <li>• <strong>Quick Actions:</strong> Use "Select All" or "Clear All" buttons</li>
+              <h4 className="font-medium text-[var(--admin-text)] mb-3">Access Options:</h4>
+              <ul className="space-y-2">
+                <li className="flex items-start gap-2">
+                  <span className="bg-purple-100 text-purple-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">👑</span>
+                  <span><strong>Premium Pass:</strong> Complete access to all courses and eBooks</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">📚</span>
+                  <span><strong>Course Access:</strong> Select specific courses to grant access</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-green-100 text-green-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">📖</span>
+                  <span><strong>eBook Access:</strong> Select specific eBooks to grant access</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-gray-100 text-gray-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">⚡</span>
+                  <span><strong>Quick Actions:</strong> Use "Select All" or "Clear All" buttons</span>
+                </li>
               </ul>
             </div>
           </div>
