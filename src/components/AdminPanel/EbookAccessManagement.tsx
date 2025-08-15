@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, UserCheck, UserX, BookOpen, Download, Eye, Lock, Unlock } from 'lucide-react';
+import { Search, Filter, UserCheck, UserX, BookOpen, Download, Eye, Lock, Unlock, Plus, Users, BookOpenCheck } from 'lucide-react';
 import { useAuth } from '../../lib/auth';
 
 interface EbookAccess {
@@ -25,15 +25,24 @@ interface EbookData {
 
 // Mock eBook data
 const ebookData: EbookData[] = [
-  { id: 'web-development-ebook', title: 'Web Development Fundamentals', category: 'Programming', price: 299 },
-  { id: 'python-ebook', title: 'Python Programming Mastery', category: 'Programming', price: 299 },
-  { id: 'java-ebook', title: 'Java Development Complete', category: 'Programming', price: 299 },
-  { id: 'ui-ux-ebook', title: 'UI/UX Design Principles', category: 'Design', price: 299 },
-  { id: 'graphic-design-ebook', title: 'Graphic Design Mastery', category: 'Design', price: 299 },
-  { id: 'digital-marketing-ebook', title: 'Digital Marketing Strategy', category: 'Business', price: 299 },
-  { id: 'business-analytics-ebook', title: 'Business Analytics & Insights', category: 'Business', price: 299 },
-  { id: 'mobile-development-ebook', title: 'Mobile App Development', category: 'Programming', price: 299 },
-  { id: 'cybersecurity-ebook', title: 'Cybersecurity Fundamentals', category: 'Programming', price: 299 }
+  { id: 'web-development-ebook', title: 'Web Development Fundamentals', category: 'Programming', price: 345 },
+  { id: 'python-ebook', title: 'Python Programming Mastery', category: 'Programming', price: 345 },
+  { id: 'java-ebook', title: 'Java Development Complete', category: 'Programming', price: 345 },
+  { id: 'ui-ux-ebook', title: 'UI/UX Design Principles', category: 'Design', price: 345 },
+  { id: 'graphic-design-ebook', title: 'Graphic Design Mastery', category: 'Design', price: 345 },
+  { id: 'digital-marketing-ebook', title: 'Digital Marketing Strategy', category: 'Business', price: 345 },
+  { id: 'business-analytics-ebook', title: 'Business Analytics & Insights', category: 'Business', price: 345 },
+  { id: 'mobile-development-ebook', title: 'Mobile App Development', category: 'Programming', price: 345 },
+  { id: 'cybersecurity-ebook', title: 'Cybersecurity Fundamentals', category: 'Programming', price: 345 }
+];
+
+// Mock user data
+const mockUsers = [
+  { id: 'user1', email: 'john@example.com', name: 'John Doe' },
+  { id: 'user2', email: 'jane@example.com', name: 'Jane Smith' },
+  { id: 'user3', email: 'bob@example.com', name: 'Bob Johnson' },
+  { id: 'user4', email: 'alice@example.com', name: 'Alice Brown' },
+  { id: 'user5', email: 'mike@example.com', name: 'Mike Wilson' }
 ];
 
 // Mock access data
@@ -84,10 +93,10 @@ const EbookAccessManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState<'all' | 'purchased' | 'manual' | 'premium'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
-  const [selectedEbook, setSelectedEbook] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<string>('');
+  const [selectedEbooks, setSelectedEbooks] = useState<string[]>([]);
   const [showGrantModal, setShowGrantModal] = useState(false);
-  const [showRevokeModal, setShowRevokeModal] = useState(false);
+  const [grantType, setGrantType] = useState<'single' | 'multiple' | 'all'>('single');
   const [selectedAccess, setSelectedAccess] = useState<EbookAccess | null>(null);
 
   // Filter data based on search and filters
@@ -123,37 +132,79 @@ const EbookAccessManagement = () => {
   }, [filterData]);
 
   const handleGrantAccess = () => {
-    if (!selectedUser || !selectedEbook) {
-      alert('Please select both user and eBook');
+    if (!selectedUser) {
+      alert('Please select a user');
       return;
     }
 
-    const ebook = ebookData.find(e => e.id === selectedEbook);
-    if (!ebook) return;
+    const userData = mockUsers.find(u => u.id === selectedUser);
+    if (!userData) return;
 
-    const newAccess: EbookAccess = {
-      id: Date.now().toString(),
-      userId: selectedUser,
-      userEmail: 'user@example.com', // In real app, get from user data
-      userName: 'User Name', // In real app, get from user data
-      ebookId: selectedEbook,
-      ebookTitle: ebook.title,
-      accessType: 'manual',
-      grantedBy: user?.email || 'admin',
-      grantedAt: new Date().toISOString(),
-      isActive: true
-    };
+    let ebooksToGrant: string[] = [];
 
-    setAccessData(prev => [...prev, newAccess]);
+    if (grantType === 'single') {
+      if (selectedEbooks.length === 0) {
+        alert('Please select at least one eBook');
+        return;
+      }
+      ebooksToGrant = selectedEbooks;
+    } else if (grantType === 'multiple') {
+      if (selectedEbooks.length === 0) {
+        alert('Please select at least one eBook');
+        return;
+      }
+      ebooksToGrant = selectedEbooks;
+    } else if (grantType === 'all') {
+      ebooksToGrant = ebookData.map(ebook => ebook.id);
+    }
+
+    const newAccesses: EbookAccess[] = ebooksToGrant.map(ebookId => {
+      const ebook = ebookData.find(e => e.id === ebookId);
+      return {
+        id: Date.now().toString() + Math.random(),
+        userId: selectedUser,
+        userEmail: userData.email,
+        userName: userData.name,
+        ebookId: ebookId,
+        ebookTitle: ebook?.title || 'Unknown eBook',
+        accessType: 'manual',
+        grantedBy: user?.email || 'admin',
+        grantedAt: new Date().toISOString(),
+        isActive: true
+      };
+    });
+
+    setAccessData(prev => [...prev, ...newAccesses]);
     setShowGrantModal(false);
     setSelectedUser('');
-    setSelectedEbook('');
+    setSelectedEbooks([]);
+    setGrantType('single');
   };
 
   const handleRevokeAccess = (accessId: string) => {
     setAccessData(prev => prev.map(access => 
       access.id === accessId ? { ...access, isActive: false } : access
     ));
+  };
+
+  const handleBulkRevoke = (userId: string) => {
+    setAccessData(prev => prev.map(access => 
+      access.userId === userId ? { ...access, isActive: false } : access
+    ));
+  };
+
+  const handleBulkActivate = (userId: string) => {
+    setAccessData(prev => prev.map(access => 
+      access.userId === userId ? { ...access, isActive: true } : access
+    ));
+  };
+
+  const toggleEbookSelection = (ebookId: string) => {
+    setSelectedEbooks(prev => 
+      prev.includes(ebookId) 
+        ? prev.filter(id => id !== ebookId)
+        : [...prev, ebookId]
+    );
   };
 
   const getAccessTypeColor = (type: string) => {
@@ -174,6 +225,15 @@ const EbookAccessManagement = () => {
     }
   };
 
+  // Group access by user
+  const groupedAccess = filteredData.reduce((acc, access) => {
+    if (!acc[access.userId]) {
+      acc[access.userId] = [];
+    }
+    acc[access.userId].push(access);
+    return acc;
+  }, {} as Record<string, EbookAccess[]>);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -182,13 +242,38 @@ const EbookAccessManagement = () => {
           <h2 className="text-2xl font-bold text-gray-900">eBook Access Management</h2>
           <p className="text-gray-600">Manage user access to eBooks and learning materials</p>
         </div>
-        <button
-          onClick={() => setShowGrantModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-        >
-          <UserCheck className="w-4 h-4" />
-          Grant Access
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setGrantType('single');
+              setShowGrantModal(true);
+            }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Grant Single Access
+          </button>
+          <button
+            onClick={() => {
+              setGrantType('multiple');
+              setShowGrantModal(true);
+            }}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
+          >
+            <BookOpenCheck className="w-4 h-4" />
+            Grant Multiple Access
+          </button>
+          <button
+            onClick={() => {
+              setGrantType('all');
+              setShowGrantModal(true);
+            }}
+            className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+          >
+            <Users className="w-4 h-4" />
+            Grant All Access
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -214,19 +299,19 @@ const EbookAccessManagement = () => {
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Purchased</p>
-              <p className="text-2xl font-bold text-blue-600">{accessData.filter(a => a.accessType === 'purchased').length}</p>
+              <p className="text-sm text-gray-600">Manual Grants</p>
+              <p className="text-2xl font-bold text-blue-600">{accessData.filter(a => a.accessType === 'manual').length}</p>
             </div>
-            <Download className="w-8 h-8 text-blue-600" />
+            <UserCheck className="w-8 h-8 text-blue-600" />
           </div>
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Manual Grants</p>
-              <p className="text-2xl font-bold text-purple-600">{accessData.filter(a => a.accessType === 'manual').length}</p>
+              <p className="text-sm text-gray-600">Unique Users</p>
+              <p className="text-2xl font-bold text-purple-600">{Object.keys(groupedAccess).length}</p>
             </div>
-            <UserCheck className="w-8 h-8 text-purple-600" />
+            <Users className="w-8 h-8 text-purple-600" />
           </div>
         </div>
       </div>
@@ -270,7 +355,7 @@ const EbookAccessManagement = () => {
         </div>
       </div>
 
-      {/* Access Table */}
+      {/* Access Table - Grouped by User */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -280,16 +365,10 @@ const EbookAccessManagement = () => {
                   User
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  eBook
+                  eBooks
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Access Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Granted By
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
+                  Access Types
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
@@ -300,69 +379,84 @@ const EbookAccessManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredData.map((access) => (
-                <tr key={access.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">{access.userName}</div>
-                      <div className="text-sm text-gray-500">{access.userEmail}</div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{access.ebookTitle}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAccessTypeColor(access.accessType)}`}>
-                      {getAccessTypeIcon(access.accessType)}
-                      <span className="ml-1 capitalize">{access.accessType}</span>
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {access.grantedBy}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(access.grantedAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      access.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                      {access.isActive ? (
-                        <>
-                          <Unlock className="w-3 h-3 mr-1" />
-                          Active
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="w-3 h-3 mr-1" />
-                          Inactive
-                        </>
-                      )}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    {access.isActive ? (
-                      <button
-                        onClick={() => handleRevokeAccess(access.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Revoke
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setAccessData(prev => prev.map(a => 
-                            a.id === access.id ? { ...a, isActive: true } : a
-                          ));
-                        }}
-                        className="text-green-600 hover:text-green-900"
-                      >
-                        Activate
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
+              {Object.entries(groupedAccess).map(([userId, userAccesses]) => {
+                const firstAccess = userAccesses[0];
+                const activeCount = userAccesses.filter(a => a.isActive).length;
+                const totalCount = userAccesses.length;
+                
+                return (
+                  <tr key={userId} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{firstAccess.userName}</div>
+                        <div className="text-sm text-gray-500">{firstAccess.userEmail}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">
+                        {userAccesses.length} eBook{userAccesses.length !== 1 ? 's' : ''}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {userAccesses.slice(0, 3).map(access => access.ebookTitle).join(', ')}
+                        {userAccesses.length > 3 && ` +${userAccesses.length - 3} more`}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1">
+                        {Array.from(new Set(userAccesses.map(a => a.accessType))).map(type => (
+                          <span key={type} className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAccessTypeColor(type)}`}>
+                            {getAccessTypeIcon(type)}
+                            <span className="ml-1 capitalize">{type}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        activeCount === totalCount ? 'bg-green-100 text-green-800' : 
+                        activeCount === 0 ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {activeCount === totalCount ? (
+                          <>
+                            <Unlock className="w-3 h-3 mr-1" />
+                            All Active
+                          </>
+                        ) : activeCount === 0 ? (
+                          <>
+                            <Lock className="w-3 h-3 mr-1" />
+                            All Inactive
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="w-3 h-3 mr-1" />
+                            {activeCount}/{totalCount} Active
+                          </>
+                        )}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex gap-2">
+                        {activeCount > 0 && (
+                          <button
+                            onClick={() => handleBulkRevoke(userId)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            Revoke All
+                          </button>
+                        )}
+                        {activeCount < totalCount && (
+                          <button
+                            onClick={() => handleBulkActivate(userId)}
+                            className="text-green-600 hover:text-green-900"
+                          >
+                            Activate All
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -371,45 +465,73 @@ const EbookAccessManagement = () => {
       {/* Grant Access Modal */}
       {showGrantModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Grant eBook Access</h3>
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              Grant eBook Access - {grantType === 'single' ? 'Single eBook' : grantType === 'multiple' ? 'Multiple eBooks' : 'All eBooks'}
+            </h3>
             
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User Email
-                </label>
-                <input
-                  type="email"
-                  value={selectedUser}
-                  onChange={(e) => setSelectedUser(e.target.value)}
-                  placeholder="Enter user email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  eBook
+                  User
                 </label>
                 <select
-                  value={selectedEbook}
-                  onChange={(e) => setSelectedEbook(e.target.value)}
+                  value={selectedUser}
+                  onChange={(e) => setSelectedUser(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="">Select an eBook</option>
-                  {ebookData.map((ebook) => (
-                    <option key={ebook.id} value={ebook.id}>
-                      {ebook.title}
+                  <option value="">Select a user</option>
+                  {mockUsers.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name} ({user.email})
                     </option>
                   ))}
                 </select>
               </div>
+              
+              {(grantType === 'single' || grantType === 'multiple') && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {grantType === 'single' ? 'eBook' : 'eBooks'}
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                    {ebookData.map((ebook) => (
+                      <label key={ebook.id} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedEbooks.includes(ebook.id)}
+                          onChange={() => toggleEbookSelection(ebook.id)}
+                          className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        />
+                        <span className="text-sm">{ebook.title}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {grantType === 'multiple' && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Selected: {selectedEbooks.length} eBook{selectedEbooks.length !== 1 ? 's' : ''}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {grantType === 'all' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-sm text-blue-800">
+                    This will grant access to all {ebookData.length} eBooks for the selected user.
+                  </p>
+                </div>
+              )}
             </div>
             
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={() => setShowGrantModal(false)}
+                onClick={() => {
+                  setShowGrantModal(false);
+                  setSelectedUser('');
+                  setSelectedEbooks([]);
+                  setGrantType('single');
+                }}
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 Cancel
