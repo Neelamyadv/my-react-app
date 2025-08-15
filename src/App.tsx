@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import BenefitsSection from './components/BenefitsSection';
 import OfferingsSection from './components/OfferingsSection';
-import TrainingSection from './components/Trainingsection';
+import TrainingSection from './components/TrainingSection';
 import ValuedCertificate from './components/ValuedCertificate';
 import ValueCert from './components/ValueaddedPage/valuecert';
 import CoursesSection from './components/CoursesSection';
