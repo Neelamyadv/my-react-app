@@ -491,27 +491,27 @@ const EbookAccessManagement = () => {
       {/* Grant Access Modal */}
       {showGrantModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-[var(--admin-card)] rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-[var(--admin-border)]">
+            <h3 className="text-lg font-medium text-[var(--admin-text)] mb-4">
               Grant eBook Access - {grantType === 'individual' ? 'Individual eBooks' : 'Premium Pass (All eBooks)'}
             </h3>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[var(--admin-text)] mb-1">
                   User Email <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--admin-text-secondary)] w-4 h-4" />
                   <input
                     type="email"
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                     placeholder="Enter user's email address"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 border border-[var(--admin-border)] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-[var(--admin-bg)] text-[var(--admin-text)] placeholder-[var(--admin-text-secondary)]"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-[var(--admin-text-secondary)] mt-1">
                   User will see eBooks when they login with this email
                 </p>
               </div>
@@ -521,49 +521,49 @@ const EbookAccessManagement = () => {
               {grantType === 'individual' && (
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-[var(--admin-text)]">
                       Select eBooks
                     </label>
                     <div className="flex gap-2">
                       <button
                         onClick={selectAllEbooks}
-                        className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200"
+                        className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
                       >
                         Select All
                       </button>
                       <button
                         onClick={clearEbookSelection}
-                        className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200"
+                        className="text-xs bg-[var(--admin-border)] text-[var(--admin-text)] px-2 py-1 rounded hover:bg-[var(--admin-border)] hover:bg-opacity-70"
                       >
                         Clear
                       </button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto border border-gray-300 rounded-lg p-3">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto border border-[var(--admin-border)] rounded-lg p-3 bg-[var(--admin-bg)]">
                     {ebookData.map((ebook) => (
-                      <label key={ebook.id} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                      <label key={ebook.id} className="flex items-center gap-2 p-2 hover:bg-[var(--admin-border)] hover:bg-opacity-30 rounded cursor-pointer">
                         <input
                           type="checkbox"
                           checked={selectedEbooks.includes(ebook.id)}
                           onChange={() => toggleEbookSelection(ebook.id)}
-                          className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                          className="w-4 h-4 text-blue-600 rounded border-[var(--admin-border)] focus:ring-blue-500 bg-[var(--admin-bg)]"
                         />
-                        <span className="text-sm">{ebook.title}</span>
+                        <span className="text-sm text-[var(--admin-text)]">{ebook.title}</span>
                       </label>
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-[var(--admin-text-secondary)] mt-1">
                     Selected: {selectedEbooks.length} eBook{selectedEbooks.length !== 1 ? 's' : ''}
                   </p>
                 </div>
               )}
 
               {grantType === 'all' && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-sm text-blue-800">
+                <div className="bg-blue-600 bg-opacity-20 border border-blue-500 border-opacity-30 rounded-lg p-3">
+                  <p className="text-sm text-blue-300">
                     This will grant access to all {ebookData.length} eBooks for the user.
                   </p>
-                  <p className="text-xs text-blue-600 mt-1">
+                  <p className="text-xs text-blue-400 mt-1">
                     User will see all eBooks when they login with the provided email.
                   </p>
                 </div>
@@ -579,7 +579,7 @@ const EbookAccessManagement = () => {
                   setSelectedEbooks([]);
                   setGrantType('individual');
                 }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="px-4 py-2 text-[var(--admin-text)] bg-[var(--admin-border)] rounded-lg hover:bg-[var(--admin-border)] hover:bg-opacity-70 transition-colors"
                 disabled={isLoading}
               >
                 Cancel
