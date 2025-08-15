@@ -270,7 +270,7 @@ const CourseDetailPage: React.FC = () => {
   // Listen for enrollment updates
   useEffect(() => {
     const handleEnrollmentUpdate = () => {
-      console.log('Enrollment update event received in course detail, refreshing...');
+      // Enrollment update event received in course detail, refreshing...
       refreshEnrollments();
     };
 
@@ -284,7 +284,7 @@ const CourseDetailPage: React.FC = () => {
       const enrolled = isEnrolledInCourseSync(courseId);
       const courseEnrollment = getCourseEnrollment(courseId);
       
-      console.log(`Course ${courseId} enrollment status:`, { enrolled, courseEnrollment, hasPremiumPass });
+      // Course enrollment status updated
       
       setIsEnrolled(enrolled);
       setEnrollment(courseEnrollment);

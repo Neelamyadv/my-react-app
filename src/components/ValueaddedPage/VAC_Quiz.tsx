@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { vacTopics } from "../../vacConfig";
+import { vacTopics } from "../../src/vacConfig";
+import { Topic, QuizQuestion } from "../../types";
 
 
 export default function VAC_Quiz() {
   const navigate = useNavigate();
-  const [topic, setTopic] = useState<any>(null);
+  const [topic, setTopic] = useState<Topic | null>(null);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [attempt, setAttempt] = useState<number>(0);
   const [submitted, setSubmitted] = useState(false);
@@ -38,7 +39,7 @@ export default function VAC_Quiz() {
     if (!topic) return;
 
     let correctCount = 0;
-    topic.questions.forEach((q: any, index: number) => {
+    topic.questions.forEach((q: QuizQuestion, index: number) => {
       if (answers[index] === q.answer) correctCount++;
     });
 
@@ -71,7 +72,7 @@ export default function VAC_Quiz() {
   return (
     <div className="p-8 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Quiz – {topic.name}</h2>
-      {topic.questions.map((q: any, qIndex: number) => (
+      {topic.questions.map((q: QuizQuestion, qIndex: number) => (
         <div key={qIndex} className="mb-6">
           <p className="font-medium mb-2">{q.q}</p>
           {q.options.map((opt: string, optIndex: number) => (

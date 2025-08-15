@@ -282,14 +282,14 @@ const CertificateModal: React.FC<CertificateModalProps> = ({
                 }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  console.log('Image failed to load:', target.src);
+                  // Image failed to load
                   // Try fallback
                   if (!target.src.includes('placeholder')) {
                     target.src = 'https://via.placeholder.com/800x600/f0f9ff/1e40af?text=Certificate+Template';
                   }
                 }}
                 onLoad={() => {
-                  console.log('Certificate image loaded successfully');
+                  // Certificate image loaded successfully
                 }}
               />
               

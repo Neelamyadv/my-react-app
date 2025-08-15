@@ -4,13 +4,14 @@ import { certificateService } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
 import { useAuth } from '../../lib/auth';
 import { CourseContent as CourseContentType, contentService } from '../../lib/contentService';
+import { Enrollment } from '../../types';
 import ContentViewer from '../CoursePlayer/ContentViewer';
 import toast from 'react-hot-toast';
 
 interface CourseContentProps {
   courseId: string;
   courseName: string;
-  enrollment: any;
+  enrollment: Enrollment;
   onProgressUpdate: (progress: number) => void;
 }
 
@@ -86,7 +87,7 @@ const CourseContent: React.FC<CourseContentProps> = ({
 
     try {
       // Generate certificate
-      const certificate = await certificateService.generateCertificate(
+      await certificateService.generateCertificate(
         `${user.first_name} ${user.last_name}`.trim(),
         courseName,
         courseId
@@ -174,7 +175,7 @@ const CourseContent: React.FC<CourseContentProps> = ({
 
           {/* Content List */}
           <div className="space-y-2">
-            {courseContent.map((content, index) => {
+            {courseContent.map((content) => {
               const isCompleted = completedContent.has(content.id);
               const isActive = activeContent?.id === content.id;
               const progress = contentProgress[content.id] || 0;

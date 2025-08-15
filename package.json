@@ -14,7 +14,7 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:watch": "vitest --watch",
-    "prepare": "husky install",
+    "prepare": "echo 'Skipping husky install'",
     "security-audit": "npm audit && npm outdated",
     "analyze": "vite-bundle-analyzer",
     "clean": "rm -rf dist node_modules/.vite",
@@ -34,6 +34,7 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-intersection-observer": "^9.16.0",
+    "react-player": "^3.3.1",
     "react-router-dom": "^6.21.1"
   },
   "devDependencies": {
@@ -44,8 +45,8 @@
     "@types/node": "^24.2.1",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",

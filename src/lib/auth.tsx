@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(localUser);
         }
       } catch (error) {
-        console.log('No local session found');
+        // Silent fail for no local session
       }
       setLoading(false);
     };
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (newUser) {
         // Don't automatically sign in after signup - user must login with credentials
-        console.log('Account created successfully. Please log in with your credentials.');
+        // Account created successfully
       }
 
       return { error: null };
@@ -126,14 +126,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
 
     try {
-      console.log('Starting Google Sign-In process...');
       const { user: googleUser, error } = await googleAuth.signIn();
       
       if (error || !googleUser) {
         return { error: error || 'Google sign-in failed' };
       }
-
-      console.log('Google user received:', googleUser);
 
       // Check if user already exists in our database
       const existingUserResult = await localDB.signIn(googleUser.email, 'google-oauth');

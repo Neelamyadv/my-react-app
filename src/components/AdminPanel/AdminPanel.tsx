@@ -28,7 +28,7 @@ const AdminPanel: React.FC = () => {
       await signOut();
       window.location.href = '/';
     } catch (error) {
-      console.error('Error signing out:', error);
+      // Error signing out
     }
   };
 

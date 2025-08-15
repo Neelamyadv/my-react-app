@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, BookOpen, Award, ChevronDown } from 'lucide-react';
-import { useAuth } from '../../lib/auth.tsx';
+import { useAuth } from '../../lib/auth';
 import { localDB } from '../../lib/database';
 import toast from 'react-hot-toast';
 import MyCoursesPage from './MyCoursesPage';
