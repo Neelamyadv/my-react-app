@@ -285,13 +285,13 @@ const PaymentAnalyticsPage: React.FC = () => {
     <div className="min-h-screen bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-[#1d3e53] via-[#254b62] to-[#476d7c] p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-6 border border-white/20">
+        <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-6 border border-white/10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
                 📊 Payment Analytics Dashboard
               </h1>
-              <p className="text-gray-600">Daily conversion tracking and revenue analytics for HR team</p>
+              <p className="text-gray-300">Daily conversion tracking and revenue analytics for HR team</p>
             </div>
             <div className="flex items-center gap-3 mt-4 md:mt-0">
               <button
@@ -346,59 +346,27 @@ const PaymentAnalyticsPage: React.FC = () => {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Total Revenue</p>
-                <p className="text-2xl font-bold text-green-600">₹{currentStats.totalRevenue.toLocaleString()}</p>
+                <p className="text-sm text-gray-300 mb-1">Total Revenue</p>
+                <p className="text-2xl font-bold text-green-400">₹{currentStats.totalRevenue.toLocaleString()}</p>
               </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <DollarSign className="w-6 h-6 text-green-600" />
+              <div className="p-3 bg-green-500/20 rounded-lg">
+                <DollarSign className="w-6 h-6 text-green-400" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
+          <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 mb-1">Total Payments</p>
-                <p className="text-2xl font-bold text-blue-600">{currentStats.totalPayments}</p>
+                <p className="text-sm text-gray-300 mb-1">Total Payments</p>
+                <p className="text-2xl font-bold text-blue-400">{currentStats.totalPayments}</p>
               </div>
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <Activity className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Success Rate</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {currentStats.totalPayments > 0 
-                    ? Math.round((currentStats.successfulPayments / currentStats.totalPayments) * 100)
-                    : 0}%
-                </p>
-              </div>
-              <div className="p-3 bg-green-100 rounded-lg">
-                <Target className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600 mb-1">Avg. Order Value</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  ₹{currentStats.totalPayments > 0 
-                    ? Math.round(currentStats.totalRevenue / currentStats.totalPayments)
-                    : 0}
-                </p>
-              </div>
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <BarChart3 className="w-6 h-6 text-purple-600" />
+              <div className="p-3 bg-blue-500/20 rounded-lg">
+                <Activity className="w-6 h-6 text-blue-400" />
               </div>
             </div>
           </div>
@@ -406,25 +374,25 @@ const PaymentAnalyticsPage: React.FC = () => {
 
         {/* Payment Type Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <PieChart className="w-5 h-5 text-blue-600" />
+          <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <PieChart className="w-5 h-5 text-blue-400" />
               Payment Type Breakdown
             </h3>
             <div className="space-y-3">
               {Object.entries(currentStats.paymentTypeBreakdown).map(([type, count]) => (
-                <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={type} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${getPaymentTypeColor(type as PaymentType)}`}>
                       {getPaymentTypeIcon(type as PaymentType)}
                     </div>
-                    <span className="font-medium text-gray-800">
+                    <span className="font-medium text-white">
                       {getPaymentTypeLabel(type as PaymentType)}
                     </span>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold text-gray-800">{count}</div>
-                    <div className="text-sm text-gray-600">
+                    <div className="font-semibold text-white">{count}</div>
+                    <div className="text-sm text-gray-300">
                       ₹{currentStats.revenueByType[type as PaymentType]?.toLocaleString() || 0}
                     </div>
                   </div>
@@ -439,27 +407,27 @@ const PaymentAnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-600" />
+          <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-green-400" />
               Revenue by Type
             </h3>
             <div className="space-y-3">
               {Object.entries(currentStats.revenueByType)
                 .sort(([,a], [,b]) => b - a)
                 .map(([type, revenue]) => (
-                <div key={type} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={type} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${getPaymentTypeColor(type as PaymentType)}`}>
                       {getPaymentTypeIcon(type as PaymentType)}
                     </div>
-                    <span className="font-medium text-gray-800">
+                    <span className="font-medium text-white">
                       {getPaymentTypeLabel(type as PaymentType)}
                     </span>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold text-green-600">₹{revenue.toLocaleString()}</div>
-                    <div className="text-sm text-gray-600">
+                    <div className="font-semibold text-green-400">₹{revenue.toLocaleString()}</div>
+                    <div className="text-sm text-gray-300">
                       {currentStats.totalRevenue > 0 
                         ? Math.round((revenue / currentStats.totalRevenue) * 100)
                         : 0}% of total
@@ -478,38 +446,38 @@ const PaymentAnalyticsPage: React.FC = () => {
         </div>
 
         {/* Recent Payments Table */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-blue-600" />
+        <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-blue-400" />
             Recent Payments ({dayPayments.length})
           </h3>
           
           {dayPayments.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+              <table className="min-w-full divide-y divide-white/20">
+                <thead className="bg-white/10">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                       Payment ID
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                       Type
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                       Amount
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                       Time
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                       Status
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="divide-y divide-white/20">
                   {dayPayments.map((payment) => (
-                    <tr key={payment.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr key={payment.id} className="hover:bg-white/5">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                         {payment.payment_id}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -517,24 +485,24 @@ const PaymentAnalyticsPage: React.FC = () => {
                           <div className={`p-1 rounded ${getPaymentTypeColor(payment.payment_type)}`}>
                             {getPaymentTypeIcon(payment.payment_type)}
                           </div>
-                          <span className="text-sm text-gray-900">
+                          <span className="text-sm text-white">
                             {getPaymentTypeLabel(payment.payment_type)}
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-400">
                         ₹{payment.amount.toLocaleString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         {new Date(payment.payment_date).toLocaleTimeString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                           payment.status === 'success' 
-                            ? 'bg-green-100 text-green-800'
+                            ? 'bg-green-500/20 text-green-400'
                             : payment.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
+                            ? 'bg-yellow-500/20 text-yellow-400'
+                            : 'bg-red-500/20 text-red-400'
                         }`}>
                           {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
                         </span>
