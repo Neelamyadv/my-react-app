@@ -34,13 +34,10 @@ const AccessPanel: React.FC = () => {
   const [courseEmail, setCourseEmail] = useState('');
   const [courseUserName, setCourseUserName] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
-  const [courseAccessType, setCourseAccessType] = useState<'single' | 'multiple' | 'all'>('single');
-
   // eBook access states
   const [ebookEmail, setEbookEmail] = useState('');
   const [ebookUserName, setEbookUserName] = useState('');
   const [selectedEbooks, setSelectedEbooks] = useState<string[]>([]);
-  const [ebookAccessType, setEbookAccessType] = useState<'single' | 'multiple' | 'all'>('single');
 
   // Premium pass states
   const [premiumEmail, setPremiumEmail] = useState('');
@@ -81,21 +78,11 @@ const AccessPanel: React.FC = () => {
       return toast.error('Please enter the user name');
     }
 
-    let coursesToGrant: string[] = [];
-
-    if (courseAccessType === 'single') {
-      if (selectedCourses.length === 0) {
-        return toast.error('Please select at least one course');
-      }
-      coursesToGrant = selectedCourses;
-    } else if (courseAccessType === 'multiple') {
-      if (selectedCourses.length === 0) {
-        return toast.error('Please select at least one course');
-      }
-      coursesToGrant = selectedCourses;
-    } else if (courseAccessType === 'all') {
-      coursesToGrant = courses.map(course => course.id);
+    if (selectedCourses.length === 0) {
+      return toast.error('Please select at least one course');
     }
+
+    let coursesToGrant: string[] = selectedCourses;
 
     // Store access in localStorage (simulating backend storage)
     coursesToGrant.forEach(courseId => {
@@ -111,7 +98,6 @@ const AccessPanel: React.FC = () => {
     setCourseEmail('');
     setCourseUserName('');
     setSelectedCourses([]);
-    setCourseAccessType('single');
   };
 
   const handleCourseToggle = (courseId: string) => {
@@ -140,21 +126,11 @@ const AccessPanel: React.FC = () => {
       return toast.error('Please enter the user name');
     }
 
-    let ebooksToGrant: string[] = [];
-
-    if (ebookAccessType === 'single') {
-      if (selectedEbooks.length === 0) {
-        return toast.error('Please select at least one eBook');
-      }
-      ebooksToGrant = selectedEbooks;
-    } else if (ebookAccessType === 'multiple') {
-      if (selectedEbooks.length === 0) {
-        return toast.error('Please select at least one eBook');
-      }
-      ebooksToGrant = selectedEbooks;
-    } else if (ebookAccessType === 'all') {
-      ebooksToGrant = ebooks.map(ebook => ebook.id);
+    if (selectedEbooks.length === 0) {
+      return toast.error('Please select at least one eBook');
     }
+
+    let ebooksToGrant: string[] = selectedEbooks;
 
     // Store access in localStorage (simulating backend storage)
     ebooksToGrant.forEach(ebookId => {
@@ -170,7 +146,6 @@ const AccessPanel: React.FC = () => {
     setEbookEmail('');
     setEbookUserName('');
     setSelectedEbooks([]);
-    setEbookAccessType('single');
   };
 
   const handleEbookToggle = (ebookId: string) => {
@@ -287,96 +262,50 @@ const AccessPanel: React.FC = () => {
               <GraduationCap className="w-6 h-6 text-blue-600" />
               <h2 className="text-lg font-medium text-[var(--admin-text)]">Course Access</h2>
             </div>
-            <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Grant access to specific courses</p>
+            <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Select one or multiple courses to grant access</p>
             
-            {/* Access Type Selection */}
-            <div className="mb-4">
-              <div className="flex gap-2 mb-3">
-                <button
-                  onClick={() => setCourseAccessType('single')}
-                  className={`px-3 py-1 text-xs rounded ${
-                    courseAccessType === 'single' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Single
-                </button>
-                <button
-                  onClick={() => setCourseAccessType('multiple')}
-                  className={`px-3 py-1 text-xs rounded ${
-                    courseAccessType === 'multiple' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Multiple
-                </button>
-                <button
-                  onClick={() => setCourseAccessType('all')}
-                  className={`px-3 py-1 text-xs rounded ${
-                    courseAccessType === 'all' 
-                      ? 'bg-blue-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  All Courses
-                </button>
-              </div>
-            </div>
-
             {/* Course Selection */}
-            {(courseAccessType === 'single' || courseAccessType === 'multiple') && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm text-[var(--admin-text-secondary)]">Select Courses</label>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={selectAllCourses}
-                      className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                      All
-                    </button>
-                    <button
-                      onClick={clearAllCourses}
-                      className="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
-                    >
-                      Clear
-                    </button>
-                  </div>
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-sm text-[var(--admin-text-secondary)]">Select Courses</label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={selectAllCourses}
+                    className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={clearAllCourses}
+                    className="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+                  >
+                    Clear All
+                  </button>
                 </div>
-                
-                <div className="space-y-2 max-h-40 overflow-y-auto bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded p-3">
-                  {courses.map((course) => (
-                    <label key={course.id} className="flex items-center space-x-2 cursor-pointer hover:bg-[var(--admin-card)] p-1 rounded transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={selectedCourses.includes(course.id)}
-                        onChange={() => handleCourseToggle(course.id)}
-                        className="w-4 h-4 text-blue-600 border-gray-400 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-[var(--admin-text)]">{course.title}</span>
-                    </label>
-                  ))}
+              </div>
+              
+              <div className="space-y-2 max-h-40 overflow-y-auto bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded p-3">
+                {courses.map((course) => (
+                  <label key={course.id} className="flex items-center space-x-2 cursor-pointer hover:bg-[var(--admin-card)] p-1 rounded transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={selectedCourses.includes(course.id)}
+                      onChange={() => handleCourseToggle(course.id)}
+                      className="w-4 h-4 text-blue-600 border-gray-400 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-[var(--admin-text)]">{course.title}</span>
+                  </label>
+                ))}
+              </div>
+              
+              {selectedCourses.length > 0 && (
+                <div className="mt-2 p-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded">
+                  <p className="text-xs text-[var(--admin-text-secondary)]">
+                    {selectedCourses.length} selected: {selectedCourses.map(id => courses.find(c => c.id === id)?.title).join(', ')}
+                  </p>
                 </div>
-                
-                {selectedCourses.length > 0 && (
-                  <div className="mt-2 p-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded">
-                    <p className="text-xs text-[var(--admin-text-secondary)]">
-                      {selectedCourses.length} selected: {selectedCourses.map(id => courses.find(c => c.id === id)?.title).join(', ')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {courseAccessType === 'all' && (
-              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-                <p className="text-sm text-blue-800">
-                  This will grant access to all {courses.length} courses for the user.
-                </p>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="space-y-4">
               <div>
@@ -418,96 +347,50 @@ const AccessPanel: React.FC = () => {
               <BookOpen className="w-6 h-6 text-green-600" />
               <h2 className="text-lg font-medium text-[var(--admin-text)]">eBook Access</h2>
             </div>
-            <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Grant access to specific eBooks</p>
+            <p className="text-sm text-[var(--admin-text-secondary)] mb-4">Select one or multiple eBooks to grant access</p>
             
-            {/* Access Type Selection */}
-            <div className="mb-4">
-              <div className="flex gap-2 mb-3">
-                <button
-                  onClick={() => setEbookAccessType('single')}
-                  className={`px-3 py-1 text-xs rounded ${
-                    ebookAccessType === 'single' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Single
-                </button>
-                <button
-                  onClick={() => setEbookAccessType('multiple')}
-                  className={`px-3 py-1 text-xs rounded ${
-                    ebookAccessType === 'multiple' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  Multiple
-                </button>
-                <button
-                  onClick={() => setEbookAccessType('all')}
-                  className={`px-3 py-1 text-xs rounded ${
-                    ebookAccessType === 'all' 
-                      ? 'bg-green-600 text-white' 
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
-                >
-                  All eBooks
-                </button>
-              </div>
-            </div>
-
             {/* eBook Selection */}
-            {(ebookAccessType === 'single' || ebookAccessType === 'multiple') && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-3">
-                  <label className="text-sm text-[var(--admin-text-secondary)]">Select eBooks</label>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={selectAllEbooks}
-                      className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                    >
-                      All
-                    </button>
-                    <button
-                      onClick={clearAllEbooks}
-                      className="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
-                    >
-                      Clear
-                    </button>
-                  </div>
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-sm text-[var(--admin-text-secondary)]">Select eBooks</label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={selectAllEbooks}
+                    className="text-xs px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={clearAllEbooks}
+                    className="text-xs px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-700"
+                  >
+                    Clear All
+                  </button>
                 </div>
-                
-                <div className="space-y-2 max-h-40 overflow-y-auto bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded p-3">
-                  {ebooks.map((ebook) => (
-                    <label key={ebook.id} className="flex items-center space-x-2 cursor-pointer hover:bg-[var(--admin-card)] p-1 rounded transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={selectedEbooks.includes(ebook.id)}
-                        onChange={() => handleEbookToggle(ebook.id)}
-                        className="w-4 h-4 text-green-600 border-gray-400 rounded focus:ring-green-500"
-                      />
-                      <span className="text-sm text-[var(--admin-text)]">{ebook.title}</span>
-                    </label>
-                  ))}
+              </div>
+              
+              <div className="space-y-2 max-h-40 overflow-y-auto bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded p-3">
+                {ebooks.map((ebook) => (
+                  <label key={ebook.id} className="flex items-center space-x-2 cursor-pointer hover:bg-[var(--admin-card)] p-1 rounded transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={selectedEbooks.includes(ebook.id)}
+                      onChange={() => handleEbookToggle(ebook.id)}
+                      className="w-4 h-4 text-green-600 border-gray-400 rounded focus:ring-green-500"
+                    />
+                    <span className="text-sm text-[var(--admin-text)]">{ebook.title}</span>
+                  </label>
+                ))}
+              </div>
+              
+              {selectedEbooks.length > 0 && (
+                <div className="mt-2 p-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded">
+                  <p className="text-xs text-[var(--admin-text-secondary)]">
+                    {selectedEbooks.length} selected: {selectedEbooks.map(id => ebooks.find(e => e.id === id)?.title).join(', ')}
+                  </p>
                 </div>
-                
-                {selectedEbooks.length > 0 && (
-                  <div className="mt-2 p-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded">
-                    <p className="text-xs text-[var(--admin-text-secondary)]">
-                      {selectedEbooks.length} selected: {selectedEbooks.map(id => ebooks.find(e => e.id === id)?.title).join(', ')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {ebookAccessType === 'all' && (
-              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded">
-                <p className="text-sm text-green-800">
-                  This will grant access to all {ebooks.length} eBooks for the user.
-                </p>
-              </div>
-            )}
+              )}
+            </div>
 
             <div className="space-y-4">
               <div>
@@ -555,8 +438,8 @@ const AccessPanel: React.FC = () => {
               <h4 className="font-medium text-[var(--admin-text)] mb-2">For HR/Managers:</h4>
               <ul className="space-y-1">
                 <li>• Enter user's full name and email address</li>
-                <li>• Select the type of access needed</li>
-                <li>• Choose specific courses/eBooks or grant all access</li>
+                <li>• Select one or multiple courses/eBooks using checkboxes</li>
+                <li>• Use "Select All" to choose everything in that category</li>
                 <li>• Click the grant button to provide access</li>
                 <li>• Users will see their content when they login</li>
               </ul>
@@ -564,11 +447,11 @@ const AccessPanel: React.FC = () => {
             <div>
               <h4 className="font-medium text-[var(--admin-text)] mb-2">Access Types:</h4>
               <ul className="space-y-1">
-                <li>• <strong>Premium Pass:</strong> Complete access to everything</li>
-                <li>• <strong>Course Access:</strong> Grant access to specific courses</li>
-                <li>• <strong>eBook Access:</strong> Grant access to specific eBooks</li>
-                <li>• <strong>Single/Multiple:</strong> Choose specific items</li>
-                <li>• <strong>All:</strong> Grant access to everything in that category</li>
+                <li>• <strong>Premium Pass:</strong> Complete access to all courses and eBooks</li>
+                <li>• <strong>Course Access:</strong> Select specific courses to grant access</li>
+                <li>• <strong>eBook Access:</strong> Select specific eBooks to grant access</li>
+                <li>• <strong>Flexible Selection:</strong> Choose any combination of items</li>
+                <li>• <strong>Quick Actions:</strong> Use "Select All" or "Clear All" buttons</li>
               </ul>
             </div>
           </div>
