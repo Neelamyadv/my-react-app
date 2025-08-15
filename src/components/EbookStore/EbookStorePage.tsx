@@ -332,18 +332,31 @@ const EbookStorePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen yellow-gradient-bg relative overflow-hidden">
+      {/* 🎨 Background Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Large organic shapes */}
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-yellow-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-orange-400/15 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 right-1/4 w-40 h-40 bg-yellow-500/25 rounded-full blur-2xl"></div>
+        
+        {/* Smaller decorative shapes */}
+        <div className="absolute top-20 left-1/4 w-16 h-16 bg-yellow-300/30 rounded-2xl transform rotate-45 blur-xl"></div>
+        <div className="absolute bottom-20 right-1/3 w-12 h-12 bg-orange-300/40 rounded-full blur-lg"></div>
+        <div className="absolute top-1/3 left-1/6 w-8 h-8 bg-yellow-200/50 rounded-lg blur-md"></div>
+      </div>
+
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="relative z-10 bg-white/10 backdrop-blur-sm border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">📚 eBook Store</h1>
-              <p className="text-gray-600 mt-1">Comprehensive learning materials for self-paced study</p>
+              <p className="text-gray-700 mt-1">Comprehensive learning materials for self-paced study</p>
             </div>
             <button
               onClick={() => navigate('/')}
-              className="text-gray-600 hover:text-gray-900 transition-colors"
+              className="text-gray-700 hover:text-gray-900 transition-colors bg-white/50 backdrop-blur-sm px-4 py-2 rounded-lg hover:bg-white/70"
             >
               ← Back to Home
             </button>
@@ -351,16 +364,16 @@ const EbookStorePage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-xl p-1 shadow-sm">
+          <div className="glass-card-dark rounded-xl p-1 shadow-sm">
             <button
               onClick={() => setActiveTab('individual')}
               className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                 activeTab === 'individual'
                   ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               Individual eBooks
@@ -370,7 +383,7 @@ const EbookStorePage = () => {
               className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                 activeTab === 'bundles'
                   ? 'bg-blue-600 text-white'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               Bundles & Collections
@@ -382,9 +395,9 @@ const EbookStorePage = () => {
         {activeTab === 'individual' && (
           <div>
             {/* Multiple Selection Section */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
+            <div className="glass-card-dark rounded-2xl shadow-sm p-6 mb-8">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Create Your Own Bundle</h2>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-700 mb-4">
                 Select multiple eBooks and get a 10% discount on your custom bundle!
               </p>
               
@@ -417,7 +430,7 @@ const EbookStorePage = () => {
             {/* eBook Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {ebookData.map((ebook) => (
-                <div key={ebook.id} className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
+                <div key={ebook.id} className="glass-card-dark rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   {/* eBook Image */}
                   <div className="relative">
                     <img
@@ -448,7 +461,7 @@ const EbookStorePage = () => {
                     </div>
 
                     <h3 className="text-lg font-bold text-gray-900 mb-2">{ebook.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{ebook.description}</p>
+                    <p className="text-gray-700 text-sm mb-4 line-clamp-2">{ebook.description}</p>
 
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                       <span className="flex items-center gap-1">
@@ -492,7 +505,7 @@ const EbookStorePage = () => {
         {activeTab === 'bundles' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {bundleOptions.map((bundle) => (
-              <div key={bundle.id} className="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
+              <div key={bundle.id} className="glass-card-dark rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-xl font-bold text-gray-900">{bundle.title}</h3>
@@ -501,7 +514,7 @@ const EbookStorePage = () => {
                     </span>
                   </div>
 
-                  <p className="text-gray-600 mb-4">{bundle.description}</p>
+                  <p className="text-gray-700 mb-4">{bundle.description}</p>
 
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     {bundle.ebooks.map((ebookId) => {
