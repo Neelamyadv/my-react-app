@@ -88,7 +88,7 @@ const CourseAccessManagement = () => {
   const [userEmail, setUserEmail] = useState<string>('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [showGrantModal, setShowGrantModal] = useState(false);
-  const [grantType, setGrantType] = useState<'single' | 'multiple' | 'all'>('single');
+  const [grantType, setGrantType] = useState<'individual' | 'all'>('individual');
   const [selectedAccess, setSelectedAccess] = useState<CourseAccess | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -140,13 +140,7 @@ const CourseAccessManagement = () => {
 
     let coursesToGrant: string[] = [];
 
-    if (grantType === 'single') {
-      if (selectedCourses.length === 0) {
-        alert('Please select at least one course');
-        return;
-      }
-      coursesToGrant = selectedCourses;
-    } else if (grantType === 'multiple') {
+    if (grantType === 'individual') {
       if (selectedCourses.length === 0) {
         alert('Please select at least one course');
         return;
@@ -288,23 +282,13 @@ const CourseAccessManagement = () => {
         <div className="flex gap-2">
           <button
             onClick={() => {
-              setGrantType('single');
+              setGrantType('individual');
               setShowGrantModal(true);
             }}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
-            <Plus className="w-4 h-4" />
-            Grant Single Access
-          </button>
-          <button
-            onClick={() => {
-              setGrantType('multiple');
-              setShowGrantModal(true);
-            }}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
-          >
             <BookOpenCheck className="w-4 h-4" />
-            Grant Multiple Access
+            Individual
           </button>
           <button
             onClick={() => {
@@ -314,7 +298,7 @@ const CourseAccessManagement = () => {
             className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
           >
             <Users className="w-4 h-4" />
-            Grant All Access
+            Premium Pass
           </button>
         </div>
       </div>
@@ -510,7 +494,7 @@ const CourseAccessManagement = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-medium text-gray-900 mb-4">
-              Grant Course Access - {grantType === 'single' ? 'Single Course' : grantType === 'multiple' ? 'Multiple Courses' : 'All Courses'}
+              Grant Course Access - {grantType === 'individual' ? 'Individual Courses' : 'Premium Pass (All Courses)'}
             </h3>
             
             <div className="space-y-4">
@@ -535,11 +519,11 @@ const CourseAccessManagement = () => {
 
 
               
-              {(grantType === 'single' || grantType === 'multiple') && (
+              {grantType === 'individual' && (
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      {grantType === 'single' ? 'Select Course' : 'Select Courses'}
+                      Select Courses
                     </label>
                     <div className="flex gap-2">
                       <button
@@ -569,11 +553,9 @@ const CourseAccessManagement = () => {
                       </label>
                     ))}
                   </div>
-                  {grantType === 'multiple' && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Selected: {selectedCourses.length} Course{selectedCourses.length !== 1 ? 's' : ''}
-                    </p>
-                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Selected: {selectedCourses.length} Course{selectedCourses.length !== 1 ? 's' : ''}
+                  </p>
                 </div>
               )}
 
@@ -596,7 +578,7 @@ const CourseAccessManagement = () => {
                   setUserEmail('');
           
                   setSelectedCourses([]);
-                  setGrantType('single');
+                  setGrantType('individual');
                 }}
                 className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 disabled={isLoading}
