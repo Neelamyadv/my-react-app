@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Eye, Trash2, Mail, Phone, X } from 'lucide-react';
-import { ContactMessage } from '../../lib/supabase';
+import { ContactMessage } from '../../types';
 import toast from 'react-hot-toast';
 
 const ContactMessages: React.FC = () => {

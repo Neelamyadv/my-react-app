@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Edit, X, Plus, Minus } from 'lucide-react';
-import { User, Enrollment } from '../../lib/supabase';
+import { User, Enrollment } from '../../types';
 import toast from 'react-hot-toast';
 
 const UserManagement: React.FC = () => {

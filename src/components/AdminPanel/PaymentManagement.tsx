@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Download, CreditCard, BookOpen, GraduationCap, Users, Video, Award } from 'lucide-react';
-import { Enrollment, User } from '../../lib/supabase';
+import { Enrollment, User } from '../../types';
 import { PaymentType } from '../../lib/razorpay';
 import toast from 'react-hot-toast';
 

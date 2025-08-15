@@ -43,12 +43,14 @@ export interface QuizQuestion {
 // Enrollment types
 export interface Enrollment {
   id: string;
-  userId: string;
-  courseId: string;
-  enrolledAt: string;
-  completedAt?: string;
+  user_id: string;
+  course_name: string;
+  payment_id: string;
+  amount_paid: number;
+  enrolled_at: string;
+  enrollment_type: string;
   progress: number;
-  certificate?: Certificate;
+  status: string;
 }
 
 export interface Certificate {
@@ -112,10 +114,9 @@ export interface ContactMessage {
   id: string;
   name: string;
   email: string;
-  subject: string;
+  phone: string;
   message: string;
-  createdAt: string;
-  read: boolean;
+  created_at: string;
 }
 
 // Component prop types
