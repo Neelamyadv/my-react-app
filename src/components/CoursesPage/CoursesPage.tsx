@@ -19,7 +19,7 @@ const topCourses = [
     originalPrice: 2450,
     badge: 'EXCLUSIVE LECTURES',
     color: 'from-purple-500 to-indigo-700',
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -33,7 +33,7 @@ const topCourses = [
     originalPrice: 2450,
     badge: 'DEVELOP YOUR TECHNICAL DISTINCT',
     color: 'from-indigo-500 to-purple-600',
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -47,7 +47,7 @@ const topCourses = [
     originalPrice: 2450,
     badge: 'CREATIVE COURSE',
     color: 'from-purple-500 to-pink-600',
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -61,7 +61,7 @@ const topCourses = [
     originalPrice: 2450,
     badge: 'ARTIFICIAL INTELLIGENCE COURSE',
     color: 'from-indigo-600 to-purple-800',
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   }
 ];
@@ -76,7 +76,7 @@ const allCourses = [
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -88,7 +88,7 @@ const allCourses = [
     description: 'Transform Your Business: Digital Marketing Strategies That Work',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -100,7 +100,7 @@ const allCourses = [
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -112,7 +112,7 @@ const allCourses = [
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -124,7 +124,7 @@ const allCourses = [
     description: 'Transform Your Business: Digital Marketing Strategies That Work',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -136,7 +136,7 @@ const allCourses = [
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -148,7 +148,7 @@ const allCourses = [
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -160,7 +160,7 @@ const allCourses = [
     description: 'Transform Your Business: Digital Marketing Strategies That Work',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   },
   {
@@ -172,7 +172,7 @@ const allCourses = [
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
     originalPrice: 2450,
-    ebookPrice: 299,
+    ebookPrice: 345,
     ebookAvailable: true
   }
 ];
@@ -192,7 +192,7 @@ const CourseCard = ({ course, isTopCourse = false }) => {
     initiateCoursePayment({
       courseId: course.id,
       courseName: `${course.title} - eBook`,
-      price: course.ebookPrice || 299,
+      price: course.ebookPrice || 345,
       originalPrice: 599,
       type: PaymentType.EBOOK
     });
@@ -564,7 +564,7 @@ const CoursesPage = () => {
                     courseId: 'ebook-bundle',
                     courseName: 'Complete Course eBook Bundle',
                     price: 799,
-                    originalPrice: 2691,
+                    originalPrice: 3105,
                     type: PaymentType.EBOOK_BUNDLE
                   });
                 }}

@@ -15,7 +15,7 @@ const ebookData = [
     title: 'Web Development Fundamentals',
     description: 'Complete guide to HTML, CSS, JavaScript, and modern web development practices.',
     category: 'Programming',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 245,
     fileSize: '15.2 MB',
@@ -29,7 +29,7 @@ const ebookData = [
     title: 'Python Programming Mastery',
     description: 'Learn Python from basics to advanced concepts including data science and automation.',
     category: 'Programming',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 312,
     fileSize: '18.7 MB',
@@ -43,7 +43,7 @@ const ebookData = [
     title: 'Java Development Complete',
     description: 'Master Java programming, OOP concepts, and enterprise development.',
     category: 'Programming',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 289,
     fileSize: '16.9 MB',
@@ -57,7 +57,7 @@ const ebookData = [
     title: 'UI/UX Design Principles',
     description: 'Learn user interface and user experience design from concept to implementation.',
     category: 'Design',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 198,
     fileSize: '12.4 MB',
@@ -71,7 +71,7 @@ const ebookData = [
     title: 'Graphic Design Mastery',
     description: 'Master graphic design tools, principles, and creative techniques.',
     category: 'Design',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 223,
     fileSize: '14.1 MB',
@@ -85,7 +85,7 @@ const ebookData = [
     title: 'Digital Marketing Strategy',
     description: 'Comprehensive guide to digital marketing, SEO, and social media strategies.',
     category: 'Business',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 267,
     fileSize: '17.3 MB',
@@ -99,7 +99,7 @@ const ebookData = [
     title: 'Business Analytics & Insights',
     description: 'Learn data analysis, business intelligence, and decision-making strategies.',
     category: 'Business',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 234,
     fileSize: '13.8 MB',
@@ -113,7 +113,7 @@ const ebookData = [
     title: 'Mobile App Development',
     description: 'Build iOS and Android apps using React Native and modern mobile technologies.',
     category: 'Programming',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 301,
     fileSize: '19.2 MB',
@@ -127,7 +127,7 @@ const ebookData = [
     title: 'Cybersecurity Fundamentals',
     description: 'Learn security principles, ethical hacking, and protection strategies.',
     category: 'Programming',
-    price: 299,
+    price: 345,
     originalPrice: 599,
     pages: 278,
     fileSize: '16.5 MB',
@@ -145,9 +145,9 @@ const bundleOptions = [
     title: 'Programming Bundle',
     description: 'Complete programming collection: Web, Python, Java, Mobile, and Cybersecurity.',
     badge: '5 eBooks',
-    price: 1199,
-    originalPrice: 1495,
-    savings: 296,
+    price: 1399,
+    originalPrice: 1725,
+    savings: 326,
     ebooks: ['web-development-ebook', 'python-ebook', 'java-ebook', 'mobile-development-ebook', 'cybersecurity-ebook']
   },
   {
@@ -155,9 +155,9 @@ const bundleOptions = [
     title: 'Design Bundle',
     description: 'Creative design collection: UI/UX and Graphic Design fundamentals.',
     badge: '2 eBooks',
-    price: 499,
-    originalPrice: 598,
-    savings: 99,
+    price: 599,
+    originalPrice: 690,
+    savings: 91,
     ebooks: ['ui-ux-ebook', 'graphic-design-ebook']
   },
   {
@@ -165,9 +165,9 @@ const bundleOptions = [
     title: 'Business Bundle',
     description: 'Business essentials: Digital Marketing and Business Analytics.',
     badge: '2 eBooks',
-    price: 499,
-    originalPrice: 598,
-    savings: 99,
+    price: 599,
+    originalPrice: 690,
+    savings: 91,
     ebooks: ['digital-marketing-ebook', 'business-analytics-ebook']
   },
   {
@@ -176,8 +176,8 @@ const bundleOptions = [
     description: 'All 9 eBooks in one comprehensive bundle. Best value!',
     badge: '9 eBooks',
     price: 1999,
-    originalPrice: 2691,
-    savings: 692,
+    originalPrice: 3105,
+    savings: 1106,
     ebooks: ['web-development-ebook', 'python-ebook', 'java-ebook', 'ui-ux-ebook', 'graphic-design-ebook', 'digital-marketing-ebook', 'business-analytics-ebook', 'mobile-development-ebook', 'cybersecurity-ebook']
   }
 ];
@@ -280,7 +280,7 @@ const EbookStorePage = () => {
       courseId: 'all-ebooks-bundle',
       courseName: 'Complete All eBooks Collection',
       price: 495,
-      originalPrice: 2691,
+      originalPrice: 3105,
       type: PaymentType.EBOOK_BUNDLE
     });
   };
@@ -292,8 +292,8 @@ const EbookStorePage = () => {
       return;
     }
 
-    const totalPrice = selectedEbooks.length * 299 - Math.floor(selectedEbooks.length * 299 * 0.1);
-    const originalPrice = selectedEbooks.length * 299;
+    const totalPrice = selectedEbooks.length * 345 - Math.floor(selectedEbooks.length * 345 * 0.1);
+    const originalPrice = selectedEbooks.length * 345;
 
     initiateCoursePayment({
       courseId: 'custom-ebook-bundle',
@@ -438,13 +438,13 @@ const EbookStorePage = () => {
                 {/* Right: Pricing and CTA */}
                 <div className="text-center lg:text-left">
                   <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
-                    <div className="mb-4">
-                      <span className="text-4xl font-bold text-gray-900">₹495</span>
-                      <span className="text-xl text-gray-500 line-through ml-2">₹2691</span>
-                    </div>
-                    <div className="text-green-600 font-semibold mb-4">
-                      Save ₹2196 (82% OFF!)
-                    </div>
+                                         <div className="mb-4">
+                       <span className="text-4xl font-bold text-gray-900">₹495</span>
+                       <span className="text-xl text-gray-500 line-through ml-2">₹3105</span>
+                     </div>
+                     <div className="text-green-600 font-semibold mb-4">
+                       Save ₹2610 (84% OFF!)
+                     </div>
                     
                     <div className="space-y-2 mb-6 text-sm text-gray-600">
                       <div className="flex items-center gap-2">
@@ -532,10 +532,10 @@ const EbookStorePage = () => {
                 {selectedEbooks.length > 0 && (
                   <div className="text-right">
                     <span className="text-lg font-bold text-green-600">
-                      ₹{selectedEbooks.length * 299 - Math.floor(selectedEbooks.length * 299 * 0.1)}
+                      ₹{selectedEbooks.length * 345 - Math.floor(selectedEbooks.length * 345 * 0.1)}
                     </span>
                     <span className="text-sm text-gray-500 line-through ml-2">
-                      ₹{selectedEbooks.length * 299}
+                      ₹{selectedEbooks.length * 345}
                     </span>
                   </div>
                 )}

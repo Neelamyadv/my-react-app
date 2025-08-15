@@ -331,7 +331,7 @@ const CourseDetailPage: React.FC = () => {
     initiateCoursePayment({
       courseId: courseId,
       courseName: `${course.title} - eBook`,
-      price: 299,
+      price: 345,
       originalPrice: 599,
       type: PaymentType.EBOOK
     });
@@ -347,7 +347,7 @@ const CourseDetailPage: React.FC = () => {
       courseId: 'ebook-bundle',
       courseName: 'Complete Course eBook Bundle',
       price: 799,
-      originalPrice: 2691,
+      originalPrice: 3105,
       type: PaymentType.EBOOK_BUNDLE
     });
   };

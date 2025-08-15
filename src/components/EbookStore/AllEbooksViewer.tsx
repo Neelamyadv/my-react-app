@@ -12,6 +12,8 @@ const ebookData = [
     title: 'Web Development Fundamentals',
     description: 'Complete guide to HTML, CSS, JavaScript, and modern web development practices.',
     category: 'Programming',
+    price: 345,
+    originalPrice: 599,
     pages: 245,
     fileSize: '15.2 MB',
     students: 1250,
