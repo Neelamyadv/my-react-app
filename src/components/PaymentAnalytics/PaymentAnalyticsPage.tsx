@@ -376,78 +376,7 @@ const PaymentAnalyticsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Payment Type Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <PieChart className="w-5 h-5 text-blue-400" />
-              Payment Type Breakdown
-            </h3>
-            <div className="space-y-3">
-              {Object.entries(currentStats.paymentTypeBreakdown).map(([type, count]) => (
-                <div key={type} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${getPaymentTypeColor(type as PaymentType)}`}>
-                      {getPaymentTypeIcon(type as PaymentType)}
-                    </div>
-                    <span className="font-medium text-white">
-                      {getPaymentTypeLabel(type as PaymentType)}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-white">{count}</div>
-                    <div className="text-sm text-gray-300">
-                      ₹{currentStats.revenueByType[type as PaymentType]?.toLocaleString() || 0}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {Object.keys(currentStats.paymentTypeBreakdown).length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  <Clock className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>No payments recorded for this date</p>
-                </div>
-              )}
-            </div>
-          </div>
 
-          <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
-            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              Revenue by Type
-            </h3>
-            <div className="space-y-3">
-              {Object.entries(currentStats.revenueByType)
-                .sort(([,a], [,b]) => b - a)
-                .map(([type, revenue]) => (
-                <div key={type} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${getPaymentTypeColor(type as PaymentType)}`}>
-                      {getPaymentTypeIcon(type as PaymentType)}
-                    </div>
-                    <span className="font-medium text-white">
-                      {getPaymentTypeLabel(type as PaymentType)}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-green-400">₹{revenue.toLocaleString()}</div>
-                    <div className="text-sm text-gray-300">
-                      {currentStats.totalRevenue > 0 
-                        ? Math.round((revenue / currentStats.totalRevenue) * 100)
-                        : 0}% of total
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {Object.keys(currentStats.revenueByType).length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  <TrendingDown className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>No revenue recorded for this date</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Recent Payments Table */}
         <div className="bg-black/40 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/10">
