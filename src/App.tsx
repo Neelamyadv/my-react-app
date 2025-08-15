@@ -39,6 +39,7 @@ import EbookStorePage from './components/EbookStore/EbookStorePage';
 import EbookViewer from './components/EbookStore/EbookViewer';
 import AllEbooksViewer from './components/EbookStore/AllEbooksViewer';
 import ContentProtection from './components/ContentProtection';
+import PaymentAnalyticsPage from './components/PaymentAnalytics/PaymentAnalyticsPage';
 
 
 function App() {
@@ -55,7 +56,7 @@ function App() {
 
 const AppContent = () => {
   const location = useLocation();
-  const hiddenPaths = ['/premium-pass', '/admin', '/access'];
+  const hiddenPaths = ['/premium-pass', '/admin', '/access', '/analytics'];
   const isHidden = hiddenPaths.includes(location.pathname);
   
   useEffect(() => {
@@ -68,7 +69,7 @@ const AppContent = () => {
   
   const navbar = isHidden ? null : <Navbar />;
   const footer = isHidden ? null : <Footer />;
-  const whatsappFloat = (location.pathname === '/admin' || location.pathname === '/access') ? null : <WhatsAppFloat />;
+  const whatsappFloat = (location.pathname === '/admin' || location.pathname === '/access' || location.pathname === '/analytics') ? null : <WhatsAppFloat />;
   
   return (
     <div className="min-h-screen yellow-gradient-bg">
@@ -114,6 +115,7 @@ const AppContent = () => {
         <Route path="/ebooks" element={<EbookStorePage />} />
         <Route path="/ebook-viewer/:ebookId" element={<EbookViewer />} />
         <Route path="/all-ebooks-viewer" element={<AllEbooksViewer />} />
+        <Route path="/analytics" element={<PaymentAnalyticsPage />} />
         
       </Routes>
       {footer}
