@@ -181,6 +181,14 @@ const AdminPanel: React.FC = () => {
 
           {/* Right Side - Empty on mobile, User Info & Sign Out on desktop */}
           <div className="hidden md:flex items-center space-x-3">
+            <a
+              href="/access"
+              className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+              title="Access Panel"
+            >
+              <Users className="h-4 w-4" />
+              Access Panel
+            </a>
             <div className="text-right">
               <p className="text-sm font-medium text-[var(--admin-text)]">Admin User</p>
               <p className="text-xs text-[var(--admin-text-secondary)]">admin@zyntiq.in</p>
