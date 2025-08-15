@@ -211,8 +211,8 @@ const ContentProtection: React.FC<ContentProtectionProps> = ({
 
   return (
     <div className="content-protection-wrapper">
-      {/* 🔒 Protection Status Indicator */}
-      {isActive && (
+      {/* 🔒 Protection Status Indicator - Only show in development */}
+      {isActive && import.meta.env.DEV && (
         <div className="fixed bottom-4 left-4 z-40">
           <div className="bg-green-600 text-white px-3 py-2 rounded-lg shadow-lg flex items-center gap-2">
             <Lock className="w-4 h-4" />
@@ -221,8 +221,8 @@ const ContentProtection: React.FC<ContentProtectionProps> = ({
         </div>
       )}
 
-      {/* 📝 Protection Notice */}
-      {isActive && (
+      {/* 📝 Protection Notice - Only show in development */}
+      {isActive && import.meta.env.DEV && (
         <div className="fixed bottom-4 right-4 z-40 max-w-xs">
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 shadow-lg">
             <div className="flex items-start gap-2">

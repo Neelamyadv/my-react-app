@@ -45,7 +45,7 @@ import PaymentAnalyticsPage from './components/PaymentAnalytics/PaymentAnalytics
 function App() {
   return (
     <AuthProvider>
-      <ContentProtection isActive={true}>
+      <ContentProtection isActive={import.meta.env.VITE_ENABLE_CONTENT_PROTECTION === 'true'}>
         <Router>
           <AppContent />
         </Router>
