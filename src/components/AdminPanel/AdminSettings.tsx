@@ -54,20 +54,40 @@ const AdminSettings: React.FC = () => {
     }
   }, []);
 
-  const handlePricingChange = (type: keyof PricingData, field: 'price' | 'originalPrice', value: number) => {
+  const handlePricingChange = (type: keyof PricingData, field: 'price' | 'originalPrice', value: string) => {
+    // Handle empty string and non-numeric input
+    if (value === '' || value === '-') {
+      const newPricing = {
+        ...pricing,
+        [type]: {
+          ...pricing[type],
+          [field]: 0
+        }
+      };
+      setPricing(newPricing);
+      setHasChanges(true);
+      return;
+    }
+
+    // Convert string to number, handle invalid input
+    const numValue = parseInt(value) || 0;
+    
+    // Ensure non-negative values
+    const finalValue = Math.max(0, numValue);
+    
     const newPricing = {
       ...pricing,
       [type]: {
         ...pricing[type],
-        [field]: value
+        [field]: finalValue
       }
     };
 
     // Recalculate discount
     if (field === 'price' || field === 'originalPrice') {
-      const newPrice = field === 'price' ? value : newPricing[type].price;
-      const newOriginalPrice = field === 'originalPrice' ? value : newPricing[type].originalPrice;
-      const newDiscount = Math.round(((newOriginalPrice - newPrice) / newOriginalPrice) * 100);
+      const newPrice = field === 'price' ? finalValue : newPricing[type].price;
+      const newOriginalPrice = field === 'originalPrice' ? finalValue : newPricing[type].originalPrice;
+      const newDiscount = newOriginalPrice > 0 ? Math.round(((newOriginalPrice - newPrice) / newOriginalPrice) * 100) : 0;
       
       newPricing[type] = {
         ...newPricing[type],
@@ -141,9 +161,27 @@ const AdminSettings: React.FC = () => {
               <input
                 type="number"
                 value={data.price}
-                onChange={(e) => handlePricingChange(type, 'price', parseInt(e.target.value) || 0)}
+                onChange={(e) => handlePricingChange(type, 'price', e.target.value)}
+                onKeyDown={(e) => {
+                  // Allow: backspace, delete, tab, escape, enter, and navigation keys
+                  if ([8, 9, 27, 13, 46, 37, 38, 39, 40].includes(e.keyCode) ||
+                      // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                      (e.keyCode === 65 && e.ctrlKey === true) ||
+                      (e.keyCode === 67 && e.ctrlKey === true) ||
+                      (e.keyCode === 86 && e.ctrlKey === true) ||
+                      (e.keyCode === 88 && e.ctrlKey === true)) {
+                    return;
+                  }
+                  // Allow numbers and decimal point
+                  if ((e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode === 190) {
+                    return;
+                  }
+                  e.preventDefault();
+                }}
                 className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 min="0"
+                step="1"
+                placeholder="0"
               />
             </div>
             <div>
@@ -153,9 +191,27 @@ const AdminSettings: React.FC = () => {
               <input
                 type="number"
                 value={data.originalPrice}
-                onChange={(e) => handlePricingChange(type, 'originalPrice', parseInt(e.target.value) || 0)}
+                onChange={(e) => handlePricingChange(type, 'originalPrice', e.target.value)}
+                onKeyDown={(e) => {
+                  // Allow: backspace, delete, tab, escape, enter, and navigation keys
+                  if ([8, 9, 27, 13, 46, 37, 38, 39, 40].includes(e.keyCode) ||
+                      // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                      (e.keyCode === 65 && e.ctrlKey === true) ||
+                      (e.keyCode === 67 && e.ctrlKey === true) ||
+                      (e.keyCode === 86 && e.ctrlKey === true) ||
+                      (e.keyCode === 88 && e.ctrlKey === true)) {
+                    return;
+                  }
+                  // Allow numbers and decimal point
+                  if ((e.keyCode >= 48 && e.keyCode <= 57) || e.keyCode === 190) {
+                    return;
+                  }
+                  e.preventDefault();
+                }}
                 className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 min="0"
+                step="1"
+                placeholder="0"
               />
             </div>
           </div>
