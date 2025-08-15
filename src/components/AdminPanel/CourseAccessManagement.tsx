@@ -86,7 +86,6 @@ const CourseAccessManagement = () => {
   const [filterType, setFilterType] = useState<'all' | 'purchased' | 'manual' | 'premium'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
   const [userEmail, setUserEmail] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [showGrantModal, setShowGrantModal] = useState(false);
   const [grantType, setGrantType] = useState<'single' | 'multiple' | 'all'>('single');
@@ -137,11 +136,7 @@ const CourseAccessManagement = () => {
       return;
     }
 
-    // Validate name
-    if (!userName.trim()) {
-      alert('Please enter the user name');
-      return;
-    }
+
 
     let coursesToGrant: string[] = [];
 
@@ -173,7 +168,7 @@ const CourseAccessManagement = () => {
           id: Date.now().toString() + Math.random(),
           userId: userId,
           userEmail: userEmail.toLowerCase(),
-          userName: userName.trim(),
+          userName: 'User', // Default name since we only need email
           courseId: courseId,
           courseTitle: course?.title || 'Unknown Course',
           accessType: 'manual',
@@ -194,7 +189,7 @@ const CourseAccessManagement = () => {
       const courseCount = coursesToGrant.length;
       const courseNames = coursesToGrant.map(id => courseData.find(c => c.id === id)?.title).join(', ');
       
-      alert(`✅ Course access granted successfully!\n\nUser: ${userName}\nEmail: ${userEmail}\nAccess granted to: ${courseCount} course${courseCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${userEmail}", they will automatically see these courses in their account.`);
+      alert(`✅ Course access granted successfully!\n\nEmail: ${userEmail}\nAccess granted to: ${courseCount} course${courseCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${userEmail}", they will automatically see these courses in their account.`);
       
       // Reset form
       setShowGrantModal(false);
@@ -538,18 +533,7 @@ const CourseAccessManagement = () => {
                 </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  User Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Enter user's full name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
+
               
               {(grantType === 'single' || grantType === 'multiple') && (
                 <div>
@@ -610,7 +594,7 @@ const CourseAccessManagement = () => {
                 onClick={() => {
                   setShowGrantModal(false);
                   setUserEmail('');
-                  setUserName('');
+          
                   setSelectedCourses([]);
                   setGrantType('single');
                 }}
