@@ -225,13 +225,7 @@ const AccessPanel: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <a
-              href="/admin"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
-            >
-              ← Back to Admin Panel
-            </a>
+          <div className="flex items-center justify-end mb-4">
             <button
               onClick={handleLogout}
               className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
@@ -240,8 +234,8 @@ const AccessPanel: React.FC = () => {
               Logout
             </button>
           </div>
-          <h1 className="text-3xl font-bold text-[var(--admin-text)] mb-2">Access Panel</h1>
-          <p className="text-[var(--admin-text-secondary)] mb-4">Grant access to users by email - perfect for HR and managers</p>
+          <h1 className="text-3xl font-bold text-[var(--admin-text)] mb-2">HR & Manager Access Panel</h1>
+          <p className="text-[var(--admin-text-secondary)] mb-4">Grant course and eBook access to users by email - Standalone panel for HR team and managers</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -554,7 +548,7 @@ const AccessPanel: React.FC = () => {
         <div className="mt-8 bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6">
           <h3 className="text-lg font-medium text-[var(--admin-text)] mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5 text-blue-600" />
-            How to Use This Access Panel
+            How to Use This HR & Manager Access Panel
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-[var(--admin-text-secondary)]">
             <div>
