@@ -278,7 +278,7 @@ const CourseAccessManagement = () => {
   }, {} as Record<string, CourseAccess[]>);
 
   return (
-    <div className="space-y-6">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto bg-[var(--admin-bg)] min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

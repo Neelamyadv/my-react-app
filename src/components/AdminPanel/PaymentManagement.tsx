@@ -188,7 +188,7 @@ const PaymentManagement: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto bg-[var(--admin-bg)] min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="mb-4 md:mb-0">
           <h1 className="text-xl md:text-2xl font-bold text-[var(--admin-text)]">Payment Management</h1>

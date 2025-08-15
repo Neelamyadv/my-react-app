@@ -170,7 +170,7 @@ const ContactMessages: React.FC = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto bg-[var(--admin-bg)] min-h-screen">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-[var(--admin-text)]">Contact Messages</h1>
