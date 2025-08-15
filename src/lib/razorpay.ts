@@ -372,13 +372,37 @@ export const PRICING = {
     price: 999,
     originalPrice: 4999,
     discount: 80
+  },
+  LIVE_TRAINING: {
+    price: 449,
+    originalPrice: 1999,
+    discount: 78
+  },
+  VAC: {
+    price: 219,
+    originalPrice: 599,
+    discount: 63
+  },
+  EBOOK: {
+    price: 299,
+    originalPrice: 599,
+    discount: 50
+  },
+  EBOOK_BUNDLE: {
+    price: 799,
+    originalPrice: 2691,
+    discount: 70
   }
 } as const;
 
 // Payment types
 export enum PaymentType {
   COURSE = 'course',
-  PREMIUM_PASS = 'premium_pass'
+  PREMIUM_PASS = 'premium_pass',
+  LIVE_TRAINING = 'live_training',
+  VAC = 'vac',
+  EBOOK = 'ebook',
+  EBOOK_BUNDLE = 'ebook_bundle'
 }
 
 export interface PaymentData {

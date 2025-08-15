@@ -7,6 +7,7 @@ import CourseContent from './CourseContent';
 import { usePayment } from '../../hooks/usePayment';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../lib/auth';
+import { PaymentType } from '../../types/payment';
 
 // Course data for all courses
 const courseData = {
@@ -310,6 +311,47 @@ const CourseDetailPage: React.FC = () => {
       await updateProgress(enrollment.id, progress);
       setEnrollment(prev => ({ ...prev, progress }));
     }
+  };
+
+  const handleEbookPurchase = (courseId: string) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    const course = courseData[courseId as keyof typeof courseData];
+    if (!course) return;
+
+    const paymentData = {
+      type: PaymentType.EBOOK,
+      itemId: courseId,
+      itemName: `${course.title} - eBook`,
+      amount: 299, // eBook price
+      userEmail: user.email,
+      userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+      userPhone: user.phone
+    };
+
+    initiateCoursePayment(paymentData);
+  };
+
+  const handleEbookBundlePurchase = () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    const paymentData = {
+      type: PaymentType.EBOOK_BUNDLE,
+      itemId: 'ebook-bundle',
+      itemName: 'Complete Course eBook Bundle',
+      amount: 799, // eBook bundle price
+      userEmail: user.email,
+      userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+      userPhone: user.phone
+    };
+
+    initiateCoursePayment(paymentData);
   };
 
   if (enrollmentLoading) {
