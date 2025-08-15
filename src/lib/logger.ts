@@ -8,7 +8,7 @@ class BrowserLogger {
     this.logToStorage = false;
   }
 
-  private formatMessage(level: string, message: string, meta?: any): string {
+  private formatMessage(level: string, message: string, meta?: unknown): string {
     const timestamp = new Date().toISOString();
     const metaStr = meta ? ` | ${JSON.stringify(meta)}` : '';
     return `[${timestamp}] ${level.toUpperCase()}: ${message}${metaStr}`;
@@ -21,7 +21,7 @@ class BrowserLogger {
     return messageLevelIndex <= currentLevelIndex;
   }
 
-  private log(level: string, message: string, meta?: any): void {
+  private log(level: string, message: string, meta?: unknown): void {
     if (!this.shouldLog(level)) return;
 
     const formattedMessage = this.formatMessage(level, message, meta);
@@ -65,19 +65,19 @@ class BrowserLogger {
     }
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     this.log('error', message, meta);
   }
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     this.log('warn', message, meta);
   }
 
-  info(message: string, meta?: any): void {
+  info(message: string, meta?: unknown): void {
     this.log('info', message, meta);
   }
 
-  debug(message: string, meta?: any): void {
+  debug(message: string, meta?: unknown): void {
     this.log('debug', message, meta);
   }
 
@@ -89,7 +89,7 @@ class BrowserLogger {
     this.logToStorage = enabled;
   }
 
-  getErrors(): any[] {
+  getErrors(): unknown[] {
     try {
       return JSON.parse(localStorage.getItem('zyntiq_errors') || '[]');
     } catch {

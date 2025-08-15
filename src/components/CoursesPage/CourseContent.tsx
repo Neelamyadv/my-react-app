@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, CheckCircle, Clock, BookOpen, Award, Download, Users } from 'lucide-react';
+import { Play, CheckCircle, BookOpen, Award, Download } from 'lucide-react';
 import { certificateService } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
 import { useAuth } from '../../lib/auth';

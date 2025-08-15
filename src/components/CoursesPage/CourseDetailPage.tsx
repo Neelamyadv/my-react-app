@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Clock, BookOpen, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { Enrollment } from '../../types';
 import PaymentModal from '../Payment/PaymentModal';
 import CourseContent from './CourseContent';
 import { usePayment } from '../../hooks/usePayment';
@@ -214,7 +215,7 @@ const CourseDetailPage: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const { user } = useAuth();
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [enrollment, setEnrollment] = useState<any>(null);
+  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   
   // Payment integration
   const {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Clock, Award, RotateCcw } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, RotateCcw } from 'lucide-react';
 import { QuizContent, QuizQuestion } from '../../lib/contentService';
 
 interface QuizPlayerProps {

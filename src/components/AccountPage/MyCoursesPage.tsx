@@ -27,7 +27,7 @@ const MyCoursesPage = () => {
 
   // Listen for certificate updates
   useEffect(() => {
-    const handleCertificateUpdate = (event: Event) => {
+    const handleCertificateUpdate = () => {
       if (user) {
         const updatedCertificates = certificateService.refreshCertificates();
         setCertificates(updatedCertificates);

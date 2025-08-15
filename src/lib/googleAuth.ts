@@ -1,9 +1,9 @@
 // Google OAuth integration
-import { escapeHTML } from './utils/security';
+// import { escapeHTML } from './utils/security'; // Unused import
 declare global {
   interface Window {
-    google: any;
-    googleSignInCallback: (response: any) => void;
+    google: unknown;
+    googleSignInCallback: (response: GoogleAuthResponse) => void;
   }
 }
 

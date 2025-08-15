@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { X, Download, Share2, Award } from 'lucide-react';
+import { X, Download, Share2 } from 'lucide-react';
 
 interface CertificateModalProps {
   isOpen: boolean;

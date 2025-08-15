@@ -1,4 +1,5 @@
 // src/components/ValueaddedPage/valuecert.tsx
+import React from "react";
 import { motion } from "framer-motion";
 import { Award, ShieldCheck, Sparkles, Share2, BadgeCheck, Trophy, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -180,7 +181,7 @@ function StatCard({ number, label }: { number: string; label: string }) {
   );
 }
 
-function FeatureCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+function FeatureCard({ icon, title, desc }: { icon: React.ReactElement; title: string; desc: string }) {
   return (
     <motion.div
       className="rounded-xl p-5 bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl"

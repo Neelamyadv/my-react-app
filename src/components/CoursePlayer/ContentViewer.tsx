@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Download, ExternalLink } from 'lucide-react';
 import VideoPlayer from './VideoPlayer';
 import QuizPlayer from './QuizPlayer';
-import { CourseContent, VideoContent, QuizContent, contentService } from '../../lib/contentService';
+import { CourseContent, QuizContent } from '../../lib/contentService';
 
 interface ContentViewerProps {
   content: CourseContent;

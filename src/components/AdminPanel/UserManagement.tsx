@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Edit, Trash2, UserPlus, Mail, Phone, X, Plus, Minus } from 'lucide-react';
+import { Search, Edit, X, Plus, Minus } from 'lucide-react';
 import { User, Enrollment } from '../../lib/supabase';
 import toast from 'react-hot-toast';
 

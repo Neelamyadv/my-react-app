@@ -162,16 +162,13 @@ const CoursesPage = () => {
     isPaymentModalOpen,
     currentPaymentData,
     initiateCoursePayment,
-    initiatePremiumPassPayment,
     closePaymentModal,
     handlePaymentSuccess
   } = usePayment();
 
   // Enrollment integration
   const {
-    enrollments,
     loading: enrollmentLoading,
-    hasPremiumPass,
     isEnrolledInCourseSync,
     refreshEnrollments
   } = useEnrollment();

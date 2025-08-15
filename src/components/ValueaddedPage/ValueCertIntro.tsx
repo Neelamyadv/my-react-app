@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function ValueCertIntro() {
   const navigate = useNavigate();
 
+  // Payment success handler (currently unused but kept for future use)
   const handlePaymentSuccess = () => {
     localStorage.setItem("vac_payment", "true");
     navigate("/value-certificate/start");

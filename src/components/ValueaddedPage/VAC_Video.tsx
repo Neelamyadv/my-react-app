@@ -7,7 +7,7 @@ import { VideoPlayerState } from "../../types";
 export default function VAC_Video() {
   const navigate = useNavigate();
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [allowSeek, setAllowSeek] = useState(false);
+  const [allowSeek] = useState(false);
   const playerRef = useRef<ReactPlayer>(null);
 
   useEffect(() => {
