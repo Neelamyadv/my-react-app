@@ -11,30 +11,43 @@ interface RazorpayPaymentResponse {
   [key: string]: unknown;
 }
 
+interface PaymentRequest {
+  courseId: string;
+  courseName: string;
+  price: number;
+  originalPrice: number;
+  type: PaymentType;
+}
+
 export const usePayment = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [currentPaymentData, setCurrentPaymentData] = useState<PaymentData | null>(null);
 
-  const initiateCoursePayment = (courseId: string, courseName: string) => {
+  const initiateCoursePayment = (paymentRequest: PaymentRequest) => {
     // Check if user is logged in
     if (!user) {
-      toast.error('Please log in to enroll in courses');
+      toast.error('Please log in to make purchases');
       return;
     }
 
     const paymentData: PaymentData = {
-      type: PaymentType.COURSE,
-      itemId: courseId,
-      itemName: courseName,
-      amount: PRICING.COURSE.price,
+      type: paymentRequest.type,
+      itemId: paymentRequest.courseId,
+      itemName: paymentRequest.courseName,
+      amount: paymentRequest.price,
       userEmail: user.email,
       userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
       userPhone: user.phone
     };
 
-    logInfo('Initiating course payment', { courseId, courseName });
+    logInfo('Initiating payment', { 
+      type: paymentRequest.type, 
+      itemId: paymentRequest.courseId, 
+      itemName: paymentRequest.courseName,
+      amount: paymentRequest.price 
+    });
     setCurrentPaymentData(paymentData);
     setIsPaymentModalOpen(true);
   };
@@ -74,8 +87,9 @@ export const usePayment = () => {
     }
 
     try {
-      // Create enrollment record in database
-      if (currentPaymentData.type === PaymentType.COURSE && currentPaymentData.itemId) {
+      // Handle different payment types
+      if (currentPaymentData.type === PaymentType.COURSE) {
+        // Regular course enrollment
         const { enrollment, error } = await localDB.createEnrollment({
           user_id: user.id,
           course_id: currentPaymentData.itemId,
@@ -92,9 +106,10 @@ export const usePayment = () => {
         }
 
         logInfo('Course enrollment created', { enrollmentId: enrollment?.id });
+        toast.success(`🎉 Successfully enrolled in ${currentPaymentData.itemName}!`);
         
       } else if (currentPaymentData.type === PaymentType.PREMIUM_PASS) {
-        // For premium pass, create a special enrollment record
+        // Premium pass enrollment
         const { enrollment, error } = await localDB.createEnrollment({
           user_id: user.id,
           course_id: 'premium-pass',
@@ -110,16 +125,13 @@ export const usePayment = () => {
           return;
         }
 
-        console.log('Premium pass enrollment created:', enrollment);
-        
-        // Show premium success message
+        logInfo('Premium pass enrollment created', { enrollmentId: enrollment?.id });
         toast.success('🚀 Premium Pass activated! You now have access to all courses!');
         
         // Close the payment modal
         closePaymentModal();
         
-        // Trigger enrollment update event IMMEDIATELY
-        console.log('Dispatching enrollmentUpdated event for premium pass...');
+        // Trigger enrollment update event
         window.dispatchEvent(new CustomEvent('enrollmentUpdated', {
           detail: {
             type: currentPaymentData.type,
@@ -128,25 +140,98 @@ export const usePayment = () => {
           }
         }));
         
-        // Force a small delay to ensure state updates, then redirect
+        // Redirect to courses page
         setTimeout(() => {
-          console.log('Redirecting to courses page...');
           navigate('/courses');
         }, 1500);
         
-        return; // Early return for premium pass to avoid duplicate processing
+        return;
+        
+      } else if (currentPaymentData.type === PaymentType.EBOOK) {
+        // eBook purchase
+        const { enrollment, error } = await localDB.createEnrollment({
+          user_id: user.id,
+          course_id: currentPaymentData.itemId,
+          course_name: currentPaymentData.itemName,
+          payment_id: paymentResponse.razorpay_payment_id,
+          enrollment_type: 'ebook',
+          amount_paid: currentPaymentData.amount
+        });
+
+        if (error) {
+          logError('Failed to create eBook enrollment', error);
+          toast.error('Payment successful but eBook access failed. Please contact support.');
+          return;
+        }
+
+        logInfo('eBook enrollment created', { enrollmentId: enrollment?.id });
+        toast.success(`📚 Successfully purchased ${currentPaymentData.itemName}!`);
+        
+      } else if (currentPaymentData.type === PaymentType.EBOOK_BUNDLE) {
+        // eBook bundle purchase
+        const { enrollment, error } = await localDB.createEnrollment({
+          user_id: user.id,
+          course_id: currentPaymentData.itemId,
+          course_name: currentPaymentData.itemName,
+          payment_id: paymentResponse.razorpay_payment_id,
+          enrollment_type: 'ebook_bundle',
+          amount_paid: currentPaymentData.amount
+        });
+
+        if (error) {
+          logError('Failed to create eBook bundle enrollment', error);
+          toast.error('Payment successful but eBook bundle access failed. Please contact support.');
+          return;
+        }
+
+        logInfo('eBook bundle enrollment created', { enrollmentId: enrollment?.id });
+        toast.success(`📚 Successfully purchased ${currentPaymentData.itemName}!`);
+        
+      } else if (currentPaymentData.type === PaymentType.LIVE_TRAINING) {
+        // Live training enrollment
+        const { enrollment, error } = await localDB.createEnrollment({
+          user_id: user.id,
+          course_id: currentPaymentData.itemId,
+          course_name: currentPaymentData.itemName,
+          payment_id: paymentResponse.razorpay_payment_id,
+          enrollment_type: 'live_training',
+          amount_paid: currentPaymentData.amount
+        });
+
+        if (error) {
+          logError('Failed to create live training enrollment', error);
+          toast.error('Payment successful but live training enrollment failed. Please contact support.');
+          return;
+        }
+
+        logInfo('Live training enrollment created', { enrollmentId: enrollment?.id });
+        toast.success(`🎓 Successfully enrolled in ${currentPaymentData.itemName}!`);
+        
+      } else if (currentPaymentData.type === PaymentType.VAC) {
+        // Value-added certificate enrollment
+        const { enrollment, error } = await localDB.createEnrollment({
+          user_id: user.id,
+          course_id: currentPaymentData.itemId,
+          course_name: currentPaymentData.itemName,
+          payment_id: paymentResponse.razorpay_payment_id,
+          enrollment_type: 'vac',
+          amount_paid: currentPaymentData.amount
+        });
+
+        if (error) {
+          logError('Failed to create VAC enrollment', error);
+          toast.error('Payment successful but certificate enrollment failed. Please contact support.');
+          return;
+        }
+
+        logInfo('VAC enrollment created', { enrollmentId: enrollment?.id });
+        toast.success(`🏆 Successfully enrolled in ${currentPaymentData.itemName}!`);
       }
 
       // Close the payment modal
       closePaymentModal();
 
-      // Show success message for regular courses
-      if (currentPaymentData.type === PaymentType.COURSE) {
-        toast.success(`🎉 Successfully enrolled in ${currentPaymentData.itemName}!`);
-      }
-
-      // Trigger a custom event to notify components about the enrollment change
-      console.log('Dispatching enrollmentUpdated event...');
+      // Trigger enrollment update event
       window.dispatchEvent(new CustomEvent('enrollmentUpdated', {
         detail: {
           type: currentPaymentData.type,
@@ -155,15 +240,14 @@ export const usePayment = () => {
         }
       }));
 
-      // Force a page reload after a short delay to ensure UI updates
+      // Reload page to reflect changes
       setTimeout(() => {
-        console.log('Reloading page to reflect enrollment changes...');
         window.location.reload();
       }, 2000);
 
     } catch (error) {
       logError('Post-payment processing error', error);
-      toast.error('Payment successful but there was an issue processing your enrollment. Please contact support.');
+      toast.error('Payment successful but there was an issue processing your purchase. Please contact support.');
     }
   };
 

@@ -7,7 +7,7 @@ import CourseContent from './CourseContent';
 import { usePayment } from '../../hooks/usePayment';
 import { useEnrollment } from '../../hooks/useEnrollment';
 import { useAuth } from '../../lib/auth';
-import { PaymentType } from '../../types/payment';
+import { PaymentType } from '../../lib/razorpay';
 
 // Course data for all courses
 const courseData = {
@@ -302,7 +302,13 @@ const CourseDetailPage: React.FC = () => {
       return;
     }
     if (courseId && courseDetails) {
-      initiateCoursePayment(courseId, courseDetails.title);
+      initiateCoursePayment({
+        courseId: courseId,
+        courseName: courseDetails.title,
+        price: courseDetails.price,
+        originalPrice: courseDetails.originalPrice,
+        type: PaymentType.COURSE
+      });
     }
   };
 
@@ -322,17 +328,13 @@ const CourseDetailPage: React.FC = () => {
     const course = courseData[courseId as keyof typeof courseData];
     if (!course) return;
 
-    const paymentData = {
-      type: PaymentType.EBOOK,
-      itemId: courseId,
-      itemName: `${course.title} - eBook`,
-      amount: 299, // eBook price
-      userEmail: user.email,
-      userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
-      userPhone: user.phone
-    };
-
-    initiateCoursePayment(paymentData);
+    initiateCoursePayment({
+      courseId: courseId,
+      courseName: `${course.title} - eBook`,
+      price: 299,
+      originalPrice: 599,
+      type: PaymentType.EBOOK
+    });
   };
 
   const handleEbookBundlePurchase = () => {
@@ -341,17 +343,13 @@ const CourseDetailPage: React.FC = () => {
       return;
     }
 
-    const paymentData = {
-      type: PaymentType.EBOOK_BUNDLE,
-      itemId: 'ebook-bundle',
-      itemName: 'Complete Course eBook Bundle',
-      amount: 799, // eBook bundle price
-      userEmail: user.email,
-      userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
-      userPhone: user.phone
-    };
-
-    initiateCoursePayment(paymentData);
+    initiateCoursePayment({
+      courseId: 'ebook-bundle',
+      courseName: 'Complete Course eBook Bundle',
+      price: 799,
+      originalPrice: 2691,
+      type: PaymentType.EBOOK_BUNDLE
+    });
   };
 
   if (enrollmentLoading) {
