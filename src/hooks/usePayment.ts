@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PaymentData, PaymentType, PRICING } from '../lib/razorpay';
 import { useAuth } from '../lib/auth';
 import { localDB } from '../lib/database';
+import { emailService } from '../lib/emailService';
 import toast from 'react-hot-toast';
 import { logError, logInfo } from '../lib/logger';
 
@@ -106,7 +107,29 @@ export const usePayment = () => {
         }
 
         logInfo('Course enrollment created', { enrollmentId: enrollment?.id });
-        toast.success(`🎉 Successfully enrolled in ${currentPaymentData.itemName}!`);
+        
+        // Send payment confirmation email
+        await emailService.sendPaymentConfirmation({
+          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+          userEmail: user.email,
+          courseName: currentPaymentData.itemName,
+          amount: currentPaymentData.amount,
+          paymentId: paymentResponse.razorpay_payment_id,
+          paymentType: 'Course'
+        });
+        
+        // Send admin notification
+        await emailService.sendAdminNotification({
+          type: 'new_payment',
+          data: {
+            userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+            courseName: currentPaymentData.itemName,
+            amount: currentPaymentData.amount,
+            paymentId: paymentResponse.razorpay_payment_id
+          }
+        });
+        
+        toast.success(`🎉 Successfully enrolled in ${currentPaymentData.itemName}! Check your email for confirmation.`);
         
       } else if (currentPaymentData.type === PaymentType.PREMIUM_PASS) {
         // Premium pass enrollment
@@ -126,7 +149,29 @@ export const usePayment = () => {
         }
 
         logInfo('Premium pass enrollment created', { enrollmentId: enrollment?.id });
-        toast.success('🚀 Premium Pass activated! You now have access to all courses!');
+        
+        // Send payment confirmation email
+        await emailService.sendPaymentConfirmation({
+          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+          userEmail: user.email,
+          courseName: currentPaymentData.itemName,
+          amount: currentPaymentData.amount,
+          paymentId: paymentResponse.razorpay_payment_id,
+          paymentType: 'Premium Pass'
+        });
+        
+        // Send admin notification
+        await emailService.sendAdminNotification({
+          type: 'new_payment',
+          data: {
+            userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+            courseName: currentPaymentData.itemName,
+            amount: currentPaymentData.amount,
+            paymentId: paymentResponse.razorpay_payment_id
+          }
+        });
+        
+        toast.success('🚀 Premium Pass activated! You now have access to all courses! Check your email for confirmation.');
         
         // Close the payment modal
         closePaymentModal();
@@ -165,7 +210,18 @@ export const usePayment = () => {
         }
 
         logInfo('eBook enrollment created', { enrollmentId: enrollment?.id });
-        toast.success(`📚 Successfully purchased ${currentPaymentData.itemName}!`);
+        
+        // Send payment confirmation email
+        await emailService.sendPaymentConfirmation({
+          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+          userEmail: user.email,
+          courseName: currentPaymentData.itemName,
+          amount: currentPaymentData.amount,
+          paymentId: paymentResponse.razorpay_payment_id,
+          paymentType: 'eBook'
+        });
+        
+        toast.success(`📚 Successfully purchased ${currentPaymentData.itemName}! Check your email for confirmation.`);
         
       } else if (currentPaymentData.type === PaymentType.EBOOK_BUNDLE) {
         // eBook bundle purchase
@@ -185,7 +241,18 @@ export const usePayment = () => {
         }
 
         logInfo('eBook bundle enrollment created', { enrollmentId: enrollment?.id });
-        toast.success(`📚 Successfully purchased ${currentPaymentData.itemName}!`);
+        
+        // Send payment confirmation email
+        await emailService.sendPaymentConfirmation({
+          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+          userEmail: user.email,
+          courseName: currentPaymentData.itemName,
+          amount: currentPaymentData.amount,
+          paymentId: paymentResponse.razorpay_payment_id,
+          paymentType: 'eBook Bundle'
+        });
+        
+        toast.success(`📚 Successfully purchased ${currentPaymentData.itemName}! Check your email for confirmation.`);
         
       } else if (currentPaymentData.type === PaymentType.LIVE_TRAINING) {
         // Live training enrollment
@@ -205,7 +272,18 @@ export const usePayment = () => {
         }
 
         logInfo('Live training enrollment created', { enrollmentId: enrollment?.id });
-        toast.success(`🎓 Successfully enrolled in ${currentPaymentData.itemName}!`);
+        
+        // Send payment confirmation email
+        await emailService.sendPaymentConfirmation({
+          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+          userEmail: user.email,
+          courseName: currentPaymentData.itemName,
+          amount: currentPaymentData.amount,
+          paymentId: paymentResponse.razorpay_payment_id,
+          paymentType: 'Live Training'
+        });
+        
+        toast.success(`🎓 Successfully enrolled in ${currentPaymentData.itemName}! Check your email for confirmation.`);
         
       } else if (currentPaymentData.type === PaymentType.VAC) {
         // Value-added certificate enrollment
@@ -225,7 +303,18 @@ export const usePayment = () => {
         }
 
         logInfo('VAC enrollment created', { enrollmentId: enrollment?.id });
-        toast.success(`🏆 Successfully enrolled in ${currentPaymentData.itemName}!`);
+        
+        // Send payment confirmation email
+        await emailService.sendPaymentConfirmation({
+          userName: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'User',
+          userEmail: user.email,
+          courseName: currentPaymentData.itemName,
+          amount: currentPaymentData.amount,
+          paymentId: paymentResponse.razorpay_payment_id,
+          paymentType: 'VAC Certificate'
+        });
+        
+        toast.success(`🏆 Successfully enrolled in ${currentPaymentData.itemName}! Check your email for confirmation.`);
       }
 
       // Close the payment modal

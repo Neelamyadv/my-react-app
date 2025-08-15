@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone } from 'lucide-react';
 import { localDB } from '../lib/database';
+import { emailService } from '../lib/emailService';
 import toast from 'react-hot-toast';
 
 const ContactPage = () => {
@@ -17,6 +18,7 @@ const ContactPage = () => {
     setLoading(true);
     
     try {
+      // Save message to database
       const { error } = await localDB.insertContactMessage(formData);
 
       if (error) {
@@ -24,7 +26,21 @@ const ContactPage = () => {
         return;
       }
 
-      toast.success('Message sent successfully!');
+      // Send confirmation email to user
+      const emailResult = await emailService.sendContactFormConfirmation(formData);
+      
+      if (emailResult.success) {
+        toast.success('Message sent successfully! Check your email for confirmation.');
+      } else {
+        toast.success('Message sent successfully! (Email confirmation failed)');
+      }
+
+      // Send notification to admin
+      await emailService.sendAdminNotification({
+        type: 'new_contact',
+        data: formData
+      });
+
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (error) {
       toast.error('Failed to send message. Please try again.');

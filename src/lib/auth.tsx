@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { localDB } from './database';
 import { googleAuth } from './googleAuth';
+import { emailService } from './emailService';
 
 interface User {
   id: string;
@@ -88,6 +89,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       if (newUser) {
+        // Send welcome email
+        await emailService.sendWelcomeEmail({
+          userName: `${userData.first_name} ${userData.last_name}`,
+          userEmail: userData.email
+        });
+        
+        // Send admin notification
+        await emailService.sendAdminNotification({
+          type: 'new_user',
+          data: {
+            name: `${userData.first_name} ${userData.last_name}`,
+            email: userData.email
+          }
+        });
+        
         // Don't automatically sign in after signup - user must login with credentials
         // Account created successfully
       }
