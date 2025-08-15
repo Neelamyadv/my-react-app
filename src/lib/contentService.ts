@@ -104,7 +104,7 @@ class ContentService {
   }
 
   // Submit quiz answers
-  async submitQuiz(quizId: string, userId: string, answers: Record<string, any>): Promise<{
+  async submitQuiz(quizId: string, userId: string, answers: Record<string, string | number | (string | number)[]>): Promise<{
     score: number;
     passed: boolean;
     feedback: string[];

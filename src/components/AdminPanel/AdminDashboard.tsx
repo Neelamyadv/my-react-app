@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, CreditCard, Zap, Activity } from 'lucide-react';
-import { localDB } from '../../lib/database';
+// import { localDB } from '../../lib/database'; // Unused import
 import { User, Enrollment, ContactMessage } from '../../lib/supabase';
 
 interface DashboardStats {

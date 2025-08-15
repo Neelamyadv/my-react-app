@@ -1,10 +1,6 @@
-import React, { Suspense, lazy, ComponentType } from 'react';
+import React, { Suspense, lazy } from 'react';
 import LoadingSpinner from './LoadingSpinner';
-
-interface LazyLoaderProps {
-  component: () => Promise<{ default: ComponentType<any> }>;
-  fallback?: React.ReactNode;
-}
+import { LazyLoaderProps } from '../types';
 
 const LazyLoader: React.FC<LazyLoaderProps> = ({ component, fallback }) => {
   const LazyComponent = lazy(component);

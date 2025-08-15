@@ -3,7 +3,7 @@ import { escapeHTML } from './utils/security';
 
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: unknown;
   }
 }
 

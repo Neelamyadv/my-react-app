@@ -162,16 +162,13 @@ const CoursesPage = () => {
     isPaymentModalOpen,
     currentPaymentData,
     initiateCoursePayment,
-    initiatePremiumPassPayment,
     closePaymentModal,
     handlePaymentSuccess
   } = usePayment();
 
   // Enrollment integration
   const {
-    enrollments,
     loading: enrollmentLoading,
-    hasPremiumPass,
     isEnrolledInCourseSync,
     refreshEnrollments
   } = useEnrollment();
@@ -192,7 +189,7 @@ const CoursesPage = () => {
   // Listen for enrollment updates
   useEffect(() => {
     const handleEnrollmentUpdate = () => {
-      console.log('Enrollment update event received, refreshing...');
+      // Enrollment update event received, refreshing...
       refreshEnrollments();
     };
 

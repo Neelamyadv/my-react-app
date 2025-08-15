@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from './lib/auth.tsx';
+import { AuthProvider } from './lib/auth';
 import { resetToProductionState } from './lib/cleanupData';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import BenefitsSection from './components/BenefitsSection';
 import OfferingsSection from './components/OfferingsSection';
-import TrainingSection from './components/Trainingsection.tsx';
+import TrainingSection from './components/TrainingSection';
 import ValuedCertificate from './components/ValuedCertificate';
 import ValueCert from './components/ValueaddedPage/valuecert';
 import CoursesSection from './components/CoursesSection';

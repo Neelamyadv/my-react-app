@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { X, CreditCard, Shield, CheckCircle, AlertCircle } from 'lucide-react';
 import { razorpayService, RazorpayService, PaymentData, PRICING } from '../../lib/razorpay';
 import { useAuth } from '../../lib/auth';
+import { PaymentResponse } from '../../types';
 import toast from 'react-hot-toast';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   paymentData: PaymentData;
-  onSuccess?: (paymentResponse: any) => void;
+  onSuccess?: (paymentResponse: PaymentResponse) => void;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
@@ -51,12 +52,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         }
       };
 
-      console.log('Initiating payment with options:', paymentOptions);
-
       // We'll use a mock razorpayService for this example
       const result = await razorpayService.createPayment(paymentOptions);
-
-      console.log('Payment result:', result);
 
       if (result.success && result.data) {
         toast.success('🎉 Payment successful! Welcome to Zyntiq!');

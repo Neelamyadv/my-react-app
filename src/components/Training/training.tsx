@@ -4,6 +4,7 @@ import './training.css';
 import { useAuth } from '../../lib/auth';
 import PaymentModal from '../Payment/PaymentModal';
 import { PaymentData, PaymentType } from '../../lib/razorpay';
+// import { PaymentResponse } from '../../types'; // Unused import
 
 // A custom hook to centralize payment logic
 const useTrainingPayment = () => {
@@ -29,7 +30,7 @@ const useTrainingPayment = () => {
       userPhone: user.phone
     };
 
-    console.log('Initiating training payment:', paymentData);
+    // Initiating training payment
     setCurrentPaymentData(paymentData);
     setIsPaymentModalOpen(true);
   };
@@ -39,8 +40,8 @@ const useTrainingPayment = () => {
     setCurrentPaymentData(null);
   };
 
-  const handlePaymentSuccess = (paymentResponse: any) => {
-    console.log('Payment successful:', paymentResponse);
+  const handlePaymentSuccess = () => {
+    // Payment successful
     alert('Enrollment successful! Welcome to our Corporate Training Program!');
     closePaymentModal();
   };

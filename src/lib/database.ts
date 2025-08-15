@@ -130,7 +130,7 @@ class LocalStorageDatabase {
       users.push(newUser);
       this.setTable('users', users);
       // Remove password from returned user object
-      const { password, ...userWithoutPassword } = newUser;
+      const { password: _, ...userWithoutPassword } = newUser;
       logInfo('User registered successfully', { email: sanitizedData.email });
       return { user: userWithoutPassword, error: null };
     } catch (error) {

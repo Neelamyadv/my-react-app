@@ -6,6 +6,11 @@ import { localDB } from '../lib/database';
 import toast from 'react-hot-toast';
 import { logError, logInfo } from '../lib/logger';
 
+interface RazorpayPaymentResponse {
+  razorpay_payment_id: string;
+  [key: string]: unknown;
+}
+
 export const usePayment = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -60,7 +65,7 @@ export const usePayment = () => {
     setCurrentPaymentData(null);
   };
 
-  const handlePaymentSuccess = async (paymentResponse: any) => {
+  const handlePaymentSuccess = async (paymentResponse: RazorpayPaymentResponse) => {
     logInfo('Payment successful', { paymentId: paymentResponse.razorpay_payment_id });
     
     if (!user || !currentPaymentData) {

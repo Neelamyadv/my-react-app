@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Clock, BookOpen, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { Enrollment } from '../../types';
 import PaymentModal from '../Payment/PaymentModal';
 import CourseContent from './CourseContent';
 import { usePayment } from '../../hooks/usePayment';
@@ -214,7 +215,7 @@ const CourseDetailPage: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const { user } = useAuth();
   const [isEnrolled, setIsEnrolled] = useState(false);
-  const [enrollment, setEnrollment] = useState<any>(null);
+  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
   
   // Payment integration
   const {
@@ -270,7 +271,7 @@ const CourseDetailPage: React.FC = () => {
   // Listen for enrollment updates
   useEffect(() => {
     const handleEnrollmentUpdate = () => {
-      console.log('Enrollment update event received in course detail, refreshing...');
+      // Enrollment update event received in course detail, refreshing...
       refreshEnrollments();
     };
 
@@ -284,7 +285,7 @@ const CourseDetailPage: React.FC = () => {
       const enrolled = isEnrolledInCourseSync(courseId);
       const courseEnrollment = getCourseEnrollment(courseId);
       
-      console.log(`Course ${courseId} enrollment status:`, { enrolled, courseEnrollment, hasPremiumPass });
+      // Course enrollment status updated
       
       setIsEnrolled(enrolled);
       setEnrollment(courseEnrollment);

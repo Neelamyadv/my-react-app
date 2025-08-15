@@ -2,12 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { vacTopics } from "../../vacConfig";
 import ReactPlayer from "react-player";
+import { VideoPlayerState } from "../../types";
 
 export default function VAC_Video() {
   const navigate = useNavigate();
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [allowSeek, setAllowSeek] = useState(false);
-  const playerRef = useRef<any>(null);
+  const [allowSeek] = useState(false);
+  const playerRef = useRef<ReactPlayer>(null);
 
   useEffect(() => {
     // Payment check
@@ -33,7 +34,7 @@ export default function VAC_Video() {
     setVideoUrl(topic.videoUrl);
   }, [navigate]);
 
-  const handleProgress = (state: any) => {
+  const handleProgress = (state: VideoPlayerState) => {
     // Prevent forward seek
     if (!allowSeek && playerRef.current) {
       playerRef.current.seekTo(state.playedSeconds, "seconds");

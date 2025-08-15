@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, Clock, Award, RotateCcw } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, RotateCcw } from 'lucide-react';
 import { QuizContent, QuizQuestion } from '../../lib/contentService';
 
 interface QuizPlayerProps {
@@ -15,7 +15,7 @@ interface QuizPlayerProps {
 
 const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<Record<string, string | number | (string | number)[]>>({});
   const [timeLeft, setTimeLeft] = useState(quiz.timeLimit ? quiz.timeLimit * 60 : null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [results, setResults] = useState<{
@@ -49,7 +49,7 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     return () => clearInterval(timer);
   }, [timeLeft, isSubmitted]);
 
-  const handleAnswerChange = (questionId: string, answer: any) => {
+  const handleAnswerChange = (questionId: string, answer: string | number | (string | number)[]) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: answer

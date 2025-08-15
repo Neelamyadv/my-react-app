@@ -6,38 +6,36 @@ import { useAuth } from '../../lib/auth';
 import { certificateService } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
 import { useState, useEffect } from 'react';
+import { Certificate, Course } from '../../types';
 import toast from 'react-hot-toast';
 
 const MyCoursesPage = () => {
   const { user } = useAuth();
   const { enrollments, loading, hasPremiumPass } = useEnrollment();
-  const [selectedCertificate, setSelectedCertificate] = useState<any>(null);
+  const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
-  const [certificates, setCertificates] = useState<any[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
 
   // Load certificates when component mounts and when enrollments change
   useEffect(() => {
     if (user) {
       const userCertificates = certificateService.getUserCertificates();
       setCertificates(userCertificates);
-      console.log('Loaded certificates on mount:', userCertificates);
+      // Loaded certificates on mount
     }
   }, [user, enrollments]);
 
   // Listen for certificate updates
   useEffect(() => {
-    const handleCertificateUpdate = (event: any) => {
-      console.log('Certificate update event received:', event);
+    const handleCertificateUpdate = () => {
       if (user) {
         const updatedCertificates = certificateService.refreshCertificates();
         setCertificates(updatedCertificates);
-        console.log('Updated certificates state:', updatedCertificates);
       }
     };
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'zyntiq_certificates') {
-        console.log('Storage change detected for certificates');
         handleCertificateUpdate(e);
       }
     };
@@ -109,7 +107,7 @@ const MyCoursesPage = () => {
     return lessons[courseId] || '50 lessons';
   };
 
-  const handleCertificateClick = async (course: any) => {
+  const handleCertificateClick = async (course: Course) => {
     if (!user) {
       toast.error('Please log in to view your certificate');
       return;
@@ -121,7 +119,7 @@ const MyCoursesPage = () => {
     }
 
     try {
-      console.log('Certificate button clicked for course:', course.course_id);
+      // Certificate button clicked for course
       
       // Check if certificate already exists for this user and course
       const studentName = `${user.first_name} ${user.last_name}`.trim();
@@ -135,22 +133,18 @@ const MyCoursesPage = () => {
       if (userCertificate) {
         // Use existing certificate
         certificate = userCertificate;
-        console.log('Using existing certificate:', certificate);
         toast.success('Certificate loaded successfully!');
       } else {
         // Generate new certificate
-        console.log('Generating new certificate for:', studentName, course.course_name, course.course_id);
         certificate = await certificateService.generateCertificate(
           studentName,
           course.course_name,
           course.course_id
         );
-        console.log('Generated new certificate:', certificate);
         
         // Update local certificates state immediately
         const updatedCertificates = certificateService.getUserCertificates();
         setCertificates(updatedCertificates);
-        console.log('Updated local certificates state:', updatedCertificates);
         
         toast.success('Certificate generated successfully!');
       }

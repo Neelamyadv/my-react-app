@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Award, Download, Share2, Eye, Calendar, Search } from 'lucide-react';
+import { Award, Share2, Eye, Calendar, Search } from 'lucide-react';
 import { certificateService, CertificateData } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
 
