@@ -7,7 +7,7 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import BenefitsSection from './components/BenefitsSection';
 import OfferingsSection from './components/OfferingsSection';
-import TrainingSection from './components/TrainingSection';
+import TrainingSection from './components/Trainingsection';
 import ValuedCertificate from './components/ValuedCertificate';
 import ValueCert from './components/ValueaddedPage/valuecert';
 import CoursesSection from './components/CoursesSection';
@@ -35,6 +35,7 @@ import VAC_TopicSelect from "./components/ValueaddedPage/VAC_TopicSelect";
 import VAC_Video from "./components/ValueaddedPage/VAC_Video";
 import VAC_Quiz from "./components/ValueaddedPage/VAC_Quiz";
 import VAC_Certificate from "./components/ValueaddedPage/VAC_Certificate";
+
 
 function App() {
   return (
@@ -104,6 +105,7 @@ const AppContent = () => {
         <Route path="/value-certificate/video" element={<VAC_Video />} />
         <Route path="/value-certificate/quiz" element={<VAC_Quiz />} />
         <Route path="/value-certificate/certificate" element={<VAC_Certificate />} />
+        
       </Routes>
       {footer}
       

@@ -1,71 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { vacTopics } from "../../vacConfig";
-import ReactPlayer from "react-player";
-import { VideoPlayerState } from "../../types";
 
 export default function VAC_Video() {
+  const { topicId } = useParams();
   const navigate = useNavigate();
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [allowSeek] = useState(false);
-  const playerRef = useRef<ReactPlayer>(null);
+  const topic = vacTopics.find((t) => t.id === topicId);
 
-  useEffect(() => {
-    // Payment check
-    if (!localStorage.getItem("vac_payment")) {
-      navigate("/value-certificate");
-      return;
-    }
+  const [videoEnded, setVideoEnded] = useState(false);
 
-    const topicId = localStorage.getItem("vac_topic");
-    const topic = vacTopics.find((t) => t.id === topicId);
-
-    if (!topic) {
-      navigate("/value-certificate/start");
-      return;
-    }
-
-    if (!topic.videoUrl) {
-      // Agar video nahi hai, direct quiz page
-      navigate("/value-certificate/quiz");
-      return;
-    }
-
-    setVideoUrl(topic.videoUrl);
-  }, [navigate]);
-
-  const handleProgress = (state: VideoPlayerState) => {
-    // Prevent forward seek
-    if (!allowSeek && playerRef.current) {
-      playerRef.current.seekTo(state.playedSeconds, "seconds");
-    }
-  };
-
-  const handleEnded = () => {
-    navigate("/value-certificate/quiz");
-  };
+  if (!topic) {
+    return <div className="text-center text-white p-10">Topic not found</div>;
+  }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Watch the Video</h2>
-      {videoUrl && (
-        <ReactPlayer
-          ref={playerRef}
-          url={videoUrl}
-          controls={true}
-          width="100%"
-          height="480px"
-          onProgress={handleProgress}
-          onEnded={handleEnded}
-          config={{
-            file: {
-              attributes: {
-                controlsList: "nodownload", // Prevent download
-              },
-            },
-          }}
-        />
-      )}
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black px-6 py-12 flex flex-col items-center">
+      <h1 className="text-4xl font-bold text-white mb-6">{topic.title}</h1>
+      <p className="text-gray-300 mb-8 max-w-2xl text-center">{topic.description}</p>
+
+      <div className="w-full max-w-4xl mb-8">
+        <iframe
+          className="w-full h-80 rounded-lg shadow-lg"
+          src={topic.videoUrl}
+          title={topic.title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          onEnded={() => setVideoEnded(true)}
+        ></iframe>
+      </div>
+
+      <button
+        disabled={!videoEnded}
+        onClick={() => navigate(`/value-certificate/quiz/${topic.id}`)}
+        className={`px-6 py-3 font-semibold rounded-lg transition-all ${
+          videoEnded
+            ? "bg-gradient-to-r from-green-500 to-teal-500 text-white hover:scale-105"
+            : "bg-gray-600 text-gray-400 cursor-not-allowed"
+        }`}
+      >
+        Continue to Quiz
+      </button>
     </div>
   );
 }

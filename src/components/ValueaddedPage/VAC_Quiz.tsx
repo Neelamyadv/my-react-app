@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { vacTopics } from "../../vacConfig";
-import { Topic, QuizQuestion } from "../../types";
-
 
 export default function VAC_Quiz() {
   const navigate = useNavigate();
-  const [topic, setTopic] = useState<Topic | null>(null);
+  const [topic, setTopic] = useState<any>(null);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [attempt, setAttempt] = useState<number>(0);
   const [submitted, setSubmitted] = useState(false);
@@ -26,7 +24,6 @@ export default function VAC_Quiz() {
     }
     setTopic(found);
 
-    // Get current attempt from storage
     const savedAttempt = parseInt(localStorage.getItem("vac_attempt") || "0", 10);
     setAttempt(savedAttempt);
   }, [navigate]);
@@ -38,12 +35,20 @@ export default function VAC_Quiz() {
   const handleSubmit = () => {
     if (!topic) return;
 
+    // ensure all answered
+    const total = topic.questions.length;
+    const answered = Object.keys(answers).length;
+    if (answered < total) {
+      alert(`Please answer all ${total} questions.`);
+      return;
+    }
+
     let correctCount = 0;
-    topic.questions.forEach((q: QuizQuestion, index: number) => {
+    topic.questions.forEach((q: any, index: number) => {
       if (answers[index] === q.answer) correctCount++;
     });
 
-    const percent = (correctCount / topic.questions.length) * 100;
+    const percent = (correctCount / total) * 100;
     setScore(percent);
     setSubmitted(true);
 
@@ -63,16 +68,27 @@ export default function VAC_Quiz() {
     } else {
       if (newAttempt >= 2) {
         alert("Failed! No more attempts left.");
+      } else {
+        alert("Failed! You can try once more.");
       }
     }
   };
 
   if (!topic) return null;
 
+  const totalQ = topic.questions?.length || 0;
+  const answeredQ = Object.keys(answers).length;
+
   return (
     <div className="p-8 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Quiz – {topic.name}</h2>
-      {topic.questions.map((q: QuizQuestion, qIndex: number) => (
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">Quiz – {topic.name}</h2>
+        <span className="text-sm text-gray-600">
+          Attempt: <b>{attempt + 1}</b>/2
+        </span>
+      </div>
+
+      {topic.questions.map((q: any, qIndex: number) => (
         <div key={qIndex} className="mb-6">
           <p className="font-medium mb-2">{q.q}</p>
           {q.options.map((opt: string, optIndex: number) => (
@@ -88,15 +104,23 @@ export default function VAC_Quiz() {
           ))}
         </div>
       ))}
+
       {!submitted && (
         <button
           onClick={handleSubmit}
-          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-60"
+          disabled={answeredQ < totalQ}
+          title={answeredQ < totalQ ? "Answer all questions to submit" : "Submit"}
         >
           Submit Quiz
         </button>
       )}
-      {submitted && <p className="mt-4">Your Score: {score}%</p>}
+
+      {submitted && (
+        <p className="mt-4">
+          Your Score: <b>{score.toFixed(0)}%</b>
+        </p>
+      )}
     </div>
   );
 }

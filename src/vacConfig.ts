@@ -1,41 +1,74 @@
-// Value Added Certificate ka data yahan store hoga
-// Easy to edit: bas neeche array me topic add/update/remove karo
-
 export const vacTopics = [
   {
-    id: "ai-basics", // unique id
-    name: "AI Basics", // topic ka naam
-    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // video link (null ho to direct quiz chalega)
-    questions: [
-      {
-        q: "AI ka full form kya hai?",
-        options: [
-          "Artificial Intel",
-          "Artificial Intelligence",
-          "Auto Intelligence",
-          "None"
-        ],
-        answer: 1, // correct option ka index
-      },
-      {
-        q: "AI ka ek real example kaun sa hai?",
-        options: ["ChatGPT", "MS Paint", "Notepad", "Calculator"],
-        answer: 0,
-      },
-    ],
+    id: "ai-basics",
+    title: "AI Basics",
+    description: "Understand the fundamentals of Artificial Intelligence",
+    videoUrl: "https://www.youtube.com/embed/placeholder1",
   },
   {
-    id: "no-video-demo",
-    name: "No Video Example",
-    videoUrl: null, // is topic me video nahi hoga
-    questions: [
-      { q: "2 + 2 = ?", options: ["3", "4", "5", "6"], answer: 1 },
-      { q: "Sun rises from?", options: ["West", "East", "North", "South"], answer: 1 },
-    ],
+    id: "ml-intro",
+    title: "Machine Learning Intro",
+    description: "Get started with Machine Learning concepts and models",
+    videoUrl: "https://www.youtube.com/embed/placeholder2",
+  },
+  {
+    id: "python-for-ai",
+    title: "Python for AI",
+    description: "Learn Python essentials for AI development",
+    videoUrl: "https://www.youtube.com/embed/placeholder3",
+  },
+  {
+    id: "data-science",
+    title: "Data Science Essentials",
+    description: "Data cleaning, visualization, and analysis techniques",
+    videoUrl: "https://www.youtube.com/embed/placeholder4",
+  },
+  {
+    id: "deep-learning",
+    title: "Deep Learning Fundamentals",
+    description: "Neural networks, CNNs, RNNs, and more",
+    videoUrl: "https://www.youtube.com/embed/placeholder5",
+  },
+  {
+    id: "nlp",
+    title: "Natural Language Processing",
+    description: "Text processing and sentiment analysis",
+    videoUrl: "https://www.youtube.com/embed/placeholder6",
+  },
+  {
+    id: "cv",
+    title: "Computer Vision Basics",
+    description: "Image processing and object detection",
+    videoUrl: "https://www.youtube.com/embed/placeholder7",
+  },
+  {
+    id: "cloud-ai",
+    title: "AI on Cloud",
+    description: "Deploy AI models using cloud services",
+    videoUrl: "https://www.youtube.com/embed/placeholder8",
+  },
+  {
+    id: "generative-ai",
+    title: "Generative AI",
+    description: "Create images, text, and music with AI",
+    videoUrl: "https://www.youtube.com/embed/placeholder9",
+  },
+  {
+    id: "chatbot-dev",
+    title: "Chatbot Development",
+    description: "Build AI-powered chatbots for websites",
+    videoUrl: "https://www.youtube.com/embed/placeholder10",
+  },
+  {
+    id: "ai-ethics",
+    title: "AI Ethics & Safety",
+    description: "Learn responsible AI practices",
+    videoUrl: "https://www.youtube.com/embed/placeholder11",
+  },
+  {
+    id: "ai-in-business",
+    title: "AI in Business",
+    description: "Use AI for marketing, sales, and automation",
+    videoUrl: "https://www.youtube.com/embed/placeholder12",
   },
 ];
-
-// helper function to get topic by id
-export const getTopicById = (id: string) => {
-  return vacTopics.find((t) => t.id === id);
-};
