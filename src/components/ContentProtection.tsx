@@ -244,7 +244,7 @@ const ContentProtection: React.FC<ContentProtectionProps> = ({
       </div>
 
       {/* 📝 Protection CSS */}
-      <style jsx>{`
+      <style>{`
         .protected-content {
           -webkit-user-select: none;
           -moz-user-select: none;
