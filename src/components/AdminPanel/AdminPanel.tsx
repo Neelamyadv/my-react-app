@@ -6,6 +6,7 @@ import ContactMessages from './ContactMessages';
 import PaymentManagement from './PaymentManagement';
 import EbookAccessManagement from './EbookAccessManagement';
 import CourseAccessManagement from './CourseAccessManagement';
+import AdminSettings from './AdminSettings';
 import AdminAuthGuard from '../Auth/AdminAuthGuard';
 import { useAuth } from '../../lib/auth';
 
@@ -66,77 +67,7 @@ const AdminPanel: React.FC = () => {
       case 'messages':
         return <ContactMessages />;
       case 'settings':
-        return (
-          <div className="p-4 md:p-6 max-w-7xl mx-auto">
-            <h1 className="text-xl md:text-2xl font-bold text-[var(--admin-text)] mb-6">Admin Settings</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* General Settings */}
-              <div className="bg-[var(--admin-card)] rounded-lg shadow-sm p-4 md:p-6 border border-[var(--admin-border)]">
-                <h2 className="text-lg font-semibold text-[var(--admin-text)] mb-4">General Settings</h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Site Name</label>
-                    <input type="text" className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]" placeholder="Zyntiq" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Logo URL</label>
-                    <input type="text" className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]" placeholder="https://..." />
-                  </div>
-                  <button type="button" className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Save</button>
-                </form>
-              </div>
-              {/* Email Settings */}
-              <div className="bg-[var(--admin-card)] rounded-lg shadow-sm p-4 md:p-6 border border-[var(--admin-border)]">
-                <h2 className="text-lg font-semibold text-[var(--admin-text)] mb-4">Email Configuration</h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">SMTP Server</label>
-                    <input type="text" className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]" placeholder="smtp.example.com" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Sender Email</label>
-                    <input type="email" className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]" placeholder="admin@zyntiq.in" />
-                  </div>
-                  <button type="button" className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Save</button>
-                </form>
-              </div>
-              {/* Payment Settings */}
-              <div className="bg-[var(--admin-card)] rounded-lg shadow-sm p-4 md:p-6 border border-[var(--admin-border)]">
-                <h2 className="text-lg font-semibold text-[var(--admin-text)] mb-4">Payment Settings</h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Payment Gateway Key</label>
-                    <input type="text" className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]" placeholder="rzp_test_..." />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Currency</label>
-                    <input type="text" className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]" placeholder="INR" />
-                  </div>
-                  <button type="button" className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Save</button>
-                </form>
-              </div>
-              {/* Security Settings */}
-              <div className="bg-[var(--admin-card)] rounded-lg shadow-sm p-4 md:p-6 border border-[var(--admin-border)]">
-                <h2 className="text-lg font-semibold text-[var(--admin-text)] mb-4">Security Settings</h2>
-                <form className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-[var(--admin-text-secondary)] mb-1">Password Policy</label>
-                    <select className="w-full px-3 py-2 rounded-md bg-[var(--admin-bg)] border border-[var(--admin-border)] text-[var(--admin-text)]">
-                      <option>Minimum 6 characters</option>
-                      <option>Minimum 8 characters, 1 number</option>
-                      <option>Minimum 10 characters, 1 number, 1 symbol</option>
-                    </select>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input type="checkbox" id="2fa" className="accent-indigo-600" />
-                    <label htmlFor="2fa" className="text-[var(--admin-text-secondary)] text-sm">Enable Two-Factor Authentication</label>
-                  </div>
-                  <button type="button" className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Save</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        );
+        return <AdminSettings />;
       default:
         return <AdminDashboard onNavigate={handleNavigation} />;
     }

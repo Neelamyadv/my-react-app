@@ -384,16 +384,16 @@ export const PRICING = {
     discount: 63
   },
   EBOOK: {
-    price: 299,
+    price: 345,
     originalPrice: 599,
-    discount: 50
+    discount: 42
   },
   EBOOK_BUNDLE: {
     price: 799,
-    originalPrice: 2691,
-    discount: 70
+    originalPrice: 3105,
+    discount: 74
   }
-} as const;
+};
 
 // Payment types
 export enum PaymentType {
