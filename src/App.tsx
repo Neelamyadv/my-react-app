@@ -7,7 +7,9 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import BenefitsSection from './components/BenefitsSection';
 import OfferingsSection from './components/OfferingsSection';
-import TrainingSection from './components/Trainingsection';
+import TrainingSection from './components/Trainingsection.tsx';
+import ValuedCertificate from './components/ValuedCertificate';
+import ValueCert from './components/ValueaddedPage/valuecert';
 import CoursesSection from './components/CoursesSection';
 import TestimonialsSection from './components/TestimonialsSection';
 import PricingSection from './components/PricingSection';
@@ -28,6 +30,11 @@ import AdminPanel from './components/AdminPanel/AdminPanel';
 import AccessPanel from './components/AdminPanel/AccessPanel';
 import WhatsAppFloat from './components/WhatsAppFloat';
 import Training from './components/Training/training';
+import ValueCertIntro from "./components/ValueaddedPage/ValueCertIntro";
+import VAC_TopicSelect from "./components/ValueaddedPage/VAC_TopicSelect";
+import VAC_Video from "./components/ValueaddedPage/VAC_Video";
+import VAC_Quiz from "./components/ValueaddedPage/VAC_Quiz";
+import VAC_Certificate from "./components/ValueaddedPage/VAC_Certificate";
 
 function App() {
   return (
@@ -67,9 +74,10 @@ const AppContent = () => {
             <BenefitsSection />
             <OfferingsSection />
             <TrainingSection />
+            <ValuedCertificate />
             <CoursesSection />
-            <TestimonialsSection />
             <PricingSection />
+            <TestimonialsSection />
           </main>
         } />
         {/* The new route for your training page is added here */}
@@ -83,7 +91,6 @@ const AppContent = () => {
         <Route path="/courses/:courseId" element={<CourseDetailPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/premium-pass" element={<PremiumPassPage />} />
-    
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/terms-of-service" element={<TermsOfServicePage />} />
         <Route path="/refund-policy" element={<RefundPolicyPage />} />
@@ -91,6 +98,12 @@ const AppContent = () => {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/access" element={<AccessPanel />} />
         <Route path="/live-training" element={<Training />} />
+        <Route path="/certificate" element={<ValueCert />} />
+        <Route path="/value-certificate" element={<ValueCertIntro />} />
+        <Route path="/value-certificate/start" element={<VAC_TopicSelect />} />
+        <Route path="/value-certificate/video" element={<VAC_Video />} />
+        <Route path="/value-certificate/quiz" element={<VAC_Quiz />} />
+        <Route path="/value-certificate/certificate" element={<VAC_Certificate />} />
       </Routes>
       {footer}
       
