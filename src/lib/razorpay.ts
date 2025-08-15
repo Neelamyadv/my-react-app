@@ -1,5 +1,6 @@
 // Razorpay payment integration
 import { escapeHTML } from './utils/security';
+import { API_CONFIG } from './apiConfig';
 
 declare global {
   interface Window {
@@ -57,9 +58,9 @@ export class RazorpayService {
   private isProduction: boolean;
 
   constructor() {
-    this.keyId = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_demo_key';
-    this.secretKey = import.meta.env.VITE_RAZORPAY_SECRET_KEY || '';
-    this.isProduction = this.keyId !== 'rzp_test_demo_key' && this.secretKey !== '';
+    this.keyId = API_CONFIG.RAZORPAY.KEY_ID;
+    this.secretKey = API_CONFIG.RAZORPAY.KEY_SECRET;
+    this.isProduction = import.meta.env.PROD;
     this.loadRazorpayScript();
   }
 
