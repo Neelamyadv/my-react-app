@@ -110,10 +110,10 @@ class BrowserLogger {
 const logger = new BrowserLogger();
 
 // Export logger functions
-export const logError = (message: string, meta?: any) => logger.error(message, meta);
-export const logWarn = (message: string, meta?: any) => logger.warn(message, meta);
-export const logInfo = (message: string, meta?: any): void => logger.info(message, meta);
-export const logDebug = (message: string, meta?: any): void => logger.debug(message, meta);
+export const logError = (message: string, meta?: unknown) => logger.error(message, meta);
+export const logWarn = (message: string, meta?: unknown) => logger.warn(message, meta);
+export const logInfo = (message: string, meta?: unknown): void => logger.info(message, meta);
+export const logDebug = (message: string, meta?: unknown): void => logger.debug(message, meta);
 
 // Export logger instance for advanced usage
 export default logger;

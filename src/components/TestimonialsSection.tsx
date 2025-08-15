@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // This is the main App component that renders the TestimonialsSection.
@@ -89,9 +89,9 @@ const TestimonialsSection = () => {
     }, 4000); // Changed to 4 seconds for better mobile experience
 
     return () => clearInterval(interval);
-  }, [activeIndex, isAnimating]);
+  }, [activeIndex, isAnimating, nextTestimonial]);
 
-  const nextTestimonial = () => {
+  const nextTestimonial = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
     
@@ -101,7 +101,7 @@ const TestimonialsSection = () => {
     });
     
     setTimeout(() => setIsAnimating(false), 500);
-  };
+  }, [isAnimating, totalSlides]);
 
   const prevTestimonial = () => {
     if (isAnimating) return;

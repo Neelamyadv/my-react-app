@@ -37,7 +37,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [playbackRate, setPlaybackRate] = useState(1);
   const [showSettings, setShowSettings] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [controlsTimeout, setControlsTimeout] = useState<number | null>(null);
   const [isBuffering, setIsBuffering] = useState(false);
 
   // Mobile detection and responsive setup
@@ -130,7 +130,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         clearTimeout(controlsTimeout);
       }
     };
-  }, [showControls, isPlaying, isMobile]);
+  }, [showControls, isPlaying, isMobile, controlsTimeout]);
 
   // ========================================
   // 🎮 PLAYER CONTROLS

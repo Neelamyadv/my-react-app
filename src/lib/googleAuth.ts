@@ -111,7 +111,7 @@ class GoogleAuthService {
         };
 
         // Trigger Google Sign-In popup
-        window.google.accounts.id.prompt((notification: any) => {
+        window.google.accounts.id.prompt((notification: { isNotDisplayed: () => boolean; isSkippedMoment: () => boolean }) => {
           if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
             // Fallback to manual sign-in
             this.showManualSignIn().then((result) => {

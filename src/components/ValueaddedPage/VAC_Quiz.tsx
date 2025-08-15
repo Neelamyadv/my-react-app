@@ -4,7 +4,7 @@ import { vacTopics } from "../../vacConfig";
 
 export default function VAC_Quiz() {
   const navigate = useNavigate();
-  const [topic, setTopic] = useState<any>(null);
+  const [topic, setTopic] = useState<{ id: string; name: string; questions: Array<{ q: string; options: string[]; answer: number }> } | null>(null);
   const [answers, setAnswers] = useState<{ [key: number]: number }>({});
   const [attempt, setAttempt] = useState<number>(0);
   const [submitted, setSubmitted] = useState(false);
@@ -44,7 +44,7 @@ export default function VAC_Quiz() {
     }
 
     let correctCount = 0;
-    topic.questions.forEach((q: any, index: number) => {
+    topic.questions.forEach((q, index: number) => {
       if (answers[index] === q.answer) correctCount++;
     });
 
@@ -88,7 +88,7 @@ export default function VAC_Quiz() {
         </span>
       </div>
 
-      {topic.questions.map((q: any, qIndex: number) => (
+      {topic.questions.map((q, qIndex: number) => (
         <div key={qIndex} className="mb-6">
           <p className="font-medium mb-2">{q.q}</p>
           {q.options.map((opt: string, optIndex: number) => (

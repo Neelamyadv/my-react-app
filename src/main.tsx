@@ -11,6 +11,6 @@ createRoot(document.getElementById('root')!).render(
 );
 
 // Register service worker for offline support
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
   registerServiceWorker();
 }

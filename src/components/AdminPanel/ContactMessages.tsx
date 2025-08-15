@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Eye, Trash2, Mail, Phone, X } from 'lucide-react';
 import { ContactMessage } from '../../lib/supabase';
 import toast from 'react-hot-toast';
@@ -17,7 +17,7 @@ const ContactMessages: React.FC = () => {
 
   useEffect(() => {
     filterMessages();
-  }, [messages, searchTerm]);
+  }, [messages, searchTerm, filterMessages]);
 
   const loadMessages = async () => {
     try {
@@ -36,7 +36,7 @@ const ContactMessages: React.FC = () => {
     }
   };
 
-  const filterMessages = () => {
+  const filterMessages = useCallback(() => {
     if (!searchTerm) {
       setFilteredMessages(messages);
       return;
@@ -49,7 +49,7 @@ const ContactMessages: React.FC = () => {
       message.message.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredMessages(filtered);
-  };
+  }, [messages, searchTerm]);
 
   const handleDeleteMessage = (messageId: string) => {
     if (window.confirm('Are you sure you want to delete this message? This action cannot be undone.')) {

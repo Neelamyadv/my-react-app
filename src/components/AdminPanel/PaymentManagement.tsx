@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Download, CreditCard } from 'lucide-react';
 import { Enrollment, User } from '../../lib/supabase';
 import toast from 'react-hot-toast';
@@ -29,7 +29,7 @@ const PaymentManagement: React.FC = () => {
 
   useEffect(() => {
     filterPayments();
-  }, [payments, searchTerm, typeFilter]);
+  }, [payments, searchTerm, typeFilter, filterPayments]);
 
   const loadData = async () => {
     try {
@@ -59,7 +59,7 @@ const PaymentManagement: React.FC = () => {
     }
   };
 
-  const filterPayments = () => {
+  const filterPayments = useCallback(() => {
     let filtered = payments;
 
     // Search filter
@@ -80,7 +80,7 @@ const PaymentManagement: React.FC = () => {
     }
 
     setFilteredPayments(filtered);
-  };
+  }, [payments, searchTerm, typeFilter, users]);
 
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId);

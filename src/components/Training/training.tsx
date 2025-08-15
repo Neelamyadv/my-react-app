@@ -424,7 +424,8 @@ const CallToAction = () => {
   );
 };
 
-// Payment Section Component
+// Payment Section Component (unused - kept for reference)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PaymentSection = () => {
   const { initiateTrainingPayment, isPaymentModalOpen, currentPaymentData, closePaymentModal, handlePaymentSuccess, TRAINING_PROGRAM_PRICE } = useTrainingPayment();
 

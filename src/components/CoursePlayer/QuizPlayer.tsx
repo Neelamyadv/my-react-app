@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CheckCircle, XCircle, Clock, RotateCcw } from 'lucide-react';
 import { QuizContent, QuizQuestion } from '../../lib/contentService';
 
@@ -47,7 +47,7 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, isSubmitted]);
+  }, [timeLeft, isSubmitted, handleSubmit]);
 
   const handleAnswerChange = (questionId: string, answer: string | number | (string | number)[]) => {
     setAnswers(prev => ({
@@ -60,7 +60,7 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
   // 📊 QUIZ SCORING SYSTEM
   // ========================================
   // You can customize the scoring logic here
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
     setIsSubmitted(true);
     
     // 🧮 SCORING CALCULATION
@@ -100,7 +100,7 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onComplete }) => {
     // - Award badges/certificates
     // - Unlock next content
     onComplete(score, passed);
-  };
+  }, [quiz.questions, answers, quiz.passingScore, onComplete]);
 
   const resetQuiz = () => {
     setCurrentQuestion(0);

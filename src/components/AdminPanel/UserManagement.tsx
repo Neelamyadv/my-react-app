@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Edit, X, Plus, Minus } from 'lucide-react';
 import { User, Enrollment } from '../../lib/supabase';
 import toast from 'react-hot-toast';
@@ -33,7 +33,7 @@ const UserManagement: React.FC = () => {
 
   useEffect(() => {
     filterUsers();
-  }, [users, searchTerm]);
+  }, [users, searchTerm, filterUsers]);
 
   const loadUsers = async () => {
     try {
@@ -48,7 +48,7 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const filterUsers = () => {
+  const filterUsers = useCallback(() => {
     if (!searchTerm) {
       setFilteredUsers(users);
       return;
@@ -61,7 +61,7 @@ const UserManagement: React.FC = () => {
       user.phone.includes(searchTerm)
     );
     setFilteredUsers(filtered);
-  };
+  }, [users, searchTerm]);
 
   const handleEditUser = (user: User) => {
     setSelectedUser(user);

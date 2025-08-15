@@ -14,14 +14,14 @@ const MyCoursesPage = () => {
   const { enrollments, loading, hasPremiumPass } = useEnrollment();
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_certificates, setCertificates] = useState<Certificate[]>([]);
 
   // Load certificates when component mounts and when enrollments change
   useEffect(() => {
     if (user) {
       const userCertificates = certificateService.getUserCertificates();
       setCertificates(userCertificates);
-      // Loaded certificates on mount
     }
   }, [user, enrollments]);
 

@@ -44,7 +44,8 @@ interface AuthProviderProps {
 }
 
 // Check if Google Auth is available (not in WebContainer environment)
-const isGoogleAuthAvailable = () => {
+// eslint-disable-next-line react-refresh/only-export-components
+const isGoogleAuthAvailable = (): boolean => {
   return !window.location.hostname.includes('webcontainer-api.io') && 
          !window.location.hostname.includes('local-credentialless');
 };

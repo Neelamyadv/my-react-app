@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Play, CheckCircle, BookOpen, Award, Download } from 'lucide-react';
 import { certificateService } from '../Certificate/CertificateService';
 import CertificateModal from '../Certificate/CertificateModal';
@@ -31,9 +31,9 @@ const CourseContent: React.FC<CourseContentProps> = ({
 
   useEffect(() => {
     loadCourseContent();
-  }, [courseId]);
+  }, [courseId, loadCourseContent]);
 
-  const loadCourseContent = async () => {
+  const loadCourseContent = useCallback(async () => {
     try {
       setLoading(true);
       const content = await contentService.getCourseContent(courseId);
@@ -49,7 +49,7 @@ const CourseContent: React.FC<CourseContentProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [courseId]);
 
   const handleContentProgress = (contentId: string, progress: number) => {
     setContentProgress(prev => ({

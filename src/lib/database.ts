@@ -130,7 +130,8 @@ class LocalStorageDatabase {
       users.push(newUser);
       this.setTable('users', users);
       // Remove password from returned user object
-      const { password: _, ...userWithoutPassword } = newUser;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _unused, ...userWithoutPassword } = newUser;
       logInfo('User registered successfully', { email: sanitizedData.email });
       return { user: userWithoutPassword, error: null };
     } catch (error) {
@@ -153,7 +154,8 @@ class LocalStorageDatabase {
         return { user: null, error: 'Invalid email or password' };
       }
       // Remove password from returned user object
-      const { password: _, ...userWithoutPassword } = user;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _unused, ...userWithoutPassword } = user;
       logInfo('User signed in successfully', { email: sanitizedEmail });
       return { user: userWithoutPassword, error: null };
     } catch (error) {

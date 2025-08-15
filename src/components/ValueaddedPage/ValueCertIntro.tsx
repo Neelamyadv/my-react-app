@@ -5,10 +5,10 @@ export default function ValueCertIntro() {
   const navigate = useNavigate();
 
   // Payment success handler (currently unused but kept for future use)
-  const handlePaymentSuccess = () => {
-    localStorage.setItem("vac_payment", "true");
-    navigate("/value-certificate/start");
-  };
+  // const handlePaymentSuccess = () => {
+  //   localStorage.setItem("vac_payment", "true");
+  //   navigate("/value-certificate/start");
+  // };
 
   const startPayment = () => {
   // Payment skip for testing

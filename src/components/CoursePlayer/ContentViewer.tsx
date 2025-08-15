@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FileText, Download, ExternalLink } from 'lucide-react';
 import VideoPlayer from './VideoPlayer';
 import QuizPlayer from './QuizPlayer';
@@ -27,13 +27,13 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
 
   useEffect(() => {
     loadContent();
-  }, [content.id]);
+  }, [content.id, loadContent]);
 
   // ========================================
   // 🔐 CONTENT LOADING & SECURITY
   // ========================================
   // This function loads content and handles secure URL generation
-  const loadContent = async () => {
+  const loadContent = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -59,7 +59,7 @@ const ContentViewer: React.FC<ContentViewerProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [content.type, content.url]);
 
   // ========================================
   // 📊 PROGRESS TRACKING

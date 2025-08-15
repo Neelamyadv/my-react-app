@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Search, Download } from 'lucide-react';
 import { Enrollment, User } from '../../lib/supabase';
 import toast from 'react-hot-toast';
@@ -22,7 +22,7 @@ const EnrollmentManagement: React.FC<EnrollmentManagementProps> = ({ onBack }) =
 
   useEffect(() => {
     filterEnrollments();
-  }, [enrollments, searchTerm, statusFilter, typeFilter]);
+  }, [enrollments, searchTerm, statusFilter, typeFilter, filterEnrollments]);
 
   const loadData = async () => {
     try {
@@ -40,7 +40,7 @@ const EnrollmentManagement: React.FC<EnrollmentManagementProps> = ({ onBack }) =
     }
   };
 
-  const filterEnrollments = () => {
+  const filterEnrollments = useCallback(() => {
     let filtered = enrollments;
 
     // Search filter
@@ -66,7 +66,7 @@ const EnrollmentManagement: React.FC<EnrollmentManagementProps> = ({ onBack }) =
     }
 
     setFilteredEnrollments(filtered);
-  };
+  }, [enrollments, searchTerm, statusFilter, typeFilter, users]);
 
   const getUserName = (userId: string) => {
     const user = users.find(u => u.id === userId);
