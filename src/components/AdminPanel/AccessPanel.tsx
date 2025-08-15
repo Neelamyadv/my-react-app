@@ -32,16 +32,13 @@ const ebooks = [
 const AccessPanel: React.FC = () => {
   // Course access states
   const [courseEmail, setCourseEmail] = useState('');
-  const [courseUserName, setCourseUserName] = useState('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   // eBook access states
   const [ebookEmail, setEbookEmail] = useState('');
-  const [ebookUserName, setEbookUserName] = useState('');
   const [selectedEbooks, setSelectedEbooks] = useState<string[]>([]);
 
   // Premium pass states
   const [premiumEmail, setPremiumEmail] = useState('');
-  const [premiumUserName, setPremiumUserName] = useState('');
 
   // Access control
   const [hasAccess, setHasAccess] = useState<boolean>(false);
@@ -74,10 +71,6 @@ const AccessPanel: React.FC = () => {
       return toast.error('Please enter a valid email address');
     }
 
-    if (!courseUserName.trim()) {
-      return toast.error('Please enter the user name');
-    }
-
     if (selectedCourses.length === 0) {
       return toast.error('Please select at least one course');
     }
@@ -92,11 +85,10 @@ const AccessPanel: React.FC = () => {
     const courseCount = coursesToGrant.length;
     const courseNames = coursesToGrant.map(id => courses.find(c => c.id === id)?.title).join(', ');
     
-    toast.success(`✅ Course access granted successfully!\n\nUser: ${courseUserName}\nEmail: ${courseEmail}\nAccess granted to: ${courseCount} course${courseCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${courseEmail}", they will automatically see these courses in their account.`);
+    toast.success(`✅ Course access granted successfully!\n\nEmail: ${courseEmail}\nAccess granted to: ${courseCount} course${courseCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${courseEmail}", they will automatically see these courses in their account.`);
 
     // Reset form
     setCourseEmail('');
-    setCourseUserName('');
     setSelectedCourses([]);
   };
 
@@ -122,10 +114,6 @@ const AccessPanel: React.FC = () => {
       return toast.error('Please enter a valid email address');
     }
 
-    if (!ebookUserName.trim()) {
-      return toast.error('Please enter the user name');
-    }
-
     if (selectedEbooks.length === 0) {
       return toast.error('Please select at least one eBook');
     }
@@ -140,11 +128,10 @@ const AccessPanel: React.FC = () => {
     const ebookCount = ebooksToGrant.length;
     const ebookNames = ebooksToGrant.map(id => ebooks.find(e => e.id === id)?.title).join(', ');
     
-    toast.success(`✅ eBook access granted successfully!\n\nUser: ${ebookUserName}\nEmail: ${ebookEmail}\nAccess granted to: ${ebookCount} eBook${ebookCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${ebookEmail}", they will automatically see these eBooks in their account.`);
+    toast.success(`✅ eBook access granted successfully!\n\nEmail: ${ebookEmail}\nAccess granted to: ${ebookCount} eBook${ebookCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${ebookEmail}", they will automatically see these eBooks in their account.`);
 
     // Reset form
     setEbookEmail('');
-    setEbookUserName('');
     setSelectedEbooks([]);
   };
 
@@ -170,10 +157,6 @@ const AccessPanel: React.FC = () => {
       return toast.error('Please enter a valid email address');
     }
 
-    if (!premiumUserName.trim()) {
-      return toast.error('Please enter the user name');
-    }
-
     // Grant access to all courses
     courses.forEach(course => {
       localStorage.setItem(`course_access_${premiumEmail.toLowerCase()}_${course.id}`, 'true');
@@ -184,11 +167,10 @@ const AccessPanel: React.FC = () => {
       localStorage.setItem(`ebook_access_${premiumEmail.toLowerCase()}_${ebook.id}`, 'true');
     });
 
-    toast.success(`✅ Premium Pass access granted successfully!\n\nUser: ${premiumUserName}\nEmail: ${premiumEmail}\nAccess granted to: ALL ${courses.length} courses and ALL ${ebooks.length} eBooks\n\nWhen this user logs in with email "${premiumEmail}", they will have complete access to all content.`);
+    toast.success(`✅ Premium Pass access granted successfully!\n\nEmail: ${premiumEmail}\nAccess granted to: ALL ${courses.length} courses and ALL ${ebooks.length} eBooks\n\nWhen this user logs in with email "${premiumEmail}", they will have complete access to all content.`);
 
     // Reset form
     setPremiumEmail('');
-    setPremiumUserName('');
   };
 
   if (!hasAccess) {
@@ -225,16 +207,6 @@ const AccessPanel: React.FC = () => {
             <p className="text-sm text-[var(--admin-text-secondary)] mb-6">Complete access to all courses and eBooks</p>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">User Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter user's full name"
-                  className="w-full px-3 py-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded text-[var(--admin-text)] focus:border-purple-500 focus:outline-none"
-                  value={premiumUserName}
-                  onChange={(e) => setPremiumUserName(e.target.value)}
-                />
-              </div>
               <div>
                 <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">Email Address</label>
                 <div className="relative">
@@ -313,16 +285,6 @@ const AccessPanel: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">User Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter user's full name"
-                  className="w-full px-3 py-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded text-[var(--admin-text)] focus:border-blue-500 focus:outline-none"
-                  value={courseUserName}
-                  onChange={(e) => setCourseUserName(e.target.value)}
-                />
-              </div>
-              <div>
                 <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -400,16 +362,6 @@ const AccessPanel: React.FC = () => {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">User Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter user's full name"
-                  className="w-full px-3 py-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded text-[var(--admin-text)] focus:border-green-500 focus:outline-none"
-                  value={ebookUserName}
-                  onChange={(e) => setEbookUserName(e.target.value)}
-                />
-              </div>
-              <div>
                 <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -445,7 +397,7 @@ const AccessPanel: React.FC = () => {
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">1</span>
-                  <span>Enter user's full name and email address</span>
+                  <span>Enter user's email address</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="bg-blue-100 text-blue-600 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold mt-0.5">2</span>

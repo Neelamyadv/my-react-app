@@ -85,7 +85,6 @@ const EbookAccessManagement = () => {
   const [filterType, setFilterType] = useState<'all' | 'purchased' | 'manual' | 'premium'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'inactive'>('all');
   const [userEmail, setUserEmail] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
   const [selectedEbooks, setSelectedEbooks] = useState<string[]>([]);
   const [showGrantModal, setShowGrantModal] = useState(false);
   const [grantType, setGrantType] = useState<'single' | 'multiple' | 'all'>('single');
@@ -136,11 +135,7 @@ const EbookAccessManagement = () => {
       return;
     }
 
-    // Validate name
-    if (!userName.trim()) {
-      alert('Please enter the user name');
-      return;
-    }
+
 
     let ebooksToGrant: string[] = [];
 
@@ -172,7 +167,7 @@ const EbookAccessManagement = () => {
           id: Date.now().toString() + Math.random(),
           userId: userId,
           userEmail: userEmail.toLowerCase(),
-          userName: userName.trim(),
+          userName: 'User', // Default name since we only need email
           ebookId: ebookId,
           ebookTitle: ebook?.title || 'Unknown eBook',
           accessType: 'manual',
@@ -193,7 +188,7 @@ const EbookAccessManagement = () => {
        const ebookCount = ebooksToGrant.length;
        const ebookNames = ebooksToGrant.map(id => ebookData.find(e => e.id === id)?.title).join(', ');
        
-       alert(`✅ Access granted successfully!\n\nUser: ${userName}\nEmail: ${userEmail}\nAccess granted to: ${ebookCount} eBook${ebookCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${userEmail}", they will automatically see these eBooks in their account.`);
+       alert(`✅ Access granted successfully!\n\nEmail: ${userEmail}\nAccess granted to: ${ebookCount} eBook${ebookCount !== 1 ? 's' : ''}\n\nWhen this user logs in with email "${userEmail}", they will automatically see these eBooks in their account.`);
       
       // Reset form
       setShowGrantModal(false);
@@ -609,7 +604,7 @@ const EbookAccessManagement = () => {
                 onClick={() => {
                   setShowGrantModal(false);
                   setUserEmail('');
-                  setUserName('');
+          
                   setSelectedEbooks([]);
                   setGrantType('single');
                 }}
