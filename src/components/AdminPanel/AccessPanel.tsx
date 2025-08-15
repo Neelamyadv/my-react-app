@@ -197,36 +197,52 @@ const AccessPanel: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Premium Pass Card */}
-          <div className="bg-[var(--admin-card)] border border-[var(--admin-border)] rounded-lg p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="bg-purple-100 p-2 rounded-lg">
-                <Users className="w-6 h-6 text-purple-600" />
-              </div>
-              <h2 className="text-lg font-medium text-[var(--admin-text)]">Premium Pass</h2>
-            </div>
-            <p className="text-sm text-[var(--admin-text-secondary)] mb-6">Complete access to all courses and eBooks</p>
+          <div className="relative bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-sm border border-purple-300/50 rounded-lg p-6 shadow-lg">
+            {/* Glass effect overlay */}
+            <div className="absolute inset-0 bg-white/10 backdrop-blur-sm rounded-lg"></div>
             
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-[var(--admin-text-secondary)] mb-2">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="email"
-                    placeholder="customer@email.com"
-                    className="w-full pl-10 pr-3 py-2 bg-[var(--admin-bg)] border border-[var(--admin-border)] rounded text-[var(--admin-text)] focus:border-purple-500 focus:outline-none"
-                    value={premiumEmail}
-                    onChange={(e) => setPremiumEmail(e.target.value)}
-                  />
+            {/* Content */}
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-gradient-to-br from-purple-400 to-pink-400 p-3 rounded-xl shadow-lg">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-purple-800">Premium Pass</h2>
+                  <div className="flex items-center gap-1 mt-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-xs text-green-700 font-medium">ALL ACCESS</span>
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={grantPremiumAccess}
-                className="w-full bg-purple-600 text-white py-3 px-4 rounded hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <CheckCircle className="w-4 h-4" />
-                Grant Premium Access
-              </button>
+              
+              <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
+                <p className="text-sm text-purple-700 font-medium">✨ Complete access to all courses and eBooks</p>
+                <p className="text-xs text-purple-600 mt-1">This grants unlimited access to the entire platform</p>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-purple-700 mb-2">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
+                    <input
+                      type="email"
+                      placeholder="customer@email.com"
+                      className="w-full pl-10 pr-3 py-3 bg-white/80 backdrop-blur-sm border border-purple-300 rounded-lg text-purple-800 placeholder-purple-400 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all"
+                      value={premiumEmail}
+                      onChange={(e) => setPremiumEmail(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={grantPremiumAccess}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Grant Premium Access
+                </button>
+              </div>
             </div>
           </div>
 
