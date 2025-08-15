@@ -282,10 +282,10 @@ const PaymentAnalyticsPage: React.FC = () => {
   const dayPayments = getPaymentsForDate(selectedDate);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-6">
+    <div className="min-h-screen bg-[conic-gradient(at_right,_var(--tw-gradient-stops))] from-[#1d3e53] via-[#254b62] to-[#476d7c] p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-6 border border-white/20">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
@@ -347,7 +347,7 @@ const PaymentAnalyticsPage: React.FC = () => {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Total Revenue</p>
@@ -359,7 +359,7 @@ const PaymentAnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Total Payments</p>
@@ -371,7 +371,7 @@ const PaymentAnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Success Rate</p>
@@ -387,7 +387,7 @@ const PaymentAnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Avg. Order Value</p>
@@ -406,7 +406,7 @@ const PaymentAnalyticsPage: React.FC = () => {
 
         {/* Payment Type Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <PieChart className="w-5 h-5 text-blue-600" />
               Payment Type Breakdown
@@ -439,7 +439,7 @@ const PaymentAnalyticsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
             <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-green-600" />
               Revenue by Type
@@ -478,7 +478,7 @@ const PaymentAnalyticsPage: React.FC = () => {
         </div>
 
         {/* Recent Payments Table */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-white/20">
           <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
             <Activity className="w-5 h-5 text-blue-600" />
             Recent Payments ({dayPayments.length})
