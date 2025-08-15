@@ -60,6 +60,10 @@ const PaymentAnalyticsPage: React.FC = () => {
     const accessGranted = sessionStorage.getItem('analytics_access') === 'true';
     setHasAccess(accessGranted);
     
+    // Always ensure we start with current date
+    const currentDate = new Date().toISOString().split('T')[0];
+    setSelectedDate(currentDate);
+    
     if (accessGranted) {
       loadPaymentData();
     }
@@ -316,30 +320,30 @@ const PaymentAnalyticsPage: React.FC = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={() => navigateDate('prev')}
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5 text-white" />
               </button>
               
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-600" />
+                <Calendar className="w-5 h-5 text-blue-400" />
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 bg-white/90 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 font-medium"
                 />
               </div>
               
               <button
                 onClick={() => navigateDate('next')}
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
               >
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 text-white" />
               </button>
             </div>
             
-            <div className="text-lg font-semibold text-gray-800">
+            <div className="text-lg font-semibold text-white">
               {formatDate(selectedDate)}
             </div>
           </div>
