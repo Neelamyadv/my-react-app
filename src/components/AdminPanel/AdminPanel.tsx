@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Users, MessageSquare, BarChart3, Settings, LogOut, CreditCard, Menu, X } from 'lucide-react';
+import { Users, MessageSquare, BarChart3, Settings, LogOut, CreditCard, Menu, X, BookOpen } from 'lucide-react';
 import AdminDashboard from './AdminDashboard';
 import UserManagement from './UserManagement';
 import ContactMessages from './ContactMessages';
 import PaymentManagement from './PaymentManagement';
+import EbookAccessManagement from './EbookAccessManagement';
 import { useAuth } from '../../lib/auth';
 
 const AdminPanel: React.FC = () => {
@@ -15,6 +16,7 @@ const AdminPanel: React.FC = () => {
     { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
     { id: 'users', name: 'Users', icon: Users },
     { id: 'payments', name: 'Payments', icon: CreditCard },
+    { id: 'ebooks', name: 'eBook Access', icon: BookOpen },
     { id: 'messages', name: 'Messages', icon: MessageSquare },
     { id: 'settings', name: 'Settings', icon: Settings },
   ];
@@ -40,6 +42,8 @@ const AdminPanel: React.FC = () => {
         return <UserManagement />;
       case 'payments':
         return <PaymentManagement />;
+      case 'ebooks':
+        return <EbookAccessManagement />;
       case 'messages':
         return <ContactMessages />;
       case 'settings':
