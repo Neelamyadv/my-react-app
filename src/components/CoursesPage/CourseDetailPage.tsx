@@ -458,7 +458,7 @@ const CourseDetailPage: React.FC = () => {
                 {courseDetails.features.map((feature, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
-                    <span className="text-gray-700 text-sm sm:text-base">{feature}</span>
+                    <span className="text-gray-50 text-sm sm:text-base">{feature}</span>
                   </div>
                 ))}
               </div>
@@ -489,7 +489,7 @@ const CourseDetailPage: React.FC = () => {
                   {user ? 'Enroll Now' : 'Login to Enroll'}
                 </button>
 
-                <p className="text-center text-xs sm:text-sm text-gray-500">30-Day Money-Back Guarantee</p>
+               
               </div>
             </div>
           </div>
