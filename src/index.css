@@ -36,7 +36,7 @@ body {
 
 /* Global background class for consistent application - light purple and white */
 .yellow-gradient-bg {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 25%, #fcd34d 50%, #fbbf24 75%, #f59e0b 100%);
+  background: radial-gradient(ellipse at bottom right, #070f2b, #1b1a55, #535c91);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
