@@ -18,9 +18,7 @@ const topCourses = [
     price: 599,
     originalPrice: 2450,
     badge: 'EXCLUSIVE LECTURES',
-    color: 'from-purple-500 to-indigo-700',
-    ebookPrice: 345,
-    ebookAvailable: true
+    color: 'from-purple-500 to-indigo-700'
   },
   {
     id: 'javascript',
@@ -32,9 +30,7 @@ const topCourses = [
     price: 599,
     originalPrice: 2450,
     badge: 'DEVELOP YOUR TECHNICAL DISTINCT',
-    color: 'from-indigo-500 to-purple-600',
-    ebookPrice: 345,
-    ebookAvailable: true
+    color: 'from-indigo-500 to-purple-600'
   },
   {
     id: 'angular',
@@ -46,9 +42,7 @@ const topCourses = [
     price: 599,
     originalPrice: 2450,
     badge: 'CREATIVE COURSE',
-    color: 'from-purple-500 to-pink-600',
-    ebookPrice: 345,
-    ebookAvailable: true
+    color: 'from-purple-500 to-pink-600'
   },
   {
     id: 'chat-gpt',
@@ -60,9 +54,7 @@ const topCourses = [
     price: 599,
     originalPrice: 2450,
     badge: 'ARTIFICIAL INTELLIGENCE COURSE',
-    color: 'from-indigo-600 to-purple-800',
-    ebookPrice: 345,
-    ebookAvailable: true
+    color: 'from-indigo-600 to-purple-800'
   }
 ];
 
@@ -75,9 +67,7 @@ const allCourses = [
     hours: '4+ Hours',
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'digital-marketing',
@@ -87,9 +77,7 @@ const allCourses = [
     hours: '2+ Hours',
     description: 'Transform Your Business: Digital Marketing Strategies That Work',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'chat-gpt',
@@ -99,9 +87,7 @@ const allCourses = [
     hours: '1+ Hours',
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'motion-design',
@@ -111,9 +97,7 @@ const allCourses = [
     hours: '4+ Hours',
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'excel-fundamental',
@@ -123,9 +107,7 @@ const allCourses = [
     hours: '2+ Hours',
     description: 'Transform Your Business: Digital Marketing Strategies That Work',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'ui-ux-design',
@@ -135,9 +117,7 @@ const allCourses = [
     hours: '2+ Hours',
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'javascript',
@@ -147,9 +127,7 @@ const allCourses = [
     hours: '4+ Hours',
     description: 'Build the web, Shape the future - Learn to Code Like a Pro',
     price: 599,
-    originalPrice: 2450,
-    ebookPrice: 345,
-    ebookAvailable: true
+    originalPrice: 2450
   },
   {
     id: 'angular',
@@ -182,21 +160,7 @@ const CourseCard = ({ course, isTopCourse = false }) => {
   const { user } = useAuth();
   const { initiateCoursePayment } = usePayment();
 
-  const handleEbookPurchase = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!user) {
-      navigate('/login');
-      return;
-    }
 
-    initiateCoursePayment({
-      courseId: course.id,
-      courseName: `${course.title} - eBook`,
-      price: course.ebookPrice || 345,
-      originalPrice: 599,
-      type: PaymentType.EBOOK
-    });
-  };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
@@ -214,13 +178,7 @@ const CourseCard = ({ course, isTopCourse = false }) => {
             </span>
           </div>
         )}
-        {course.ebookAvailable && (
-          <div className="absolute top-4 right-4">
-            <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-              📖 eBook Ready
-            </span>
-          </div>
-        )}
+
       </div>
 
       {/* Course Content */}
@@ -245,12 +203,6 @@ const CourseCard = ({ course, isTopCourse = false }) => {
             <span className="text-2xl font-bold text-gray-900">₹{course.price}</span>
             <span className="text-sm text-gray-500 line-through ml-2">₹{course.originalPrice}</span>
           </div>
-          {course.ebookAvailable && (
-            <div className="text-right">
-              <span className="text-lg font-bold text-green-600">₹{course.ebookPrice}</span>
-              <span className="text-xs text-green-600 block">eBook Only</span>
-            </div>
-          )}
         </div>
 
         {/* Action Buttons */}
@@ -261,14 +213,6 @@ const CourseCard = ({ course, isTopCourse = false }) => {
           >
             View Details
           </button>
-          {course.ebookAvailable && (
-            <button
-              onClick={handleEbookPurchase}
-              className="bg-green-500 text-white py-2 px-4 rounded-xl font-semibold hover:bg-green-600 transition-colors"
-            >
-              📖 Buy eBook
-            </button>
-          )}
         </div>
       </div>
     </div>
